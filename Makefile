@@ -1,4 +1,4 @@
-NAME		= a.out
+NAME		= webserv
 
 SRC			= ${wildcard *.cpp}
 OBJ_PATH	= ./obj/

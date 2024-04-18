@@ -16,12 +16,14 @@ int main() {
     struct sockaddr_in address;
     int addrlen = sizeof(address);
     char buffer[BUFFER_SIZE] = {0};
-    std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\n\n<html><body><h1>Hello, World!</h1></body></html>";
+
+    // TIP: se o Content-Length for maior que o necessario o browser ficara em loop esperando o ultimo byte
+    std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: 84\n\n<html><head><title>WebServ</title></head><body><h1>Hello, World!!</h1></body></html>";
 
     // Create epoll instance
     int epoll_fd = epoll_create(10);
     if (epoll_fd == -1) {
-        std::cerr << "Failed to create epoll instance" << std::endl;
+        std::cerr << "Failed to create epoll instance" << std::endl;    
         return -1;
     }
 
@@ -57,14 +59,9 @@ int main() {
     }
 
     struct epoll_event events[MAX_EVENTS];
-    while (true) {
-        int num_events = epoll_wait(epoll_fd, events, MAX_EVENTS, -1);
-        if (num_events == -1) {
-            std::cerr << "epoll_wait failed" << std::endl;
-            return -1;
-        }
-
-        for (int i = 0; i < num_events; ++i) {
+    while (epoll_wait(epoll_fd, events, MAX_EVENTS, -1) > 0)
+    {   
+        for (int i = 0; i < MAX_EVENTS; ++i) {
             if (events[i].data.fd == server_fd) {
                 // Accept incoming connection
                 if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0) {
@@ -87,19 +84,19 @@ int main() {
                 if (bytes_received <= 0) {
                     // Connection closed or error
                     epoll_ctl(epoll_fd, EPOLL_CTL_DEL, client_socket, NULL);
-                    close(client_socket);
                     std::cout << "Connection closed" << std::endl;
                 } else {
                     // Send response
                     send(client_socket, response.c_str(), response.length(), 0);
                     std::cout << "Response sent" << std::endl;
                 }
+                close(client_socket);
             }
         }
     }
 
-	std::cout << "Socket closed" << std::endl;
     // Close the server socket
+	std::cout << "Socket closed" << std::endl;
     close(server_fd);
     return 0;
 }
