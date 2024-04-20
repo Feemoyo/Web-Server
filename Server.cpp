@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 17:36:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/20 12:13:27 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/04/20 20:02:12 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ Server::Server(void)
 	return ;
 }
 
-Server::Server(int n_port)
-:_port(n_port)
+Server::Server(int port)
+:_port(port)
 {
 	this->_init_socket();
 	this->_init_sockaddr_in();
@@ -77,12 +77,6 @@ void	Server::start(void)
 	}
 	return ;
 }
-
-// void	Server::stop(void)
-// {
-// 	close(this->_server_socket);
-// 	exit(0);
-// }
 
 void	Server::_process_request(int client_socket)
 {
@@ -144,5 +138,11 @@ void	Server::_init_fds(void)
 		this->_fds[i].events = 0;
 		this->_fds[i].revents = 0;
 	}
+	return ;
+}
+
+void	Server::stop(void)
+{
+	close(_server_socket);
 	return ;
 }
