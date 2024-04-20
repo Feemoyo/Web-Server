@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 17:36:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/20 11:55:17 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/04/20 12:13:27 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,5 +138,11 @@ void	Server::_init_fds(void)
 {
 	this->_fds[0].fd = this->_server_socket;
 	this->_fds[0].events = POLLIN;
+	for (int i = 1; i < _MAX_CLIENTS - 1; i++)
+	{
+		this->_fds[i].fd = 0;
+		this->_fds[i].events = 0;
+		this->_fds[i].revents = 0;
+	}
 	return ;
 }
