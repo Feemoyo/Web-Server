@@ -1,51 +1,51 @@
-NAME		= webserv
+NAME				=				webserv
 
-SRC			= ${wildcard *.cpp}
-OBJ_PATH	= ./obj/
+SRC					=				${wildcard *.cpp}
+OBJ_PATH			=				./obj/
 
-OBJ			= ${addprefix ${OBJ_PATH}, ${notdir ${SRC:.cpp=.o}}}
+OBJ					=				${addprefix ${OBJ_PATH}, ${notdir ${SRC:.cpp=.o}}}
 
-CXX			= c++
+CXX					=				c++
 
-INCLUDES	= -I.
+INCLUDES			=				-I.
 
-CXXFLAGS	= -Wall -Wextra -Werror -Wpedantic -std=c++98 -g3
+CXXFLAGS			=				-Wall -Wextra -Werror -Wpedantic -std=c++98 -g3
 
-VALGRIND 	= valgrind
+VALGRIND			=				valgrind
 
-VALFLAGS 	= --quiet \
-			--show-error-list=yes \
-			--show-leak-kinds=all \
-			--track-origins=yes \
-			--error-exitcode=42 \
-			--exit-on-first-error=yes
+VALFLAGS			=				--quiet \
+									--show-error-list=yes \
+									--show-leak-kinds=all \
+									--track-origins=yes \
+									--error-exitcode=42 \
+									--exit-on-first-error=yes
 
-DEL			= rm -rf
+DEL					=				rm -rf
 
-.DEFAULT_GOAL = all
+.DEFAULT_GOAL		=				all
 
-${OBJ_PATH}%.o: %.cpp
-	${CXX} ${CXXFLAGS} -c $< -o $@
+${OBJ_PATH}%.o:		%.cpp
+					${CXX} ${CXXFLAGS} -c $< -o $@
 
-all: ${NAME}
+all:				${NAME}
 
-${NAME}: ${OBJ}
-	${CXX} ${CXXFLAGS} ${INCLUDES} ${OBJ} -o ${NAME}
+${NAME}:			${OBJ}
+					${CXX} ${CXXFLAGS} ${INCLUDES} ${OBJ} -o ${NAME}
 
-${OBJ}: | ${OBJ_PATH}
+${OBJ}:				| ${OBJ_PATH}
 
 ${OBJ_PATH}:
-	mkdir ${OBJ_PATH}
+					mkdir ${OBJ_PATH}
 
 clean:
-	${DEL} ${OBJ_PATH}
+					${DEL} ${OBJ_PATH}
 
-fclean: clean
-	${DEL} ${NAME}
+fclean:				clean
+					${DEL} ${NAME}
 
-re: fclean all
+re:					fclean all
 
-valgrind: ${NAME}
-	${VALGRIND} ${VALFLAGS} ./${NAME} test.txt s1 "Hello World"
+valgrind:			${NAME}
+					${VALGRIND} ${VALFLAGS} ./${NAME} test.txt s1 "Hello World"
 
-.PHONY: all clean fclean re valgrind
+.PHONY:				all clean fclean re valgrind
