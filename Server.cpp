@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 17:36:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/20 20:02:12 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/04/20 21:03:01 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ void	Server::_process_request(int client_socket)
 
 	std::string	response = "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: 84\n\n<html><head><title>WebServ</title></head><body><h1>Hello, World!!</h1></body></html>";
 	write(client_socket, response.c_str(), response.size());
+	return ;
 }
 
 void	Server::_init_socket(void)
