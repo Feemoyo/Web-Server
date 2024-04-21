@@ -21,9 +21,11 @@ private:
 	sockaddr_in			_server_addr;
 	static const int	_MAX_CLIENTS = 10;
 	struct pollfd		_fds[_MAX_CLIENTS + 1];
+	int					_active_clients;
 
 						Server(void);
 
+	int					_accept_request(void);
 	void				_process_request(int client_socket);
 
 	void				_init_socket(void);
