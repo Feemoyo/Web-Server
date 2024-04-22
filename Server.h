@@ -29,7 +29,6 @@ private:
 	void				_process_request(int client_socket);
 
 	void				_init_socket(void);
-	void				_init_sockaddr_in(void);
 	void				_init_bind(void);
 	void				_init_listen(void);
 	void				_init_fds(void);
