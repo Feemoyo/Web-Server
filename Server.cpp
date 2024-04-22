@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 17:36:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/21 12:05:42 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/04/22 15:03:08 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ Server::Server(int port)
 :_port(port), _active_clients(0)
 {
 	this->_init_socket();
-	this->_init_sockaddr_in();
+	this->_init_sockaddr_init();
 	this->_init_bind();
 	return ;
 }
@@ -95,19 +95,15 @@ void	Server::_process_request(int client_socket)
 void	Server::_init_socket(void)
 {
 	this->_server_socket = socket(AF_INET, SOCK_STREAM, 0);
+	this->_server_addr.sin_family = AF_INET;
+	this->_server_addr.sin_addr.s_addr = INADDR_ANY;
+	this->_server_addr.sin_port = htons(this->_port);
 	if (this->_server_socket < 0)
 	{
 		std::cerr << "Socket creation failed" << std::endl;
         exit(1);
 	}
-	return ;
-}
-
-void	Server::_init_sockaddr_in(void)
-{
-	this->_server_addr.sin_family = AF_INET;
-	this->_server_addr.sin_addr.s_addr = INADDR_ANY;
-	this->_server_addr.sin_port = htons(this->_port);
+	
 	return ;
 }
 
