@@ -23,13 +23,14 @@ private:
 	struct pollfd		_fds[_MAX_CLIENTS + 1];
 	int					_active_clients;
 
+	int					_NUM_REQUEST;
+
 						Server(void);
 
 	int					_accept_request(void);
 	void				_process_request(int client_socket);
 
 	void				_init_socket(void);
-	void				_init_sockaddr_in(void);
 	void				_init_bind(void);
 	void				_init_listen(void);
 	void				_init_fds(void);
