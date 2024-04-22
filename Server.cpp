@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 17:36:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/22 15:03:08 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/04/22 18:01:16 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ Server::Server(int port)
 :_port(port), _active_clients(0)
 {
 	this->_init_socket();
-	this->_init_sockaddr_init();
 	this->_init_bind();
 	return ;
 }
@@ -41,22 +40,33 @@ void	Server::start(void)
 	// TODO: Implementar uma classe para gerenciar os clientes
 	while (true)
 	{
+		std::cout << "\nWaiting for connections..." << std::endl;
 		int	poll_result = poll(this->_fds, this->_active_clients + 1, -1);
+		std::cout << "Clients result: " << this->_active_clients << std::endl;
+
 		if (poll_result < 0)
 		{
 			std::cerr << "Poll fail" << std::endl;
 			break ;
 		}
+		
 		if (this->_fds[0].revents & POLLIN)
 		{
-			if (_accept_request() < 0)
-				continue ;
+			if (_accept_request() != 0)
+			{
+				std::cerr << "Accept fail" << std::endl;
+				break ;
+			}
 			std::cout << "New connection accepted" << std::endl;
 		}
+		 
 		for(int i = 1; i <= this->_active_clients; ++i)
 		{
+			std::cout << "fds[0] " << this->_fds[i].revents << std::endl; 
+			std::cout << "POLLIN " << POLLIN << std::endl;
 			if (this->_fds[i].revents & POLLIN)
 			{
+				std::cout << "fds[i].fd " << this->_fds[i].fd << " " << i  << std::endl; 
 				_process_request(this->_fds[i].fd);
 				close(this->_fds[i].fd);
 				this->_fds[i] = this->_fds[this->_active_clients--];
@@ -88,7 +98,9 @@ void	Server::_process_request(int client_socket)
 	read(client_socket, buffer, sizeof(buffer));;
 
 	std::string	response = "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: 84\n\n<html><head><title>WebServ</title></head><body><h1>Hello, World!!</h1></body></html>";
+	std::cout << client_socket << std::endl;
 	write(client_socket, response.c_str(), response.size());
+	std::cout << "Num Response: " << ++this->_NUM_REQUEST << std::endl;
 	return ;
 }
 
