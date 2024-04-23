@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef SERVER_H
-# define SERVER_H
+#ifndef SERVER_HPP
+# define SERVER_HPP
 
 # include <iostream>
 # include <cstring>
@@ -22,8 +22,6 @@ private:
 	static const int	_MAX_CLIENTS = 10;
 	struct pollfd		_fds[_MAX_CLIENTS + 1];
 	int					_active_clients;
-
-	int					_NUM_REQUEST;
 
 						Server(void);
 
