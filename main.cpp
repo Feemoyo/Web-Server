@@ -6,11 +6,12 @@
 /*   By: rferrero <rferrero@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 19:27:55 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/23 16:39:05 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/04/23 18:33:12 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include "FileReader.hpp"
 
 Server	*server;
 
@@ -31,6 +32,10 @@ int main(void)
 	sigemptyset(&interrupt_handler.sa_mask);
 	interrupt_handler.sa_flags = 0;
 	sigaction(SIGINT, &interrupt_handler, 0);
+
+	FileReader	*fr = new FileReader("index.png");
+
+	std::cout << fr->get_type() << std :: endl;
 
 	server->start();
 	delete server;

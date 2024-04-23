@@ -11,21 +11,25 @@ typedef	enum	e_type
 {
 	HTML,
 	PNG,
-	VSG
+	SVG
 }	t_type;
 
 class	FileReader
 {
 private:
-	std::string	_filename;
-	t_type		_type;
+	std::string		_filename;
+	int				_type;
 
-	int			_classification(void);
+	void			_classification(void);
+	const char		*_get_extension(std::string filename);
 
 public:
-				FileReader(void);
-				FileReader(std::string filename);
-				~FileReader(void);
+					FileReader(void);
+					FileReader(std::string filename);
+					~FileReader(void);
+
+	const int	&get_type(void);
+
 };
 
 #endif
