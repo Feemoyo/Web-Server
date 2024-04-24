@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 17:36:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/22 18:01:16 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/04/24 11:57:06 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	Server::start(void)
 			}
 			std::cout << "New connection accepted" << std::endl;
 		}
-		 
+		
 		for(int i = 1; i <= this->_active_clients; ++i)
 		{
 			std::cout << "fds[0] " << this->_fds[i].revents << std::endl; 
@@ -95,12 +95,28 @@ int	Server::_accept_request(void)
 void	Server::_process_request(int client_socket)
 {
 	char	buffer[1024] = {0};
-	read(client_socket, buffer, sizeof(buffer));;
+	read(client_socket, buffer, sizeof(buffer));
 
-	std::string	response = "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: 84\n\n<html><head><title>WebServ</title></head><body><h1>Hello, World!!</h1></body></html>";
-	std::cout << client_socket << std::endl;
-	write(client_socket, response.c_str(), response.size());
-	std::cout << "Num Response: " << ++this->_NUM_REQUEST << std::endl;
+
+	// TODO: Este metodo é o responsavel por tratar as requisições dos clientes
+	// if (_NUM_REQUEST > 0)
+	// {
+	// 	std::string	response = "HTTP/1.1 200 OK\nDate: Mon, 27 Jul 2009 12:28:53 GMT\nServer: MyServer\nLast-Modified: Wed, 22 Jul 2009 19:15:56 GMT\nContent-Type: image/svg+xml\nContent-Length: 115543\n\n";
+	// 	std::ifstream	file("/home/femoyo/Documents/Web-Server/imgs/icon.svg");
+	// 	std::stringstream file_content;
+	// 	file_content << file.rdbuf();
+	// 	response += file_content.str();
+	// 	std::cout << "request buffer: " << buffer << std::endl;
+	// 	std::cout << "file : " + file_content.str() << std::endl;
+	// }
+
+	// std::cout << client_socket << std::endl;
+	// write(client_socket, response.c_str(), response.size());
+	// std::cout << "Num Response: " << ++this->_NUM_REQUEST << std::endl;
+	
+	this->_response.set_socket(client_socket);
+	this->_response.send_response();
+	
 	return ;
 }
 

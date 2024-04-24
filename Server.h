@@ -10,8 +10,13 @@
 # include <netinet/in.h>
 # include <unistd.h>
 # include <poll.h>
+# include <fcntl.h>
+# include <sstream>
+# include <string>
+# include <fstream>
 
 # include <csignal>
+# include "Response.h"
 
 class	Server
 {
@@ -25,6 +30,8 @@ private:
 
 	int					_NUM_REQUEST;
 
+	Response			_response;
+	
 						Server(void);
 
 	int					_accept_request(void);
