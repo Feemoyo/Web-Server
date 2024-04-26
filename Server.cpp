@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 17:36:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/23 16:38:59 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/04/26 12:18:54 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,11 +82,11 @@ int	Server::_accept_request(void)
 	if (client_socket < 0)
 	{
 		std::cerr << "Accept fail" << std::endl;
-		return (1);
+		return (EXIT_FAILURE);
 	}
 	this->_fds[++this->_active_clients].fd = client_socket;
 	this->_fds[this->_active_clients].events = POLLIN;
-	return (0);
+	return (EXIT_SUCCESS);
 }
 
 void	Server::_process_request(int client_socket)
@@ -109,7 +109,7 @@ void	Server::_init_socket(void)
 	if (this->_server_socket < 0)
 	{
 		std::cerr << "Socket creation failed" << std::endl;
-        exit(1);
+        exit(EXIT_FAILURE);
 	}
 	
 	return ;
@@ -121,7 +121,7 @@ void	Server::_init_bind(void)
 	{
 		std::cerr << "Bind failed" << std::endl;
 		close(this->_server_socket);
-       	exit(1);
+       	exit(EXIT_FAILURE);
 	}
 	return ;
 }
@@ -132,7 +132,7 @@ void	Server::_init_listen(void)
 	{
 		std::cerr << "Listen failed" << std::endl;
 		close(this->_server_socket);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	return ;
 }

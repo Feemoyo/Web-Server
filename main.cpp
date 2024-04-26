@@ -3,17 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 19:27:55 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/23 18:33:12 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/04/26 12:59:13 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-#include "FileReader.hpp"
+#include "FileHandler.hpp"
 
-Server	*server;
+Server			*server;
+FileHandler		*config;
 
 void	_server_interrupt(int sig)
 {
@@ -23,8 +24,14 @@ void	_server_interrupt(int sig)
 	exit(0);
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
+	if (argc != 2)
+	{
+		std::cerr << "Need a .conf file to run the server" <<std::endl;
+		return (EXIT_FAILURE);
+	}
+	config = new FileHandler(argv[1]);
 	server = new Server(8080);
 
 	struct sigaction	interrupt_handler;
@@ -33,11 +40,9 @@ int main(void)
 	interrupt_handler.sa_flags = 0;
 	sigaction(SIGINT, &interrupt_handler, 0);
 
-	FileReader	*fr = new FileReader("index.png");
-
-	std::cout << fr->get_type() << std :: endl;
+	delete config;
 
 	server->start();
 	delete server;
-	return (0);
+	return (EXIT_SUCCESS);
 }
