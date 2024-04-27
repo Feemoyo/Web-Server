@@ -3,18 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 19:27:55 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/26 12:59:13 by user42           ###   ########.fr       */
+/*   Updated: 2024/04/26 23:51:38 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "FileHandler.hpp"
+#include "ConfigHandler.hpp"
+
 
 Server			*server;
 FileHandler		*config;
+ConfigHandler	*config_file;
+
 
 void	_server_interrupt(int sig)
 {
@@ -33,6 +37,7 @@ int main(int argc, char **argv)
 	}
 	config = new FileHandler(argv[1]);
 	server = new Server(8080);
+	config_file = new ConfigHandler(config->get_content());
 
 	struct sigaction	interrupt_handler;
 	interrupt_handler.sa_handler = _server_interrupt;
@@ -41,6 +46,7 @@ int main(int argc, char **argv)
 	sigaction(SIGINT, &interrupt_handler, 0);
 
 	delete config;
+	delete config_file;
 
 	server->start();
 	delete server;
