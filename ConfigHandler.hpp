@@ -8,6 +8,8 @@
 # include <vector>
 # include <map>
 
+# include <cstring>
+
 typedef struct	s_location
 {
 	std::string					path;
