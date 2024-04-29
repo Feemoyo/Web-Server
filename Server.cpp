@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 17:36:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/29 12:25:52 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/04/29 13:09:25 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,11 @@ int	Server::_accept_request(void)
 
 void	Server::_process_request(int client_socket)
 {
+	// TIPS: dentro do buffer a segunda substr é o path do request
 	char	buffer[1024] = {0};
+	// std::stringstream buffer;
 	read(client_socket, buffer, sizeof(buffer));
-
+	std::cout << "requests: " << buffer << std::endl;
 
 	// TODO: Adicionar um tratamento para os multiplos requests ex: o proximo request "icon.svg"
 	this->_response.set_socket(client_socket);

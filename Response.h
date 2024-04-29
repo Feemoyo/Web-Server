@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 10:33:56 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/04/29 12:27:05 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/04/29 19:37:25 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 # include <sstream>
 
 // TODO: é necessario entender se precisamos primeiro ler todos os .html ou deixar conforme as request chegam
-
+//
 class Response
 {
 	private:
