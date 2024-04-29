@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 17:36:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/24 11:57:06 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/04/29 12:25:52 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,22 +98,7 @@ void	Server::_process_request(int client_socket)
 	read(client_socket, buffer, sizeof(buffer));
 
 
-	// TODO: Este metodo é o responsavel por tratar as requisições dos clientes
-	// if (_NUM_REQUEST > 0)
-	// {
-	// 	std::string	response = "HTTP/1.1 200 OK\nDate: Mon, 27 Jul 2009 12:28:53 GMT\nServer: MyServer\nLast-Modified: Wed, 22 Jul 2009 19:15:56 GMT\nContent-Type: image/svg+xml\nContent-Length: 115543\n\n";
-	// 	std::ifstream	file("/home/femoyo/Documents/Web-Server/imgs/icon.svg");
-	// 	std::stringstream file_content;
-	// 	file_content << file.rdbuf();
-	// 	response += file_content.str();
-	// 	std::cout << "request buffer: " << buffer << std::endl;
-	// 	std::cout << "file : " + file_content.str() << std::endl;
-	// }
-
-	// std::cout << client_socket << std::endl;
-	// write(client_socket, response.c_str(), response.size());
-	// std::cout << "Num Response: " << ++this->_NUM_REQUEST << std::endl;
-	
+	// TODO: Adicionar um tratamento para os multiplos requests ex: o proximo request "icon.svg"
 	this->_response.set_socket(client_socket);
 	this->_response.send_response();
 	

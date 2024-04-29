@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 10:33:59 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/04/24 11:53:44 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/04/29 12:21:45 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 Response::Response(void)
 {
+	this->_response = "";
+	this->_file_path = "./www/index.html";
 	return ;
 }
 
@@ -38,11 +40,18 @@ void	Response::set_socket(int socket)
 
 void	Response::_make_response(void)
 {
+	std::string	file_content;
+	std::ostringstream	handler;
+
+	file_content = this->read_file();
+	handler << file_content.size();
+	
 	this->_header = "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: ";
-	this->_header += _response.size();
+	this->_header += handler.str();
 	this->_header += " \n\n";
 	this->_response = this->_header;
-	this->_response += this->read_file();
+	this->_response += file_content;
+
 	return ;
 }
 

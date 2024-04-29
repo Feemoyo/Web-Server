@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 19:27:55 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/24 11:36:39 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/04/29 12:27:21 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,7 @@ int main(void)
 	delete server;
 
 	// Response response(0);
-
-	// std::string output = response.read_file();
-	// std::cout << output << std::endl;
+	// response.send_response();
 	
 	return (0);
 }
