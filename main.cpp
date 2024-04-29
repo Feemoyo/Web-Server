@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 19:27:55 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/20 21:04:02 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/04/29 12:27:21 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.h"
+#include "Response.h"
 
 Server	*server;
 
@@ -34,5 +35,9 @@ int main(void)
 
 	server->start();
 	delete server;
+
+	// Response response(0);
+	// response.send_response();
+	
 	return (0);
 }

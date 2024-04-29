@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 17:36:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/22 18:01:16 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/04/29 13:09:25 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	Server::start(void)
 			}
 			std::cout << "New connection accepted" << std::endl;
 		}
-		 
+		
 		for(int i = 1; i <= this->_active_clients; ++i)
 		{
 			std::cout << "fds[0] " << this->_fds[i].revents << std::endl; 
@@ -94,13 +94,16 @@ int	Server::_accept_request(void)
 
 void	Server::_process_request(int client_socket)
 {
+	// TIPS: dentro do buffer a segunda substr é o path do request
 	char	buffer[1024] = {0};
-	read(client_socket, buffer, sizeof(buffer));;
+	// std::stringstream buffer;
+	read(client_socket, buffer, sizeof(buffer));
+	std::cout << "requests: " << buffer << std::endl;
 
-	std::string	response = "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: 84\n\n<html><head><title>WebServ</title></head><body><h1>Hello, World!!</h1></body></html>";
-	std::cout << client_socket << std::endl;
-	write(client_socket, response.c_str(), response.size());
-	std::cout << "Num Response: " << ++this->_NUM_REQUEST << std::endl;
+	// TODO: Adicionar um tratamento para os multiplos requests ex: o proximo request "icon.svg"
+	this->_response.set_socket(client_socket);
+	this->_response.send_response();
+	
 	return ;
 }
 
