@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 19:27:55 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/29 21:07:42 by user42           ###   ########.fr       */
+/*   Updated: 2024/04/30 13:02:16 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 Server			*server;
 FileHandler		*config;
-Parser	*config_file;
+Parser			*config_file;
 
 
 void	_server_interrupt(int sig)
@@ -25,7 +25,7 @@ void	_server_interrupt(int sig)
 	std::cout << "\nServer Interrupted\nSignal: " << (sig + 128) << std::endl;
 	server->stop();
 	delete server;
-	exit(0);
+	exit(EXIT_SUCCESS);
 }
 
 int main(int argc, char **argv)
@@ -54,5 +54,5 @@ int main(int argc, char **argv)
 	// Response response(0);
 	// response.send_response();
 	
-	return (0);
+	return (EXIT_SUCESS);
 }

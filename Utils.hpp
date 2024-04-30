@@ -5,6 +5,7 @@
 
 # include <iostream>
 # include <fstream>
+# include <sstream>
 # include <string>
 # include <vector>
 # include <map>
@@ -17,8 +18,6 @@
 # include <netinet/in.h>
 # include <unistd.h>
 # include <poll.h>
-
-# include <sstream>
 
 typedef struct	s_location
 {
