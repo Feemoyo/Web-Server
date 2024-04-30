@@ -33,7 +33,6 @@ private:
 	void				_init_listen(void);
 	void				_init_fds(void);
 
-
 public:
 						Server(int port);
 						~Server(void);
