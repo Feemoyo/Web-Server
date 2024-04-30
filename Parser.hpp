@@ -3,29 +3,7 @@
 #ifndef PARSER_HPP
 # define PARSER_HPP
 
-# include <iostream>
-# include <string>
-# include <vector>
-# include <map>
-
-# include <cstring>
-
-typedef struct	s_location
-{
-	std::string					path;
-	std::vector<std::string>	methods;
-	std::string					index_file;
-	bool						autoindex;
-}	t_location;
-
-typedef struct	s_server
-{
-	std::string							port;
-	std::string							server_name;
-	std::string							root;
-	std::map<std::string, std::string>	errors;
-	std::map<std::string, t_location>	locations;
-}	t_server;
+# include "Utils.hpp"
 
 class	Parser
 {

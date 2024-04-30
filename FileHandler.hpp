@@ -3,19 +3,7 @@
 #ifndef FileHandler_H
 # define FileHandler_H
 
-# include <iostream>
-# include <fstream>
-# include <cstring>
-# include <cstdlib>
-
-typedef	enum	e_type
-{
-	INVALID,
-	CONF,
-	HTML,
-	PNG,
-	SVG
-}	t_type;
+# include "Utils.hpp"
 
 class	FileHandler
 {

@@ -3,12 +3,7 @@
 #ifndef RESPONSE_HPP
 # define RESPONSE_HPP
 
-# include <iostream>
-# include <fstream>
-# include <string>
-# include <sys/socket.h>
-# include <unistd.h>
-# include <sstream>
+# include "Utils.hpp"
 
 // TODO: é necessario entender se precisamos primeiro ler todos os .html ou deixar conforme as request chegam
 //

@@ -3,15 +3,8 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-# include <iostream>
-# include <cstring>
-# include <cstdlib>
-# include <sys/socket.h>
-# include <netinet/in.h>
-# include <unistd.h>
-# include <poll.h>
-
-# include <csignal>
+# include "Utils.hpp"
+# include "Response.hpp"
 
 class	Server
 {
@@ -22,6 +15,9 @@ private:
 	static const int	_MAX_CLIENTS = 10;
 	struct pollfd		_fds[_MAX_CLIENTS + 1];
 	int					_active_clients;
+
+	int					_NUM_REQUEST;
+	Response			_response;
 
 						Server(void);
 
