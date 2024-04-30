@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef SERVER_H
-# define SERVER_H
+#ifndef SERVER_HPP
+# define SERVER_HPP
 
 # include <iostream>
 # include <cstring>
@@ -10,13 +10,8 @@
 # include <netinet/in.h>
 # include <unistd.h>
 # include <poll.h>
-# include <fcntl.h>
-# include <sstream>
-# include <string>
-# include <fstream>
 
 # include <csignal>
-# include "Response.h"
 
 class	Server
 {
@@ -28,10 +23,6 @@ private:
 	struct pollfd		_fds[_MAX_CLIENTS + 1];
 	int					_active_clients;
 
-	int					_NUM_REQUEST;
-
-	Response			_response;
-	
 						Server(void);
 
 	int					_accept_request(void);

@@ -3,17 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 19:27:55 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/29 12:27:21 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/04/29 21:02:41 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.h"
+#include "Server.hpp"
+#include "FileHandler.hpp"
+#include "ConfigHandler.hpp"
+
 #include "Response.h"
 
-Server	*server;
+Server			*server;
+FileHandler		*config;
+ConfigHandler	*config_file;
+
 
 void	_server_interrupt(int sig)
 {
@@ -23,15 +29,25 @@ void	_server_interrupt(int sig)
 	exit(0);
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
+	if (argc != 2)
+	{
+		std::cerr << "Need a .conf file to run the server" <<std::endl;
+		return (EXIT_FAILURE);
+	}
+	config = new FileHandler(argv[1]);
 	server = new Server(8080);
+	config_file = new ConfigHandler(config->get_content());
 
 	struct sigaction	interrupt_handler;
 	interrupt_handler.sa_handler = _server_interrupt;
 	sigemptyset(&interrupt_handler.sa_mask);
 	interrupt_handler.sa_flags = 0;
 	sigaction(SIGINT, &interrupt_handler, 0);
+
+	delete config;
+	delete config_file;
 
 	server->start();
 	delete server;

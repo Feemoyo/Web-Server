@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 17:36:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/29 13:09:25 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/04/29 21:03:24 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.h"
+#include "Server.hpp"
 
 Server::Server(void)
 {
@@ -62,11 +62,8 @@ void	Server::start(void)
 		
 		for(int i = 1; i <= this->_active_clients; ++i)
 		{
-			std::cout << "fds[0] " << this->_fds[i].revents << std::endl; 
-			std::cout << "POLLIN " << POLLIN << std::endl;
 			if (this->_fds[i].revents & POLLIN)
 			{
-				std::cout << "fds[i].fd " << this->_fds[i].fd << " " << i  << std::endl; 
 				_process_request(this->_fds[i].fd);
 				close(this->_fds[i].fd);
 				this->_fds[i] = this->_fds[this->_active_clients--];
@@ -85,11 +82,11 @@ int	Server::_accept_request(void)
 	if (client_socket < 0)
 	{
 		std::cerr << "Accept fail" << std::endl;
-		return (1);
+		return (EXIT_FAILURE);
 	}
 	this->_fds[++this->_active_clients].fd = client_socket;
 	this->_fds[this->_active_clients].events = POLLIN;
-	return (0);
+	return (EXIT_SUCCESS);
 }
 
 void	Server::_process_request(int client_socket)
@@ -116,7 +113,7 @@ void	Server::_init_socket(void)
 	if (this->_server_socket < 0)
 	{
 		std::cerr << "Socket creation failed" << std::endl;
-        exit(1);
+        exit(EXIT_FAILURE);
 	}
 	
 	return ;
@@ -128,7 +125,7 @@ void	Server::_init_bind(void)
 	{
 		std::cerr << "Bind failed" << std::endl;
 		close(this->_server_socket);
-       	exit(1);
+       	exit(EXIT_FAILURE);
 	}
 	return ;
 }
@@ -139,7 +136,7 @@ void	Server::_init_listen(void)
 	{
 		std::cerr << "Listen failed" << std::endl;
 		close(this->_server_socket);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	return ;
 }
