@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
+/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 19:27:55 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/26 23:51:38 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/04/29 20:55:03 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "FileHandler.hpp"
 #include "ConfigHandler.hpp"
 
+#include "Response.h"
 
 Server			*server;
 FileHandler		*config;
@@ -50,5 +51,9 @@ int main(int argc, char **argv)
 
 	server->start();
 	delete server;
-	return (EXIT_SUCCESS);
+
+	// Response response(0);
+	// response.send_response();
+	
+	return (0);
 }
