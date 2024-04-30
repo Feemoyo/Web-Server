@@ -6,19 +6,18 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 19:27:55 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/29 21:02:41 by user42           ###   ########.fr       */
+/*   Updated: 2024/04/29 21:07:42 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "FileHandler.hpp"
-#include "ConfigHandler.hpp"
-
-#include "Response.h"
+#include "Parser.hpp"
+#include "Response.hpp"
 
 Server			*server;
 FileHandler		*config;
-ConfigHandler	*config_file;
+Parser	*config_file;
 
 
 void	_server_interrupt(int sig)
@@ -38,7 +37,7 @@ int main(int argc, char **argv)
 	}
 	config = new FileHandler(argv[1]);
 	server = new Server(8080);
-	config_file = new ConfigHandler(config->get_content());
+	config_file = new Parser(config->get_content());
 
 	struct sigaction	interrupt_handler;
 	interrupt_handler.sa_handler = _server_interrupt;

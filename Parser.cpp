@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ConfigHandler.cpp                                  :+:      :+:    :+:   */
+/*   Parser.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ConfigHandler.hpp"
+#include "Parser.hpp"
 
 static bool	_is_digit(char c)
 {
@@ -42,17 +42,17 @@ static bool	_is_close_bracket(char c)
 	return (c == 125);
 }
 
-ConfigHandler::ConfigHandler(void)
+Parser::Parser(void)
 {
 	return ;
 }
 
-ConfigHandler::~ConfigHandler(void)
+Parser::~Parser(void)
 {
 	return ;
 }
 
-ConfigHandler::ConfigHandler(std::string &content)
+Parser::Parser(std::string &content)
 {
 	if (this->_is_valid(content) == true)
 		std::cout << "VALID" << std::endl;
@@ -61,7 +61,7 @@ ConfigHandler::ConfigHandler(std::string &content)
 	return ;
 }
 
-bool	ConfigHandler::_is_brackets_ok(std::string &content)
+bool	Parser::_is_brackets_ok(std::string &content)
 {
 	int	opened_brackets = 0;
 	int	closed_brackets = 0;
@@ -77,7 +77,7 @@ bool	ConfigHandler::_is_brackets_ok(std::string &content)
 	return (opened_brackets == closed_brackets);
 }
 
-bool	ConfigHandler::_is_server_block_ok(std::string &content)
+bool	Parser::_is_server_block_ok(std::string &content)
 {
 	//	check for server on config file
 	size_t	found = content.find("server");
@@ -112,7 +112,7 @@ bool	ConfigHandler::_is_server_block_ok(std::string &content)
 	return (true);
 }
 
-bool	ConfigHandler::_is_valid(std::string &content)
+bool	Parser::_is_valid(std::string &content)
 {
 	if (_is_brackets_ok(content) == true && _is_server_block_ok(content) == true)
 		return (true);
