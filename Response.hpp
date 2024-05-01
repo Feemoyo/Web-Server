@@ -25,6 +25,7 @@ public:
 
 	void		set_socket(int socket);
 	void		send_response(void);
+	void		set_file_path(std::string path);
 
 };
 

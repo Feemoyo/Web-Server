@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 10:33:59 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/04/30 12:50:36 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/01 20:28:51 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ void	Response::_make_response(void)
 	file_content = this->read_file();
 	handler << file_content.size();
 	
-	this->_header = "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: ";
+	//TODO: o Content-Type tem que ser dinamico e pode ser encontrado no request
+	this->_header = "HTTP/1.1 200 OK\nContent-Type: */*\nContent-Length: ";
 	this->_header += handler.str();
 	this->_header += " \n\n";
 	this->_response = this->_header;
@@ -68,6 +69,7 @@ std::string	Response::read_file(void) const
 	std::string		file_content;
 
 	file.open(this->_file_path.c_str());
+	std::cout << "File path: " << this->_file_path << std::endl;
 	if (!file.is_open())
 	{
 		std::cerr << "Error opening file" << std::endl;
@@ -79,4 +81,15 @@ std::string	Response::read_file(void) const
 	}
 	file.close();
 	return (file_content);
+}
+
+void	Response::set_file_path(std::string path)
+{
+	if (path == "/")
+	{
+		this->_file_path = "./www/index.html";
+		return ;
+	}
+	this->_file_path = "." + path;
+	return ;
 }

@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 17:36:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/30 21:58:19 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/05/01 20:25:15 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	Server::start(void)
 	std::cout << "Server running on port " << this->_port << "..." << std::endl;
 	this->_init_fds();
 
-	// TODO: Implementar uma classe para gerenciar os clientes
+	// TODO: Implementar uma classe para gerenciar os clientes (FD_SET)
 	while (true)
 	{
 		std::cout << "\nWaiting for connections..." << std::endl;
@@ -113,16 +113,19 @@ void	Server::_process_request(int client_socket)
         }
     }
 	
-	std::map<std::string, std::string>::iterator it;
-	for (it = data_map.begin(); it != data_map.end(); ++it)
-	{
-        std::cout << it->first << ": " << it->second << std::endl;  // Chave: Valor
-    }
+	// std::map<std::string, std::string>::iterator it;
+	// for (it = data_map.begin(); it != data_map.end(); ++it)
+	// {
+    //     std::cout << it->first << ": " << it->second << std::endl;
+    // }
 
-	// TODO: Adicionar um tratamento para os multiplos requests ex: o proximo request "icon.svg"
-	this->_response.set_socket(client_socket);
-	this->_response.send_response();
+	std::size_t auxFindGET1 = data_map["Request"].find("/", 0);
+	std::size_t auxFindGET2 = data_map["Request"].find(" ", auxFindGET1);
+	std::string path = data_map["Request"].substr(auxFindGET1, auxFindGET2 - auxFindGET1);
 	
+	this->_response.set_socket(client_socket);
+	this->_response.set_file_path(path);
+	this->_response.send_response();
 	return ;
 }
 
