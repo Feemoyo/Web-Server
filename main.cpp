@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 19:27:55 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/30 13:02:16 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/04/30 20:22:36 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,5 +54,5 @@ int main(int argc, char **argv)
 	// Response response(0);
 	// response.send_response();
 	
-	return (EXIT_SUCESS);
+	return (EXIT_SUCCESS);
 }
