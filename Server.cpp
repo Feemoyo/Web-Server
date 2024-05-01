@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 17:36:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/29 21:03:24 by user42           ###   ########.fr       */
+/*   Updated: 2024/04/30 21:58:19 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,31 @@ void	Server::_process_request(int client_socket)
 {
 	// TIPS: dentro do buffer a segunda substr é o path do request
 	char	buffer[1024] = {0};
-	// std::stringstream buffer;
 	read(client_socket, buffer, sizeof(buffer));
-	std::cout << "requests: " << buffer << std::endl;
+	
+	std::map<std::string, std::string> data_map;
+    std::istringstream stream(buffer);
+    std::string line;
+
+	std::getline(stream, line);
+	data_map["Request"] = line;
+    while (std::getline(stream, line))
+	{
+        std::size_t first_space = line.find(':');
+        if (first_space != std::string::npos)
+		{
+            std::string key = line.substr(0, first_space);
+            std::string value = line.substr(first_space + 2);
+
+            data_map[key] = value;
+        }
+    }
+	
+	std::map<std::string, std::string>::iterator it;
+	for (it = data_map.begin(); it != data_map.end(); ++it)
+	{
+        std::cout << it->first << ": " << it->second << std::endl;  // Chave: Valor
+    }
 
 	// TODO: Adicionar um tratamento para os multiplos requests ex: o proximo request "icon.svg"
 	this->_response.set_socket(client_socket);
