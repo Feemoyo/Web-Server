@@ -68,6 +68,73 @@ void	ToolKit::_extract_content(void)
 	return ;
 }
 
+void	ToolKit::status_code_handler(std::string status_code, std::string html_path)
+{
+	std::map<std::string, std::string> statusCodes;
+
+	statusCodes.insert(std::make_pair("100", "Continue"));
+	statusCodes.insert(std::make_pair("101", "Switching Protocols"));
+	statusCodes.insert(std::make_pair("102", "Processing"));
+	statusCodes.insert(std::make_pair("200", "OK"));
+	statusCodes.insert(std::make_pair("201","Created"));
+	statusCodes.insert(std::make_pair("202", "Accepted"));
+	statusCodes.insert(std::make_pair("203", "Non-Authoritative Information"));
+	statusCodes.insert(std::make_pair("204",  "No Content"));
+	statusCodes.insert(std::make_pair("205", "Reset Content"));
+	statusCodes.insert(std::make_pair("206", "Partial Content"));
+	["207"] = "Multi-Status";
+	["208"] = "Already Reported";
+	["226"] = "IM Used";
+	["300"] = "Multiple Choices";
+	["301"] = "Moved Permanently";
+	["302"] = "Found";
+	["303"] = "See Other";
+	["304"] = "Not Modified";
+	["305"] = "Use Proxy";
+	["307"] = "Temporary Redirect";
+	["308"] = "Permanent Redirect";
+	["400"] = "Bad Request";
+	["401"] = "Unauthorized";
+	["402"] = "Payment Required";
+	["403"] = "Forbidden";
+	["404"] = "Not Found";
+	["405"] = "Method Not Allowed";
+	["406"] = "Not Acceptable";
+	["407"] = "Proxy Authentication Required";
+	["408"] = "Request Timeout";
+	["409"] = "Conflict";
+	["410"] = "Gone";
+	["411"] = "Length Required";
+	["412"] = "Precondition Failed";
+	["413"] = "Payload Too Large";
+	["414"] = "URI Too Long";
+	["415"] = "Unsupported Media Type";
+	["416"] = "Range Not Satisfiable";
+	["417"] = "Expectation Failed";
+	["418"] = "I'm a teapot"
+	["421"] = "Misdirected Request";
+	["422"] = "Unprocessable Entity";
+	["423"] = "Locked";
+	["424"] = "Failed Dependency";
+	["425"] = "Too Early";
+	["426"] = "Upgrade Required";
+	["428"] = "Precondition Required";
+	["429"] = "Too Many Requests";
+	["431"] = "Request Header Fields Too Large";
+	["451"] = "Unavailable For Legal Reasons";
+	["500"] = "Internal Server Error";
+	["501"] = "Not Implemented";
+	["502"] = "Bad Gateway";
+	["503"] = "Service Unavailable";
+	["504"] = "Gateway Timeout";
+	["505"] = "HTTP Version Not Supported";
+	["506"] = "Variant Also Negotiates";
+	["507"] = "Insufficient Storage";
+	["508"] = "Loop Detected";
+	["510"] = "Not Extended";
+	["511"] = "Network Authentication Required";
+}
+
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
