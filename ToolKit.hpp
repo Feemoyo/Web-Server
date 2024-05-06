@@ -23,8 +23,8 @@ class ToolKit
 		// ToolKit 			&operator=(ToolKit const & rhs);
 
 		std::string			&get_content(void);
-		std::string			&get_file_path(void);
 		std::string			&get_file_name(void);
+		std::string			&get_file_path(void);
 		std::string			&get_status_code(void);
 
 

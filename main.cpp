@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 19:27:55 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/02 19:58:49 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/05/06 19:08:35 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int main()
 	t->set_file("/dir/www/index.html");
 
 	std::string tmp = t->get_file_name();
-	std::string tmp2 = t->get_file_path(true);
+	std::string tmp2 = t->get_file_path();
 	
 	std::cout << "filename: " << tmp << std::endl;
 	std::cout << "filepath: " << tmp2 << std::endl;

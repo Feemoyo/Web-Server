@@ -1,5 +1,7 @@
 #include "ToolKit.hpp"
 
+std::string ToolKit::_status_code = NULL;
+
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
