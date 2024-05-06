@@ -76,6 +76,7 @@ void	ToolKit::set_file(std::string path, std::string name)
 {
 	this->_file_path = path;
 	this->_file_name = name;
+	_extract_content();
 	return ;
 }
 
@@ -83,6 +84,7 @@ void	ToolKit::set_file(std::string path_and_name)
 {
 	this->_file_path = path_and_name.substr(0, path_and_name.find_last_of('/') + 1);
 	this->_file_name = path_and_name.substr(path_and_name.find_last_of('/') + 1);
+	_extract_content();
 	return ;
 }
 
