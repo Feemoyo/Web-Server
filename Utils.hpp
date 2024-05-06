@@ -13,6 +13,7 @@
 # include <cstring>
 # include <cstdlib>
 # include <csignal>
+# include <cctype>
 
 # include <sys/socket.h>
 # include <netinet/in.h>

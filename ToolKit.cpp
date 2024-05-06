@@ -4,43 +4,19 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-ToolKit::ToolKit()
+ToolKit::ToolKit(void)
 {
+	return ;
 }
-
-// ToolKit::ToolKit( const ToolKit & src )
-// {
-// }
-
 
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
 */
 
-ToolKit::~ToolKit()
+ToolKit::~ToolKit(void)
 {
+	return ;
 }
-
-
-/*
-** --------------------------------- OVERLOAD ---------------------------------
-*/
-
-// ToolKit	&ToolKit::operator=( ToolKit const & rhs )
-// {
-// 	//if ( this != &rhs )
-// 	//{
-// 		//this->_value = rhs.getValue();
-// 	//}
-// 	return *this;
-// }
-
-// std::ostream	&operator<<( std::ostream & o, ToolKit const & i )
-// {
-// 	//o << "Value = " << i.getValue();
-// 	return o;
-// }
-
 
 /*
 ** --------------------------------- METHODS ----------------------------------
@@ -92,6 +68,10 @@ std::string	&ToolKit::get_status_code(void)
 	return (this->_status_code);
 }
 
+/*
+** --------------------------------- SETTERS ---------------------------------
+*/
+
 void	ToolKit::set_file(std::string path, std::string name)
 {
 	this->_file_path = path;
@@ -111,5 +91,3 @@ void	ToolKit::set_status_code(std::string code)
 	this->_status_code = code;
 	return ;
 }
-
-/* ************************************************************************** */
