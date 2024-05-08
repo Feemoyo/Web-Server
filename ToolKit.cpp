@@ -31,6 +31,7 @@ void	ToolKit::_extract_content(void)
 	{
 		std::cerr << "File cannot be opened" << std::endl;
 		std::cout << (this->_file_path + this->_file_name).c_str() << std::endl;
+		this->_content = "";
 		return ;
 	}
 	if (file.peek() == std::ifstream::traits_type::eof())

@@ -14,9 +14,7 @@ class	Response : public ToolKit
 		int			_client_socket;
 		std::string	_header;
 		std::string	_response;
-		// std::string	_file_path;
 
-		// std::string	read_file(void) const;
 		void		_make_response(void);
 
 	public:
@@ -26,7 +24,6 @@ class	Response : public ToolKit
 
 		void		set_socket(int socket);
 		void		send_response(void);
-		// void		set_file_path(std::string path);
 
 };
 

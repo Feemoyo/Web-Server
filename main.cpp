@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 19:27:55 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/07 23:33:39 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/05/08 00:03:45 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 #include "Server.hpp"
 
 Server			*server;
-// Parser			*config_file;
-
 
 void	_server_interrupt(int sig)
 {
@@ -45,9 +43,6 @@ int main(int argc, char **argv)
 
 	server->start();
 	delete server;
-
-	// Response response(0);
-	// response.send_response();
 	
 	return (EXIT_SUCCESS);
 }

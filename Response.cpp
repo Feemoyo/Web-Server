@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 10:33:59 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/05/07 23:23:24 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/05/08 00:03:30 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,34 +63,3 @@ void	Response::send_response(void)
 	write(this->_client_socket, this->_response.c_str(), this->_response.size());
 }
 
-// std::string	Response::read_file(void) const
-// {
-// 	std::ifstream	file;
-// 	std::string		line;
-// 	std::string		file_content;
-
-// 	file.open(this->_file_path.c_str());
-// 	std::cout << "File path: " << this->_file_path << std::endl;
-// 	if (!file.is_open())
-// 	{
-// 		std::cerr << "Error opening file" << std::endl;
-// 		return ("");
-// 	}
-// 	while (std::getline(file, line))
-// 	{
-// 		file_content += line;
-// 	}
-// 	file.close();
-// 	return (file_content);
-// }
-
-// void	Response::set_file_path(std::string path)
-// {
-// 	if (path == "/")
-// 	{
-// 		this->_file_path = "./www/index.html";
-// 		return ;
-// 	}
-// 	this->_file_path = "." + path;
-// 	return ;
-// }
