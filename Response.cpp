@@ -6,16 +6,17 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 10:33:59 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/05/02 19:32:47 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/05/07 23:23:24 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ToolKit.hpp"
 #include "Response.hpp"
 
 Response::Response(void)
 {
 	this->_response = "";
-	this->_file_path = "./www/index.html";
+	this->set_file("./www/index.html");
 	return ;
 }
 
@@ -23,7 +24,7 @@ Response::Response(int client_socket)
 {
 	this->_client_socket = client_socket;
 	this->_response = "";
-	this->_file_path = "./www/index.html";
+	this->set_file("./www/index.html");
 	return ;
 }
 
@@ -43,7 +44,7 @@ void	Response::_make_response(void)
 	std::string	file_content;
 	std::ostringstream	handler;
 
-	file_content = this->read_file();
+	file_content = this->get_content();
 	handler << file_content.size();
 	
 	//TODO: o Content-Type tem que ser dinamico e pode ser encontrado no request
@@ -62,34 +63,34 @@ void	Response::send_response(void)
 	write(this->_client_socket, this->_response.c_str(), this->_response.size());
 }
 
-std::string	Response::read_file(void) const
-{
-	std::ifstream	file;
-	std::string		line;
-	std::string		file_content;
+// std::string	Response::read_file(void) const
+// {
+// 	std::ifstream	file;
+// 	std::string		line;
+// 	std::string		file_content;
 
-	file.open(this->_file_path.c_str());
-	std::cout << "File path: " << this->_file_path << std::endl;
-	if (!file.is_open())
-	{
-		std::cerr << "Error opening file" << std::endl;
-		return ("");
-	}
-	while (std::getline(file, line))
-	{
-		file_content += line;
-	}
-	file.close();
-	return (file_content);
-}
+// 	file.open(this->_file_path.c_str());
+// 	std::cout << "File path: " << this->_file_path << std::endl;
+// 	if (!file.is_open())
+// 	{
+// 		std::cerr << "Error opening file" << std::endl;
+// 		return ("");
+// 	}
+// 	while (std::getline(file, line))
+// 	{
+// 		file_content += line;
+// 	}
+// 	file.close();
+// 	return (file_content);
+// }
 
-void	Response::set_file_path(std::string path)
-{
-	if (path == "/")
-	{
-		this->_file_path = "./www/index.html";
-		return ;
-	}
-	this->_file_path = "." + path;
-	return ;
-}
+// void	Response::set_file_path(std::string path)
+// {
+// 	if (path == "/")
+// 	{
+// 		this->_file_path = "./www/index.html";
+// 		return ;
+// 	}
+// 	this->_file_path = "." + path;
+// 	return ;
+// }

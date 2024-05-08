@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 17:36:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/02 19:12:01 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/05/07 23:57:44 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,8 +123,12 @@ void	Server::_process_request(int client_socket)
 	std::size_t auxFindGET2 = data_map["Request"].find(" ", auxFindGET1);
 	std::string path = data_map["Request"].substr(auxFindGET1, auxFindGET2 - auxFindGET1);
 	
+	std::cout << path << std::endl;
+	
 	this->_response.set_socket(client_socket);
-	this->_response.set_file_path(path);
+	if (!path.compare("/"))
+		path = "/www/index.html";
+	this->_response.set_file("." + path);
 	this->_response.send_response();
 	return ;
 }
