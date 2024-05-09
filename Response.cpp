@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 10:33:59 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/05/02 19:32:47 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/05/07 11:33:04 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ void	Response::_make_response(void)
 	handler << file_content.size();
 	
 	//TODO: o Content-Type tem que ser dinamico e pode ser encontrado no request
+	//	deixar de forma dinâmica!
 	this->_header = "HTTP/1.1 200 OK\nContent-Type: */*\nContent-Length: ";
 	this->_header += handler.str();
 	this->_header += " \n\n";

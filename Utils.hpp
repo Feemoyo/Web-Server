@@ -31,9 +31,10 @@ typedef struct	s_location
 
 typedef struct	s_server
 {
-	std::string							port;
+	int									port;
 	std::string							server_name;
 	std::string							root;
+	int									max_body_size;
 	std::map<std::string, std::string>	errors;
 	std::map<std::string, t_location>	locations;
 }	t_server;

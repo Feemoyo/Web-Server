@@ -15,7 +15,7 @@ private:
 	void					_copy_content(std::string &content);
 	void					_remove_comments(void);
 	void					_remove_white_spaces(void);
-	// t_server				_server_block(void);
+	void					_server_block(void);
 
 public:
 							Config(void);
@@ -24,7 +24,7 @@ public:
 
 	// std::vector<t_server>	&get_servers(void);
 	// t_server				&get_server(int index);
-	// size_t					&get_total_servers(void);
+	size_t					&get_total_servers(void);
 	std::string				&get_content(void);
 
 	// void					set_server(t_server server_config);
