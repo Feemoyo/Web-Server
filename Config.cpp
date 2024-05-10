@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/09 14:08:17 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/09 22:01:38 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,11 @@ Config::Config(void)
 }
 
 Config::Config(std::string &content)
-:_total_servers(0)
 {
 	_copy_content(content);
 	_remove_comments();
 	_remove_white_spaces();
+	_find_total_servers();
 	_server_block();
 
 	return ;
@@ -75,36 +75,89 @@ void	Config::_remove_white_spaces(void)
 	return ;
 }
 
+void	Config::_find_total_servers(void)
+{
+	size_t	ref = 0;
+
+	while ((ref = this->_content.find("server{", ref)) != std::string::npos)
+	{
+		this->_total_servers.push_back(ref);
+		ref += strlen("server{");
+	}
+	return ;
+}
+
 void	Config::_server_block(void)
 {
-	size_t		start = 0;
+	if (this->_total_servers.empty())
+	{
+		std::cerr << "Fail to find server configuration" << std::endl;
+		return ;
+	}
+	for (size_t i = 0; i < this->_total_servers.size(); i++)
+	{
+		t_server	server;
+
+		_find_config_port(server, this->_total_servers[i]);
+		_find_config_server_name(server, this->_total_servers[i]);
+		_find_config_root(server, this->_total_servers[i]);
+		_find_config_max_body_size(server, this->_total_servers[i]);
+		this->_servers.push_back(server);
+	}
+	// for (std::vector<t_server>::iterator i = this->_servers.begin(); i != this->_servers.end(); i++)
+	// {
+	// 	std::cout << i->port << std::endl;
+	// 	std::cout << i->server_name << std::endl;
+	// 	std::cout << i->root << std::endl;
+	// 	std::cout << i->max_body_size << std::endl;
+	// }
+
+	return ;
+}
+
+void	Config::_find_config_port(t_server &server, size_t start)
+{
 	size_t		end = 0;
-	t_server	server;
 	std::string	ref;
 
-	start = this->_content.find("server{");
-	if (start == std::string::npos)
-	{
-		std::cerr << "Failed to find server configuration" << std::endl;
-		return ; 
-	}
-	start = this->_content.find("listen") + strlen("listen");
-	end = this->_content.find("server_name");
+	start = this->_content.find("listen", start) + strlen("listen");
+	end = this->_content.find("server_name", start);
 	ref = this->_content.substr(start, end - start);
 	server.port = string_to_int(ref);
+	return ;
+}
 
-	start = this->_content.find("server_name") + strlen("server_name");
-	end = this->_content.find("root");
+void	Config::_find_config_server_name(t_server &server, size_t start)
+{
+	size_t		end = 0;
+	std::string	ref;
+
+	start = this->_content.find("server_name", start) + strlen("server_name");
+	end = this->_content.find("root", start);
 	server.server_name = this->_content.substr(start, end - start);
+	return ;
+}
 
-	start = this->_content.find("root") + strlen("root");
-	end = this->_content.find("client_max_body_size");
+void	Config::_find_config_root(t_server &server, size_t start)
+{
+	size_t		end = 0;
+	std::string	ref;
+
+	start = this->_content.find("root", start) + strlen("root");
+	end = this->_content.find("client_max_body_size", start);
 	server.root = this->_content.substr(start, end - start);
+	return ;
+}
 
-	start = this->_content.find("client_max_body_size") + strlen("error_page");
-	end = this->_content.find("error_page");
-	server.max_body_size = this->_content.substr(start, end - start);
+void	Config::_find_config_max_body_size(t_server &server, size_t start)
+{
+	size_t		end = 0;
+	std::string	ref;
 
+	start = this->_content.find("client_max_body_size", start) + strlen("client_max_body_size");
+	end = this->_content.find("error_page", start);
+	ref = this->_content.substr(start, end - start);
+	server.max_body_size = string_to_int(ref);
 	return ;
 }
 
