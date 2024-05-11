@@ -22,7 +22,7 @@ private:
 	void			_find_config_server_name(t_server &server, size_t start);
 	void			_find_config_root(t_server &server, size_t start);
 	void			_find_config_max_body_size(t_server &server, size_t start);
-	void			_find_config_errors_location(t_server server, size_t start);
+	void			_find_config_errors_location(t_server &server, size_t start);
 
 public:
 					Config(void);
@@ -39,12 +39,5 @@ public:
 };
 
 std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs);
-// {
-// 	lhs << rhs.path << std::endl;
-// 	lhs << rhs.default_file << std::endl;
-// 	for (size_t i = 0; i < rhs.methods.size(); i++)
-// 		lhs << rhs.methods[i] << std::endl;
-// 	return (lhs);
-// }
 
 #endif

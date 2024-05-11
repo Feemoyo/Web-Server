@@ -3,30 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/10 21:46:28 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/05/10 23:47:27 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Config.hpp"
 
-// static std::string	int_to_string(int i)
-// {
-// 	std::ostringstream	oss;
-
-// 	oss << i;
-// 	return (oss.str());
-// }
-
-// static std::string	size_t_to_string(size_t i)
-// {
-// 	std::stringstream	ss;
-
-// 	ss << i;
-// 	return (ss.str());
-// }
+std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs)
+{
+	lhs << rhs.path << std::endl;
+	lhs << rhs.default_file << std::endl;
+	for (size_t i = 0; i < rhs.methods.size(); i++)
+		lhs << rhs.methods[i] << std::endl;
+	return (lhs);
+}
 
 static int	string_to_int(std::string str)
 {
@@ -118,23 +111,21 @@ void	Config::_server_block(void)
 		_find_config_server_name(server, this->_total_servers[i]);
 		_find_config_root(server, this->_total_servers[i]);
 		_find_config_max_body_size(server, this->_total_servers[i]);
-	
 		_find_config_errors_location(server, this->_total_servers[i]);
 		this->_servers.push_back(server);
 	}
-	// for (std::vector<t_server>::iterator i = this->_servers.begin(); i != this->_servers.end(); i++)
-	// {
-	// 	std::cout << i->port << std::endl;
-	// 	std::cout << i->server_name << std::endl;
-	// 	std::cout << i->root << std::endl;
-	// 	std::cout << i->max_body_size << std::endl;
-	// 	// for (std::map<std::string, t_location>::iterator it = (i->locations).begin(); it != (i->locations).end(); it++)
-	// 	// {
-	// 	// 	std::cout << (*it).first << std::endl;
-	// 	// 	std::cout << (*it).second << std::endl;
-	// 	// }
-	// }
-
+	for (std::vector<t_server>::iterator j = this->_servers.begin(); j != this->_servers.end(); j++)
+	{
+		std::cout << j->port << std::endl;
+		std::cout << j->server_name << std::endl;
+		std::cout << j->root << std::endl;
+		std::cout << j->max_body_size << std::endl;
+		for (std::map<std::string, t_location>::iterator it = j->locations.begin(); it != j->locations.end(); it++)
+		{
+			std::cout << it->first << std::endl;
+			std::cout << it->second << std::endl;
+		}
+	}
 	return ;
 }
 
@@ -184,7 +175,7 @@ void	Config::_find_config_max_body_size(t_server &server, size_t start)
 	return ;
 }
 
-void	Config::_find_config_errors_location(t_server server, size_t start)
+void	Config::_find_config_errors_location(t_server &server, size_t start)
 {
 	size_t		end;
 	std::string	ref;
@@ -198,24 +189,10 @@ void	Config::_find_config_errors_location(t_server server, size_t start)
 	errors.default_file = ref;
 	errors.methods.push_back("GET");
 	server.locations.insert(std::pair<std::string, t_location>("errors", errors));
-	for (std::map<std::string, t_location>::iterator it = server.locations.begin(); it != server.locations.end(); it++)
-	{
-		std::cout << it->first << std::endl;
-		std::cout << it->second << std::endl;
-	}
 	return ;
 }
 
 std::string	&Config::get_content(void)
 {
 	return (this->_content);
-}
-
-std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs)
-{
-	lhs << rhs.path << std::endl;
-	lhs << rhs.default_file << std::endl;
-	for (size_t i = 0; i < rhs.methods.size(); i++)
-		lhs << rhs.methods[i] << std::endl;
-	return (lhs);
 }
