@@ -12,6 +12,8 @@ private:
 	std::vector<size_t>		_total_servers;
 	std::string				_content;
 
+					Config(void);
+
 	void			_copy_content(std::string &content);
 	void			_remove_comments(void);
 	void			_remove_white_spaces(void);
@@ -23,21 +25,20 @@ private:
 	void			_find_config_root(t_server &server, size_t start);
 	void			_find_config_max_body_size(t_server &server, size_t start);
 	void			_find_config_errors_location(t_server &server, size_t start);
+	void			_find_config_default_index_location(t_server &server, size_t start);
 
 public:
-					Config(void);
 					Config(std::string &content);
 					~Config(void);
 
-	// std::vector<t_server>	&get_servers(void);
-	// t_server				&get_server(int index);
-	// size_t					&get_total_servers(void);
+	std::vector<t_server>	&get_servers(void);
+	t_server				&get_server(int index);
+	size_t					get_total_servers(void);
 	std::string				&get_content(void);
-
-	// void					set_server(t_server server_config);
 
 };
 
 std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs);
+std::ostream	&operator<<(std::ostream &lhs, const t_server &rhs);
 
 #endif

@@ -6,22 +6,17 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/10 23:47:27 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/11 02:24:08 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Config.hpp"
 
-std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs)
-{
-	lhs << rhs.path << std::endl;
-	lhs << rhs.default_file << std::endl;
-	for (size_t i = 0; i < rhs.methods.size(); i++)
-		lhs << rhs.methods[i] << std::endl;
-	return (lhs);
-}
+/*
+** ----------------------------- STATIC FUNCTIONS -----------------------------
+*/
 
-static int	string_to_int(std::string str)
+static int	_string_to_int(std::string str)
 {
 	std::stringstream	ss(str);
 	int					ref;
@@ -30,10 +25,32 @@ static int	string_to_int(std::string str)
 	return (ref);
 }
 
-static bool	is_space(char c)
+static bool	_is_space(char c)
 {
 	return (std::isspace(static_cast<unsigned char>(c)));
 }
+
+static void	_find_methods(std::string ref, t_location &location)
+{
+	size_t		start;
+
+	start = ref.find("GET");
+	if (start != std::string::npos)
+		location.methods.push_back("GET");
+	
+	start = ref.find("POST");
+	if (start != std::string::npos)
+		location.methods.push_back("POST");
+
+	start = ref.find("DELETE");
+	if (start != std::string::npos)
+		location.methods.push_back("DELETE");
+	return ;
+}
+
+/*
+** ------------------------------- CONSTRUCTOR --------------------------------
+*/
 
 Config::Config(void)
 {
@@ -47,14 +64,21 @@ Config::Config(std::string &content)
 	_remove_white_spaces();
 	_find_total_servers();
 	_server_block();
-
 	return ;
 }
+
+/*
+** -------------------------------- DESTRUCTOR --------------------------------
+*/
 
 Config::~Config(void)
 {
 	return ;
 }
+
+/*
+** --------------------------------- METHODS ----------------------------------
+*/
 
 void	Config::_copy_content(std::string &content)
 {
@@ -80,7 +104,7 @@ void	Config::_remove_comments(void)
 
 void	Config::_remove_white_spaces(void)
 {
-	this->_content.erase(std::remove_if(this->_content.begin(), this->_content.end(), is_space), this->_content.end());
+	this->_content.erase(std::remove_if(this->_content.begin(), this->_content.end(), _is_space), this->_content.end());
 	return ;
 }
 
@@ -112,19 +136,15 @@ void	Config::_server_block(void)
 		_find_config_root(server, this->_total_servers[i]);
 		_find_config_max_body_size(server, this->_total_servers[i]);
 		_find_config_errors_location(server, this->_total_servers[i]);
+		_find_config_default_index_location(server, this->_total_servers[i]);
+		
+		// _find_other_locations(server, this->_total_servers[i]);
+
 		this->_servers.push_back(server);
 	}
 	for (std::vector<t_server>::iterator j = this->_servers.begin(); j != this->_servers.end(); j++)
 	{
-		std::cout << j->port << std::endl;
-		std::cout << j->server_name << std::endl;
-		std::cout << j->root << std::endl;
-		std::cout << j->max_body_size << std::endl;
-		for (std::map<std::string, t_location>::iterator it = j->locations.begin(); it != j->locations.end(); it++)
-		{
-			std::cout << it->first << std::endl;
-			std::cout << it->second << std::endl;
-		}
+		std::cout << *j << std::endl;
 	}
 	return ;
 }
@@ -137,7 +157,7 @@ void	Config::_find_config_port(t_server &server, size_t start)
 	start = this->_content.find("listen", start) + strlen("listen");
 	end = this->_content.find("server_name", start);
 	ref = this->_content.substr(start, end - start);
-	server.port = string_to_int(ref);
+	server.port = _string_to_int(ref);
 	return ;
 }
 
@@ -171,7 +191,7 @@ void	Config::_find_config_max_body_size(t_server &server, size_t start)
 	start = this->_content.find("client_max_body_size", start) + strlen("client_max_body_size");
 	end = this->_content.find("location/", start);
 	ref = this->_content.substr(start, end - start);
-	server.max_body_size = string_to_int(ref);
+	server.max_body_size = _string_to_int(ref);
 	return ;
 }
 
@@ -187,12 +207,79 @@ void	Config::_find_config_errors_location(t_server &server, size_t start)
 
 	errors.path = "/errors/";
 	errors.default_file = ref;
-	errors.methods.push_back("GET");
+	start = this->_content.find(ref + "allowed_methods", start) + strlen(ref.c_str()) + strlen("allowed_methods");
+	end = this->_content.find("}", start);
+	ref = this->_content.substr(start, end - start);
+	_find_methods(ref, errors);
 	server.locations.insert(std::pair<std::string, t_location>("errors", errors));
 	return ;
+}
+
+void	Config::_find_config_default_index_location(t_server &server, size_t start)
+{
+	size_t		end;
+	std::string	ref;
+
+	start = this->_content.find("location", start) + strlen("location");
+	end = this->_content.find("{defaultindex.html", start);
+	ref = this->_content.substr(start, end - start);
+	t_location	index;
+
+	index.path = ref;
+	index.default_file = "index.html";
+	start = this->_content.find("index.htmlallowed_methods", start) + strlen("index.htmlallowed_methods");
+	end = this->_content.find("}", start);
+	ref = this->_content.substr(start, end - start);
+	_find_methods(ref, index);
+
+	server.locations.insert(std::pair<std::string, t_location>("index", index));
+	return ;
+}
+
+/*
+** --------------------------------- ACCESSOR ---------------------------------
+*/
+
+std::vector<t_server>	&Config::get_servers(void)
+{
+	return (this->_servers);
+}
+
+t_server	&Config::get_server(int index)
+{
+	return (this->_servers[index]);
+}
+
+size_t	Config::get_total_servers(void)
+{
+	return (this->_total_servers.size());
 }
 
 std::string	&Config::get_content(void)
 {
 	return (this->_content);
+}
+
+/*
+** -------------------------------- OVERLOADS ---------------------------------
+*/
+
+std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs)
+{
+	lhs << "Location " << rhs.path << std::endl;
+	lhs << "Default file: " << rhs.default_file << std::endl;
+	for (size_t i = 0; i < rhs.methods.size(); i++)
+		lhs << rhs.methods[i] << " ";
+	return (lhs);
+}
+
+std::ostream	&operator<<(std::ostream &lhs, const t_server &rhs)
+{
+	lhs << "Server " << rhs.server_name << std::endl;
+	lhs << "Port: " << rhs.port << std::endl;
+	lhs << "Root: " << rhs.root << std::endl;
+	lhs << "Max client body size: " << rhs.max_body_size << std::endl;
+	for (std::map<std::string, t_location>::const_iterator it = rhs.locations.begin(); it != rhs.locations.end(); it++)
+		lhs << (*it).first << " " << (*it).second << std::endl;
+	return (lhs);
 }

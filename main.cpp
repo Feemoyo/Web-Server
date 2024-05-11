@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 19:27:55 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/09 13:21:23 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/11 01:04:20 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,13 @@
 Server			*server;
 ToolKit			*tools;
 Config			*conf;
+
+
+void	_server_config_model(void)
+{
+	std::cout << "server\n{\n\tlisten\t\t\t\t\t80\n\tserver_name\t\t\t\tlocalhost\n\troot\t\t\t\t\twww\n\tclient_max_body_size\t200\n\tlocation /\n\t{\n\t\tdefault\t\t\t\tindex.html\n\t\tallowed_methods\t\tGET\n\t}\n\tlocation /errors/\n\t{\n\t\tdefault\t\t\t\t404.html\n\t\tallowed_methods\t\tGET\n\t}\n}" << std::endl;
+	return ;
+}
 
 void	_server_interrupt(int sig)
 {
@@ -34,7 +41,9 @@ int main(int argc, char **argv)
 {
 	if (argc != 2)
 	{
-		std::cerr << "Need a .conf file to run the server" <<std::endl;
+		std::cout << "Need a .conf file to run the server" << std::endl;
+		std::cout << ".conf file exemple:" << std::endl;
+		_server_config_model();
 		return (EXIT_FAILURE);
 	}
 	server = new Server(8080);
@@ -49,8 +58,6 @@ int main(int argc, char **argv)
 	tools->set_file("./", argv[1]);
 	
 	conf = new Config(tools->get_content());
-
-	// std::cout << conf->get_content() << std::endl;
 
 	server->start();
 
