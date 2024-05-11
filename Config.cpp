@@ -6,18 +6,34 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/09 22:01:38 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/10 20:51:56 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Config.hpp"
 
+// static std::string	int_to_string(int i)
+// {
+// 	std::ostringstream	oss;
+
+// 	oss << i;
+// 	return (oss.str());
+// }
+
+// static std::string	size_t_to_string(size_t i)
+// {
+// 	std::stringstream	ss;
+
+// 	ss << i;
+// 	return (ss.str());
+// }
+
 static int	string_to_int(std::string str)
 {
-	std::istringstream	iss(str);
+	std::stringstream	ss(str);
 	int					ref;
 
-	iss >> ref;
+	ss >> ref;
 	return (ref);
 }
 
@@ -102,6 +118,8 @@ void	Config::_server_block(void)
 		_find_config_server_name(server, this->_total_servers[i]);
 		_find_config_root(server, this->_total_servers[i]);
 		_find_config_max_body_size(server, this->_total_servers[i]);
+	
+		_find_config_errors_location(server, this->_total_servers[i]);
 		this->_servers.push_back(server);
 	}
 	// for (std::vector<t_server>::iterator i = this->_servers.begin(); i != this->_servers.end(); i++)
@@ -110,6 +128,11 @@ void	Config::_server_block(void)
 	// 	std::cout << i->server_name << std::endl;
 	// 	std::cout << i->root << std::endl;
 	// 	std::cout << i->max_body_size << std::endl;
+	// 	// for (std::map<std::string, t_location>::iterator it = (i->locations).begin(); it != (i->locations).end(); it++)
+	// 	// {
+	// 	// 	std::cout << (*it).first << std::endl;
+	// 	// 	std::cout << (*it).second << std::endl;
+	// 	// }
 	// }
 
 	return ;
@@ -117,7 +140,7 @@ void	Config::_server_block(void)
 
 void	Config::_find_config_port(t_server &server, size_t start)
 {
-	size_t		end = 0;
+	size_t		end;
 	std::string	ref;
 
 	start = this->_content.find("listen", start) + strlen("listen");
@@ -129,7 +152,7 @@ void	Config::_find_config_port(t_server &server, size_t start)
 
 void	Config::_find_config_server_name(t_server &server, size_t start)
 {
-	size_t		end = 0;
+	size_t		end;
 	std::string	ref;
 
 	start = this->_content.find("server_name", start) + strlen("server_name");
@@ -140,7 +163,7 @@ void	Config::_find_config_server_name(t_server &server, size_t start)
 
 void	Config::_find_config_root(t_server &server, size_t start)
 {
-	size_t		end = 0;
+	size_t		end;
 	std::string	ref;
 
 	start = this->_content.find("root", start) + strlen("root");
@@ -151,13 +174,35 @@ void	Config::_find_config_root(t_server &server, size_t start)
 
 void	Config::_find_config_max_body_size(t_server &server, size_t start)
 {
-	size_t		end = 0;
+	size_t		end;
 	std::string	ref;
 
 	start = this->_content.find("client_max_body_size", start) + strlen("client_max_body_size");
-	end = this->_content.find("error_page", start);
+	end = this->_content.find("location/", start);
 	ref = this->_content.substr(start, end - start);
 	server.max_body_size = string_to_int(ref);
+	return ;
+}
+
+void	Config::_find_config_errors_location(t_server server, size_t start)
+{
+	size_t		end;
+	std::string	ref;
+
+	start = this->_content.find("location/errors/{default", start) + strlen("location/errors/{default");
+	end = this->_content.find("allowed_methods", start);
+	ref = this->_content.substr(start, end - start);
+	t_location	errors;
+
+	errors.path = "/errors/";
+	errors.default_file = ref;
+	errors.methods.push_back("GET");
+	server.locations.insert(std::pair<std::string, t_location>("errors", errors));
+	for (std::map<std::string, t_location>::iterator it = server.locations.begin(); it != server.locations.end(); it++)
+	{
+		std::cout << it->first << std::endl;
+		std::cout << it->second << std::endl;
+	}
 	return ;
 }
 

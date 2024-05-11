@@ -6,6 +6,7 @@
 # include <iostream>
 # include <fstream>
 # include <sstream>
+# include <ostream>
 # include <string>
 # include <vector>
 # include <map>
@@ -25,9 +26,8 @@
 typedef struct	s_location
 {
 	std::string					path;
+	std::string					default_file;
 	std::vector<std::string>	methods;
-	std::string					index_file;
-	bool						autoindex;
 }	t_location;
 
 typedef struct	s_server
@@ -36,7 +36,6 @@ typedef struct	s_server
 	std::string							server_name;
 	std::string							root;
 	int									max_body_size;
-	std::map<std::string, std::string>	errors;
 	std::map<std::string, t_location>	locations;
 }	t_server;
 
