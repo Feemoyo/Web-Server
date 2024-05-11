@@ -16,7 +16,6 @@ private:
 	struct pollfd		_fds[_MAX_CLIENTS + 1];
 	int					_active_clients;
 
-	int					_NUM_REQUEST;
 	Response			_response;
 
 						Server(void);

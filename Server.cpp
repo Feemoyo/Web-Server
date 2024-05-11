@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 17:36:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/07 23:57:44 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/05/08 21:10:18 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,11 +113,11 @@ void	Server::_process_request(int client_socket)
         }
     }
 	
-	// std::map<std::string, std::string>::iterator it;
-	// for (it = data_map.begin(); it != data_map.end(); ++it)
-	// {
-    //     std::cout << it->first << ": " << it->second << std::endl;
-    // }
+	std::map<std::string, std::string>::iterator it;
+	for (it = data_map.begin(); it != data_map.end(); ++it)
+	{
+        std::cout << it->first << ": " << it->second << std::endl;
+    }
 
 	std::size_t auxFindGET1 = data_map["Request"].find("/", 0);
 	std::size_t auxFindGET2 = data_map["Request"].find(" ", auxFindGET1);
@@ -126,6 +126,7 @@ void	Server::_process_request(int client_socket)
 	std::cout << path << std::endl;
 	
 	this->_response.set_socket(client_socket);
+	//TODO: o path tem que ser setado pelo .conf
 	if (!path.compare("/"))
 		path = "/www/index.html";
 	this->_response.set_file("." + path);
