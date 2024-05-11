@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/10 20:51:56 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/10 21:46:28 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,4 +209,13 @@ void	Config::_find_config_errors_location(t_server server, size_t start)
 std::string	&Config::get_content(void)
 {
 	return (this->_content);
+}
+
+std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs)
+{
+	lhs << rhs.path << std::endl;
+	lhs << rhs.default_file << std::endl;
+	for (size_t i = 0; i < rhs.methods.size(); i++)
+		lhs << rhs.methods[i] << std::endl;
+	return (lhs);
 }

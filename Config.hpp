@@ -38,13 +38,13 @@ public:
 
 };
 
-std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs)
-{
-	lhs << rhs.path << std::endl;
-	lhs << rhs.default_file << std::endl;
-	for (size_t i = 0; i < rhs.methods.size(); i++)
-		lhs << rhs.methods[i] << std::endl;
-	return (lhs);
-}
+std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs);
+// {
+// 	lhs << rhs.path << std::endl;
+// 	lhs << rhs.default_file << std::endl;
+// 	for (size_t i = 0; i < rhs.methods.size(); i++)
+// 		lhs << rhs.methods[i] << std::endl;
+// 	return (lhs);
+// }
 
 #endif
