@@ -5,6 +5,7 @@
 
 # include "Utils.hpp"
 # include "Response.hpp"
+# include "Request.hpp"
 
 class	Server
 {
@@ -17,6 +18,7 @@ private:
 	int					_active_clients;
 
 	Response			_response;
+	Request				_request;
 
 						Server(void);
 

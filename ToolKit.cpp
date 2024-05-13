@@ -1,5 +1,7 @@
 #include "ToolKit.hpp"
 
+std::string	ToolKit::_status_code = "";
+
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
@@ -31,15 +33,17 @@ void	ToolKit::_extract_content(void)
 	{
 		std::cerr << "File cannot be opened" << std::endl;
 		this->_content = "";
+		this->_status_code = "404 Not Found";
 		return ;
 	}
 	if (file.peek() == std::ifstream::traits_type::eof())
 	{
 		std::cerr << "File is empty" << std::endl;
+		this->_status_code = "404 Not Found";
 		file.close();
 		return ;
 	}
-	
+	this->_status_code = "200 OK";
 	std::getline(file, line);
 	this->_content = line + '\n';
 	while (std::getline(file, line))

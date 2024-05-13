@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 17:36:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/08 21:10:18 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/05/13 15:13:22 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,46 +89,16 @@ int	Server::_accept_request(void)
 	return (EXIT_SUCCESS);
 }
 
+
+// ???: Os nomes _request e _response estao confusos.
 void	Server::_process_request(int client_socket)
 {
-	// TIPS: dentro do buffer a segunda substr é o path do request
 	char	buffer[1024] = {0};
 	read(client_socket, buffer, sizeof(buffer));
 	
-	std::map<std::string, std::string> data_map;
-    std::istringstream stream(buffer);
-    std::string line;
-
-	std::getline(stream, line);
-	data_map["Request"] = line;
-    while (std::getline(stream, line))
-	{
-        std::size_t first_space = line.find(':');
-        if (first_space != std::string::npos)
-		{
-            std::string key = line.substr(0, first_space);
-            std::string value = line.substr(first_space + 2);
-
-            data_map[key] = value;
-        }
-    }
-	
-	std::map<std::string, std::string>::iterator it;
-	for (it = data_map.begin(); it != data_map.end(); ++it)
-	{
-        std::cout << it->first << ": " << it->second << std::endl;
-    }
-
-	std::size_t auxFindGET1 = data_map["Request"].find("/", 0);
-	std::size_t auxFindGET2 = data_map["Request"].find(" ", auxFindGET1);
-	std::string path = data_map["Request"].substr(auxFindGET1, auxFindGET2 - auxFindGET1);
-	
-	std::cout << path << std::endl;
-	
+	this->_request.set_buffer(buffer);
+	std::string path = this->_request.get_path();
 	this->_response.set_socket(client_socket);
-	//TODO: o path tem que ser setado pelo .conf
-	if (!path.compare("/"))
-		path = "/www/index.html";
 	this->_response.set_file("." + path);
 	this->_response.send_response();
 	return ;
