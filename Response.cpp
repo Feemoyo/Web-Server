@@ -3,14 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 10:33:59 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/05/07 11:33:04 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/13 18:07:45 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Response.hpp"
+
+/*
+** ------------------------------- CONSTRUCTOR --------------------------------
+*/
 
 Response::Response(void)
 {
@@ -27,15 +31,38 @@ Response::Response(int client_socket)
 	return ;
 }
 
+/*
+** -------------------------------- DESTRUCTOR --------------------------------
+*/
+
 Response::~Response(void)
 {
 	return ;
 }
 
-void	Response::set_socket(int socket)
+/*
+** --------------------------------- METHODS ----------------------------------
+*/
+
+std::string	Response::_read_file(void) const
 {
-	this->_client_socket = socket;
-	return ;
+	std::ifstream	file;
+	std::string		line;
+	std::string		file_content;
+
+	file.open(this->_file_path.c_str());
+	std::cout << "File path: " << this->_file_path << std::endl;
+	if (!file.is_open())
+	{
+		std::cerr << "Error opening file" << std::endl;
+		return ("");
+	}
+	while (std::getline(file, line))
+	{
+		file_content += line;
+	}
+	file.close();
+	return (file_content);
 }
 
 void	Response::_make_response(void)
@@ -43,7 +70,7 @@ void	Response::_make_response(void)
 	std::string	file_content;
 	std::ostringstream	handler;
 
-	file_content = this->read_file();
+	file_content = this->_read_file();
 	handler << file_content.size();
 	
 	//TODO: o Content-Type tem que ser dinamico e pode ser encontrado no request
@@ -63,25 +90,14 @@ void	Response::send_response(void)
 	write(this->_client_socket, this->_response.c_str(), this->_response.size());
 }
 
-std::string	Response::read_file(void) const
-{
-	std::ifstream	file;
-	std::string		line;
-	std::string		file_content;
+/*
+** --------------------------------- SETTERS ---------------------------------
+*/
 
-	file.open(this->_file_path.c_str());
-	std::cout << "File path: " << this->_file_path << std::endl;
-	if (!file.is_open())
-	{
-		std::cerr << "Error opening file" << std::endl;
-		return ("");
-	}
-	while (std::getline(file, line))
-	{
-		file_content += line;
-	}
-	file.close();
-	return (file_content);
+void	Response::set_socket(int socket)
+{
+	this->_client_socket = socket;
+	return ;
 }
 
 void	Response::set_file_path(std::string path)

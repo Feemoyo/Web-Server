@@ -3,14 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 17:36:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/02 19:12:01 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/05/13 18:01:33 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+
+/*
+** ------------------------------- CONSTRUCTOR --------------------------------
+*/
 
 Server::Server(void)
 {
@@ -25,11 +29,19 @@ Server::Server(int port)
 	return ;
 }
 
+/*
+** -------------------------------- DESTRUCTOR --------------------------------
+*/
+
 Server::~Server(void)
 {
 	close(this->_server_socket);
 	return ;
 }
+
+/*
+** --------------------------------- METHODS ----------------------------------
+*/
 
 void	Server::start(void)
 {
