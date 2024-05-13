@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/11 02:24:08 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/13 17:57:32 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,15 +137,11 @@ void	Config::_server_block(void)
 		_find_config_max_body_size(server, this->_total_servers[i]);
 		_find_config_errors_location(server, this->_total_servers[i]);
 		_find_config_default_index_location(server, this->_total_servers[i]);
-		
-		// _find_other_locations(server, this->_total_servers[i]);
-
+		_find_other_locations(server, this->_total_servers[i]);
 		this->_servers.push_back(server);
 	}
 	for (std::vector<t_server>::iterator j = this->_servers.begin(); j != this->_servers.end(); j++)
-	{
 		std::cout << *j << std::endl;
-	}
 	return ;
 }
 
@@ -211,7 +207,7 @@ void	Config::_find_config_errors_location(t_server &server, size_t start)
 	end = this->_content.find("}", start);
 	ref = this->_content.substr(start, end - start);
 	_find_methods(ref, errors);
-	server.locations.insert(std::pair<std::string, t_location>("errors", errors));
+	server.locations.insert(std::pair<std::string, t_location>(errors.path, errors));
 	return ;
 }
 
@@ -231,8 +227,37 @@ void	Config::_find_config_default_index_location(t_server &server, size_t start)
 	end = this->_content.find("}", start);
 	ref = this->_content.substr(start, end - start);
 	_find_methods(ref, index);
+	server.locations.insert(std::pair<std::string, t_location>(index.path, index));
+	return ;
+}
 
-	server.locations.insert(std::pair<std::string, t_location>("index", index));
+void	Config::_find_other_locations(t_server &server, size_t start)
+{
+	size_t		end = this->_content.find("{", start);
+	size_t		end_server = (this->_content.find("}}", start));
+	std::string	ref;
+
+	while (end < end_server)
+	{
+		start = this->_content.find("location", start) + strlen("location");
+		end = this->_content.find("{", start);
+		ref = this->_content.substr(start, end - start);
+		if (ref != "/errors/" && ref != "/")
+		{
+			t_location	locat;
+
+			locat.path = ref;
+			start = this->_content.find("default", end) + strlen("default");
+			end = this->_content.find("allowed_methods", start);
+			ref = this->_content.substr(start, end - start);
+			locat.default_file = ref;
+			start = this->_content.find("allowed_methods", start) + strlen("allowed_methods");
+			end = this->_content.find("}", start);
+			ref = this->_content.substr(start, end - start);
+			_find_methods(ref, locat);
+			server.locations.insert(std::pair<std::string, t_location>(locat.path, locat));
+		}
+	}
 	return ;
 }
 

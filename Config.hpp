@@ -26,6 +26,7 @@ private:
 	void			_find_config_max_body_size(t_server &server, size_t start);
 	void			_find_config_errors_location(t_server &server, size_t start);
 	void			_find_config_default_index_location(t_server &server, size_t start);
+	void			_find_other_locations(t_server &server, size_t start);
 
 public:
 					Config(std::string &content);
