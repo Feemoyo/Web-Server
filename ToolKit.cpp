@@ -12,6 +12,8 @@
 
 #include "ToolKit.hpp"
 
+std::string	ToolKit::_status_code = "";
+
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
@@ -42,14 +44,29 @@ void	ToolKit::_extract_content(void)
 	if (!file.is_open())
 	{
 		std::cerr << "File cannot be opened" << std::endl;
-		return ;
+		// this->_content = "";
+		this->set_status_code("404 Not Found");
+		file.close();
+		file.open("./www/errors/404.html");
+		// return ;
 	}
-	if (file.peek() == std::ifstream::traits_type::eof())
+	else if (file.peek() == std::ifstream::traits_type::eof())
 	{
 		std::cerr << "File is empty" << std::endl;
+		this->set_status_code("204 No Content");
 		file.close();
-		return ;
+		file.open("./www/errors/404.html");
+
+		// return ;
 	}
+	else
+	{
+		this->set_status_code("200 OK");
+	
+	}
+
+	std::getline(file, line);
+	this->_content = line + '\n';
 	while (std::getline(file, line))
 		this->_content += line + '\n';
 	file.close();
@@ -97,6 +114,7 @@ void	ToolKit::set_file(std::string path_and_name)
 	this->_file_path = path_and_name.substr(0, path_and_name.find_last_of('/') + 1);
 	this->_file_name = path_and_name.substr(path_and_name.find_last_of('/') + 1);
 	_extract_content();
+
 	return ;
 }
 

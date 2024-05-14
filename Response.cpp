@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "ToolKit.hpp"
 #include "Response.hpp"
 
 /*
@@ -19,7 +20,7 @@
 Response::Response(void)
 {
 	this->_response = "";
-	this->_file_path = "./www/index.html";
+	this->set_file("./www/index.html");
 	return ;
 }
 
@@ -27,7 +28,7 @@ Response::Response(int client_socket)
 {
 	this->_client_socket = client_socket;
 	this->_response = "";
-	this->_file_path = "./www/index.html";
+	this->set_file("./www/index.html");
 	return ;
 }
 
@@ -70,12 +71,13 @@ void	Response::_make_response(void)
 	std::string	file_content;
 	std::ostringstream	handler;
 
-	file_content = this->_read_file();
+	file_content = this->get_content();
 	handler << file_content.size();
 	
 	//TODO: o Content-Type tem que ser dinamico e pode ser encontrado no request
-	//	deixar de forma dinâmica!
-	this->_header = "HTTP/1.1 200 OK\nContent-Type: */*\nContent-Length: ";
+	this->_header = "HTTP/1.1 ";
+	this->_header += this->_status_code;
+	this->_header += "\nContent-Type: */*\nContent-Length: ";
 	this->_header += handler.str();
 	this->_header += " \n\n";
 	this->_response = this->_header;
