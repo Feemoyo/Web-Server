@@ -73,6 +73,7 @@ void	Servers::_init_socket(void)
 		if (this->_servers[i].server_socket < 0)
 		{
 			std::cerr << "Socket creation failed on server port:" << this->_servers[i].port << std::endl;
+			close_servers();
 	        exit(EXIT_FAILURE);
 		}
 		this->_servers[i].server_addr.sin_family = AF_INET;
@@ -136,6 +137,7 @@ void	Servers::_accept_connection(size_t index)
 	if (client_fd < 0)
 	{
 		std::cerr << "Accept fail on port: " << this->_servers[index].port << std::endl;
+		close_servers();
 		exit(EXIT_FAILURE);
 	}
 	std::cout << "Connection accepted on port: " << this->_servers[index].port << std::endl;
@@ -155,7 +157,7 @@ void	Servers::_process_request(size_t index, int &client_fd)
 		std::cerr << "Client closed connection on port: " << this->_servers[index].port << std::endl;
 	else
 	{
-		// std::cout << "DATA FROM CLIENT: " << std::string(buffer, bytes_read) << std::endl;
+		std::cout << "DATA FROM CLIENT: " << std::string(buffer, bytes_read) << std::endl;
 		const char *msg = "RODRIGO";
 		send(client_fd, msg, strlen(msg), 0);
 	}
