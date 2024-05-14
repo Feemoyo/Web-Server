@@ -6,11 +6,15 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:32:11 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/05/14 04:05:17 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/14 19:32:39 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Request.hpp"
+
+/*
+** ------------------------------- CONSTRUCTOR --------------------------------
+*/
 
 Request::Request(void)
 {
@@ -25,10 +29,18 @@ Request::Request(char *buffer)
 	return ;
 }
 
+/*
+** -------------------------------- DESTRUCTOR --------------------------------
+*/
+
 Request::~Request(void)
 {
 	return ;
 }
+
+/*
+** --------------------------------- METHODS ----------------------------------
+*/
 
 void	Request::set_buffer(char *buffer)
 {
