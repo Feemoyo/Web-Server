@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:01:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/13 18:01:05 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/14 02:18:09 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,9 @@ void	ToolKit::_extract_content(void)
 	if (!file.is_open())
 	{
 		std::cerr << "File cannot be opened" << std::endl;
-		// this->_content = "";
 		this->set_status_code("404 Not Found");
 		file.close();
 		file.open("./www/errors/404.html");
-		// return ;
 	}
 	else if (file.peek() == std::ifstream::traits_type::eof())
 	{
@@ -56,15 +54,9 @@ void	ToolKit::_extract_content(void)
 		this->set_status_code("204 No Content");
 		file.close();
 		file.open("./www/errors/404.html");
-
-		// return ;
 	}
 	else
-	{
 		this->set_status_code("200 OK");
-	
-	}
-
 	std::getline(file, line);
 	this->_content = line + '\n';
 	while (std::getline(file, line))

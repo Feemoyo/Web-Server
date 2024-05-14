@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/13 17:57:32 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/14 01:21:27 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,8 +140,6 @@ void	Config::_server_block(void)
 		_find_other_locations(server, this->_total_servers[i]);
 		this->_servers.push_back(server);
 	}
-	for (std::vector<t_server>::iterator j = this->_servers.begin(); j != this->_servers.end(); j++)
-		std::cout << *j << std::endl;
 	return ;
 }
 

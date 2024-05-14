@@ -23,6 +23,8 @@
 # include <unistd.h>
 # include <poll.h>
 
+# define MAX_CLIENTS 10
+
 typedef struct	s_location
 {
 	std::string					path;
@@ -37,6 +39,9 @@ typedef struct	s_server
 	std::string							root;
 	int									max_body_size;
 	std::map<std::string, t_location>	locations;
+
+	int									server_socket;
+	sockaddr_in							server_addr;
 }	t_server;
 
 typedef	enum	e_type
@@ -47,5 +52,8 @@ typedef	enum	e_type
 	PNG,
 	SVG
 }	t_type;
+
+std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs);
+std::ostream	&operator<<(std::ostream &lhs, const t_server &rhs);
 
 #endif
