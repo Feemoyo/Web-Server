@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 10:33:59 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/05/13 18:07:45 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/14 06:02:07 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,27 +45,6 @@ Response::~Response(void)
 ** --------------------------------- METHODS ----------------------------------
 */
 
-std::string	Response::_read_file(void) const
-{
-	std::ifstream	file;
-	std::string		line;
-	std::string		file_content;
-
-	file.open(this->_file_path.c_str());
-	std::cout << "File path: " << this->_file_path << std::endl;
-	if (!file.is_open())
-	{
-		std::cerr << "Error opening file" << std::endl;
-		return ("");
-	}
-	while (std::getline(file, line))
-	{
-		file_content += line;
-	}
-	file.close();
-	return (file_content);
-}
-
 void	Response::_make_response(void)
 {
 	std::string	file_content;
@@ -99,16 +78,5 @@ void	Response::send_response(void)
 void	Response::set_socket(int socket)
 {
 	this->_client_socket = socket;
-	return ;
-}
-
-void	Response::set_file_path(std::string path)
-{
-	if (path == "/")
-	{
-		this->_file_path = "./www/index.html";
-		return ;
-	}
-	this->_file_path = "." + path;
 	return ;
 }

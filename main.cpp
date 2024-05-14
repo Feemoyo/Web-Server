@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 19:27:55 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/11 01:04:20 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/14 09:19:42 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ int main(int argc, char **argv)
 
 	tools->set_file("./", argv[1]);
 	
+	std::cout << "Config file loaded" << std::endl;
 	conf = new Config(tools->get_content());
-
 	server->start();
 
 	delete server;
