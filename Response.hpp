@@ -6,8 +6,6 @@
 # include "Utils.hpp"
 # include "ToolKit.hpp"
 
-// TODO: é necessario entender se precisamos primeiro ler todos os .html ou deixar conforme as request chegam
-//
 class	Response : public ToolKit
 {
 	private:

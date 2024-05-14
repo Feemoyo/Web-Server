@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef TOOLKIT_HPP
 # define TOOLKIT_HPP
 
@@ -5,7 +7,7 @@
 
 class ToolKit
 {
-	protected:
+protected:
 		std::string				_content;
 		std::string				_file_path;
 		std::string				_file_name;
@@ -14,7 +16,7 @@ class ToolKit
 
 		void					_extract_content(void);
 		
-	public:
+public:
 
 							ToolKit(void);
 		virtual 			~ToolKit(void);
