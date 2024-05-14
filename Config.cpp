@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/14 01:21:27 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/14 16:24:56 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,9 @@ Config::Config(void)
 	return ;
 }
 
-Config::Config(std::string &content)
+Config::Config(char *argv)
 {
-	_copy_content(content);
+	set_file("./", argv);
 	_remove_comments();
 	_remove_white_spaces();
 	_find_total_servers();
@@ -73,18 +73,13 @@ Config::Config(std::string &content)
 
 Config::~Config(void)
 {
+	this->_servers.clear();
 	return ;
 }
 
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
-
-void	Config::_copy_content(std::string &content)
-{
-	this->_content = content;
-	return ;
-}
 
 void	Config::_remove_comments(void)
 {
