@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
 /*   Updated: 2024/05/14 16:24:56 by rferrero         ###   ########.fr       */
@@ -62,6 +62,8 @@ Config::Config(char *argv)
 	set_file("./", argv);
 	_remove_comments();
 	_remove_white_spaces();
+	if (!_verify_brackets())
+		return ;
 	_find_total_servers();
 	_server_block();
 	return ;
@@ -101,6 +103,31 @@ void	Config::_remove_white_spaces(void)
 {
 	this->_content.erase(std::remove_if(this->_content.begin(), this->_content.end(), _is_space), this->_content.end());
 	return ;
+}
+
+//TODO: Melhorar o encerramento em caso de erro
+bool	Config::_verify_brackets(void)
+{
+	if (this->_count_occurrences(this->_content, '{') != this->_count_occurrences(this->_content, '}'))
+	{
+		std::cerr << "Error .conf: Brackets are not balanced" << std::endl;
+		return (false);
+
+	}
+	return (true);
+}
+
+int	Config::_count_occurrences(const std::string &str, const char c)
+{
+	int i = 0;
+    for (std::string::const_iterator it = str.begin(); it != str.end(); ++it)
+	{
+        if (*it == c)
+		{
+            i++;
+        }
+    }
+    return i;
 }
 
 void	Config::_find_total_servers(void)
@@ -232,6 +259,7 @@ void	Config::_find_other_locations(t_server &server, size_t start)
 
 	while (end < end_server)
 	{
+		// std::cout << "debug: Config constructor" << std::endl;
 		start = this->_content.find("location", start) + strlen("location");
 		end = this->_content.find("{", start);
 		ref = this->_content.substr(start, end - start);

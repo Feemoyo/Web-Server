@@ -14,6 +14,8 @@ private:
 
 	void			_remove_comments(void);
 	void			_remove_white_spaces(void);
+	bool			_verify_brackets(void);
+	int				_count_occurrences(const std::string &str, const char c);
 	void			_find_total_servers(void);
 
 	void			_server_block(void);
