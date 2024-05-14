@@ -4,17 +4,14 @@
 # define CONFIG_HPP
 
 # include "Utils.hpp"
+# include "ToolKit.hpp"
 
-class	Config
+class	Config : public ToolKit
 {
 private:
 	std::vector<t_server>	_servers;
 	std::vector<size_t>		_total_servers;
-	std::string				_content;
 
-					Config(void);
-
-	void			_copy_content(std::string &content);
 	void			_remove_comments(void);
 	void			_remove_white_spaces(void);
 	bool			_verify_brackets(void);
@@ -31,7 +28,8 @@ private:
 	void			_find_other_locations(t_server &server, size_t start);
 
 public:
-					Config(std::string &content);
+					Config(void);
+					Config(char *argv);
 					~Config(void);
 
 	std::vector<t_server>	&get_servers(void);
@@ -40,8 +38,5 @@ public:
 	std::string				&get_content(void);
 
 };
-
-std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs);
-std::ostream	&operator<<(std::ostream &lhs, const t_server &rhs);
 
 #endif

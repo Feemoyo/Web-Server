@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/14 09:23:46 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/05/14 16:24:56 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,9 @@ Config::Config(void)
 	return ;
 }
 
-Config::Config(std::string &content)
+Config::Config(char *argv)
 {
-	_copy_content(content);
+	set_file("./", argv);
 	_remove_comments();
 	_remove_white_spaces();
 	if (!_verify_brackets())
@@ -75,18 +75,13 @@ Config::Config(std::string &content)
 
 Config::~Config(void)
 {
+	this->_servers.clear();
 	return ;
 }
 
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
-
-void	Config::_copy_content(std::string &content)
-{
-	this->_content = content;
-	return ;
-}
 
 void	Config::_remove_comments(void)
 {
@@ -167,8 +162,6 @@ void	Config::_server_block(void)
 		_find_other_locations(server, this->_total_servers[i]);
 		this->_servers.push_back(server);
 	}
-	for (std::vector<t_server>::iterator j = this->_servers.begin(); j != this->_servers.end(); j++)
-		std::cout << *j << std::endl;
 	return ;
 }
 

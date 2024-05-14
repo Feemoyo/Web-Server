@@ -3,37 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 19:27:55 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/14 09:19:42 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/05/14 18:18:30 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.hpp"
-#include "ToolKit.hpp"
 #include "Config.hpp"
+#include "Servers.hpp"
 
-Server			*server;
-ToolKit			*tools;
-Config			*conf;
-
+Servers		*webserv;
+Config		*conf;
 
 void	_server_config_model(void)
 {
-	std::cout << "server\n{\n\tlisten\t\t\t\t\t80\n\tserver_name\t\t\t\tlocalhost\n\troot\t\t\t\t\twww\n\tclient_max_body_size\t200\n\tlocation /\n\t{\n\t\tdefault\t\t\t\tindex.html\n\t\tallowed_methods\t\tGET\n\t}\n\tlocation /errors/\n\t{\n\t\tdefault\t\t\t\t404.html\n\t\tallowed_methods\t\tGET\n\t}\n}" << std::endl;
+	std::cout << "server\n{\n\tlisten\t\t\t\t\t80" << std::endl;
+	std::cout << "\tserver_name\t\t\t\tlocalhost" << std::endl;
+	std::cout << "\troot\t\t\t\t\twww\n\tclient_max_body_size\t200" << std::endl;
+	std::cout << "\tlocation /\n\t{\n\t\tdefault\t\t\t\tindex.html" << std::endl;
+	std::cout << "\t\tallowed_methods\t\tGET\n\t}\n" << std::endl;
+	std::cout << "\tlocation /errors/\n\t{\n\t\tdefault\t\t\t\t404.html" << std::endl;
+	std::cout << "\t\tallowed_methods\t\tGET\n\t}\n}" << std::endl;
 	return ;
 }
 
 void	_server_interrupt(int sig)
 {
 	std::cout << "\nServer Interrupted\nSignal: " << (sig + 128) << std::endl;
-	server->stop();
-	delete server;
-
-	delete tools;
+	webserv->close_servers();
+	delete webserv;
 	delete conf;
-
 	exit(EXIT_SUCCESS);
 }
 
@@ -46,24 +46,18 @@ int main(int argc, char **argv)
 		_server_config_model();
 		return (EXIT_FAILURE);
 	}
-	server = new Server(8080);
-	tools = new ToolKit();
-
 	struct sigaction	interrupt_handler;
 	interrupt_handler.sa_handler = _server_interrupt;
 	sigemptyset(&interrupt_handler.sa_mask);
 	interrupt_handler.sa_flags = 0;
 	sigaction(SIGINT, &interrupt_handler, 0);
 
-	tools->set_file("./", argv[1]);
-	
-	std::cout << "Config file loaded" << std::endl;
-	conf = new Config(tools->get_content());
-	server->start();
+	conf = new Config(argv[1]);
+	webserv = new Servers(conf);
 
-	delete server;
-	delete tools;
+	webserv->run_servers();
+
 	delete conf;
-
+	delete webserv;
 	return (EXIT_SUCCESS);
 }
