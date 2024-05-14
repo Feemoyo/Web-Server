@@ -9,10 +9,12 @@
 # include <string>
 # include <vector>
 # include <map>
+# include <algorithm>
 
 # include <cstring>
 # include <cstdlib>
 # include <csignal>
+# include <cctype>
 
 # include <sys/socket.h>
 # include <netinet/in.h>

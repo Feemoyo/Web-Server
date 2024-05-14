@@ -5,6 +5,7 @@
 
 # include "Utils.hpp"
 # include "Response.hpp"
+# include "Request.hpp"
 
 class	Server
 {
@@ -16,8 +17,8 @@ private:
 	struct pollfd		_fds[_MAX_CLIENTS + 1];
 	int					_active_clients;
 
-	int					_NUM_REQUEST;
 	Response			_response;
+	Request				_request;
 
 						Server(void);
 

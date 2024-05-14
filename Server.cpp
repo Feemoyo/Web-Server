@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 17:36:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/04/29 21:03:24 by user42           ###   ########.fr       */
+/*   Updated: 2024/05/13 15:13:22 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	Server::start(void)
 	std::cout << "Server running on port " << this->_port << "..." << std::endl;
 	this->_init_fds();
 
-	// TODO: Implementar uma classe para gerenciar os clientes
+	// TODO: Implementar uma classe para gerenciar os clientes (FD_SET)
 	while (true)
 	{
 		std::cout << "\nWaiting for connections..." << std::endl;
@@ -89,18 +89,18 @@ int	Server::_accept_request(void)
 	return (EXIT_SUCCESS);
 }
 
+
+// ???: Os nomes _request e _response estao confusos.
 void	Server::_process_request(int client_socket)
 {
-	// TIPS: dentro do buffer a segunda substr é o path do request
 	char	buffer[1024] = {0};
-	// std::stringstream buffer;
 	read(client_socket, buffer, sizeof(buffer));
-	std::cout << "requests: " << buffer << std::endl;
-
-	// TODO: Adicionar um tratamento para os multiplos requests ex: o proximo request "icon.svg"
-	this->_response.set_socket(client_socket);
-	this->_response.send_response();
 	
+	this->_request.set_buffer(buffer);
+	std::string path = this->_request.get_path();
+	this->_response.set_socket(client_socket);
+	this->_response.set_file("." + path);
+	this->_response.send_response();
 	return ;
 }
 
