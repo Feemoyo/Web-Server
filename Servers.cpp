@@ -42,29 +42,6 @@ Servers::~Servers(void)
 ** --------------------------------- METHODS ----------------------------------
 */
 
-void	Servers::run_servers(void)
-{
-	_init_socket();
-	_init_bind();
-	_init_listen();
-	_init_fds();
-	while (true)
-	{
-		if (poll(this->_fds.data(), this->_fds.size(), -1) < 0)
-		{
-			std::cerr << "Poll fail" << std::endl;
-			break ;
-		}
-		for (size_t i = 0; i < this->_fds.size(); i++)
-		{
-			if (this->_fds[i].revents & POLLIN)
-				_accept_connection(i);
-		}
-	}
-	this->_fds.clear();
-	return ;
-}
-
 void	Servers::_init_socket(void)
 {
 	for (size_t i = 0; i < this->_servers.size(); i ++)
@@ -73,13 +50,12 @@ void	Servers::_init_socket(void)
 		if (this->_servers[i].server_socket < 0)
 		{
 			std::cerr << "Socket creation failed on server port:" << this->_servers[i].port << std::endl;
-			close_servers();
-	        exit(EXIT_FAILURE);
+			close(this->_servers[i].server_socket);
+			continue ;
 		}
 		this->_servers[i].server_addr.sin_family = AF_INET;
 		this->_servers[i].server_addr.sin_addr.s_addr = INADDR_ANY;
 		this->_servers[i].server_addr.sin_port = htons(this->_servers[i].port);
-		std::cout << "Server socket on port " << this->_servers[i].port << std::endl;
 	}
 	return ;
 }
@@ -89,12 +65,7 @@ void	Servers::_init_bind(void)
 	for (size_t i = 0; i < this->_servers.size(); i ++)
 	{
 		if (bind(this->_servers[i].server_socket, reinterpret_cast<sockaddr *>(&this->_servers[i].server_addr), sizeof(this->_servers[i].server_addr)) < 0)
-		{
 			std::cerr << "Bind failed on server port: " << this->_servers[i].port << std::endl;
-			close_servers();
-	       	exit(EXIT_FAILURE);
-		}
-		std::cout << "Binded on port " << this->_servers[i].port << std::endl;
 	}
 	return ;
 }
@@ -106,10 +77,9 @@ void	Servers::_init_listen(void)
 		if (listen(this->_servers[i].server_socket, MAX_CLIENTS) < 0)
 		{
 			std::cerr << "Listen failed on port: " << this->_servers[i].port << std::endl;
-			close(this->_servers[i].server_socket);
-			exit(EXIT_FAILURE);
+			close_servers();
+			break ;
 		}
-		std::cout << "Listening on port " << this->_servers[i].port << std::endl;
 	}
 	return ;
 }
@@ -128,6 +98,29 @@ void	Servers::_init_fds(void)
 	return ;
 }
 
+void	Servers::run_servers(void)
+{
+	_init_socket();
+	_init_bind();
+	_init_listen();
+	_init_fds();
+	while (true)
+	{
+		if (poll(this->_fds.data(), this->_fds.size(), -1) < 0)
+		{
+			std::cerr << "Poll fail" << std::endl;
+			close_servers();
+			break ;
+		}
+		for (size_t i = 0; i < this->_fds.size(); i++)
+		{
+			if (this->_fds[i].revents & POLLIN)
+				_accept_connection(i);
+		}
+	}
+	return ;
+}
+
 void	Servers::_accept_connection(size_t index)
 {
 	struct sockaddr_in	client_addr;
@@ -138,9 +131,9 @@ void	Servers::_accept_connection(size_t index)
 	{
 		std::cerr << "Accept fail on port: " << this->_servers[index].port << std::endl;
 		close_servers();
-		exit(EXIT_FAILURE);
+		close(client_fd);
+		return ;
 	}
-	std::cout << "Connection accepted on port: " << this->_servers[index].port << std::endl;
 	_process_request(index, client_fd);
 	close(client_fd);
 	return ;
@@ -157,9 +150,10 @@ void	Servers::_process_request(size_t index, int &client_fd)
 		std::cerr << "Client closed connection on port: " << this->_servers[index].port << std::endl;
 	else
 	{
-		std::cout << "DATA FROM CLIENT: " << std::string(buffer, bytes_read) << std::endl;
-		const char *msg = "RODRIGO";
-		send(client_fd, msg, strlen(msg), 0);
+		this->_request.set_buffer(buffer);
+		this->_response.set_socket(client_fd);
+		this->_response.set_file("." + this->_request.get_path());
+		this->_response.send_response();
 	}
 	return ;
 }
@@ -167,11 +161,8 @@ void	Servers::_process_request(size_t index, int &client_fd)
 void	Servers::close_servers(void)
 {
 	for (size_t i = 0; i < this->_servers.size(); i++)
-	{
 		close(this->_servers[i].server_socket);
-	}
 	this->_servers.clear();
 	this->_fds.clear();
 	return ;
 }
-
