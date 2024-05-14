@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/14 16:24:56 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/14 19:28:25 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,6 @@ bool	Config::_verify_brackets(void)
 	{
 		std::cerr << "Error .conf: Brackets are not balanced" << std::endl;
 		return (false);
-
 	}
 	return (true);
 }
@@ -120,14 +119,12 @@ bool	Config::_verify_brackets(void)
 int	Config::_count_occurrences(const std::string &str, const char c)
 {
 	int i = 0;
-    for (std::string::const_iterator it = str.begin(); it != str.end(); ++it)
+	for (std::string::const_iterator it = str.begin(); it != str.end(); ++it)
 	{
-        if (*it == c)
-		{
-            i++;
-        }
-    }
-    return i;
+	    if (*it == c)
+			i++;
+	}
+	return i;
 }
 
 void	Config::_find_total_servers(void)
