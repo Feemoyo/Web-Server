@@ -19,7 +19,7 @@ private:
 			Servers(void);
 
 	void	_init_socket(void);
-	void	_init_bind(void);
+	bool	_init_bind(void);
 	void	_init_listen(void);
 	void	_init_fds(void);
 	void	_accept_connection(size_t index);
