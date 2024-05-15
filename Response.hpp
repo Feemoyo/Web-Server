@@ -3,7 +3,6 @@
 #ifndef RESPONSE_HPP
 # define RESPONSE_HPP
 
-# include "Utils.hpp"
 # include "ToolKit.hpp"
 
 class	Response : public ToolKit

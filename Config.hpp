@@ -3,7 +3,6 @@
 #ifndef CONFIG_HPP
 # define CONFIG_HPP
 
-# include "Utils.hpp"
 # include "ToolKit.hpp"
 
 class	Config : public ToolKit
