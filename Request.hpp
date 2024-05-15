@@ -3,7 +3,6 @@
 #ifndef REQUEST_HPP
 # define REQUEST_HPP
 
-# include "Utils.hpp"
 # include "ToolKit.hpp"
 
 class	Request : public ToolKit
