@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Request.cpp                                        :+:      :+:    :+:   */
+/*   Client.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,20 +10,20 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Request.hpp"
+#include "Client.hpp"
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Request::Request(void)
+Client::Client(void)
 {
 	this->_buffer_map.clear();
 
 	return ;
 }
 
-Request::Request(char *buffer)
+Client::Client(char *buffer)
 {
 	this->set_buffer(buffer);
 	return ;
@@ -33,7 +33,7 @@ Request::Request(char *buffer)
 ** -------------------------------- DESTRUCTOR --------------------------------
 */
 
-Request::~Request(void)
+Client::~Client(void)
 {
 	return ;
 }
@@ -42,7 +42,7 @@ Request::~Request(void)
 ** --------------------------------- METHODS ----------------------------------
 */
 
-void	Request::set_buffer(char *buffer)
+void	Client::set_buffer(char *buffer)
 {
 	std::istringstream stream(buffer);
 	std::string line;
@@ -65,7 +65,7 @@ void	Request::set_buffer(char *buffer)
 	return ;
 }
 
-void	Request::print_map(void)
+void	Client::print_map(void)
 {
 	std::map<std::string, std::string>::iterator it;
 	for (it = this->_buffer_map.begin(); it != this->_buffer_map.end(); ++it)
@@ -76,7 +76,7 @@ void	Request::print_map(void)
 	return ;
 }
 
-std::string	Request::get_path(void)
+std::string	Client::get_path(void)
 {
 	std::size_t auxFindGET1 = this->_buffer_map["Request"].find("/", 0);
 	std::size_t auxFindGET2 = this->_buffer_map["Request"].find(" ", auxFindGET1);
@@ -84,5 +84,8 @@ std::string	Request::get_path(void)
 
 	if (!path.compare("/"))
 		path = "/www/index.html";
+
+	print_map();
+
 	return (path);
 }

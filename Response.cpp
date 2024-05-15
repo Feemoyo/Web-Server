@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 10:33:59 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/05/14 04:05:03 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/15 16:34:02 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ Response::Response(void)
 	return ;
 }
 
-Response::Response(int client_socket)
+Response::Response(int client_fd, std::string root)
 {
-	this->_client_socket = client_socket;
+	this->_client_fd = client_fd;
 	this->_response = "";
 	this->set_file("./www/index.html");
 	return ;
@@ -46,7 +46,7 @@ Response::~Response(void)
 
 void	Response::_make_response(void)
 {
-	std::string	file_content;
+	std::string			file_content;
 	std::ostringstream	handler;
 
 	file_content = this->get_content();
@@ -67,15 +67,15 @@ void	Response::_make_response(void)
 void	Response::send_response(void)
 {
 	this->_make_response();
-	write(this->_client_socket, this->_response.c_str(), this->_response.size());
+	write(this->_client_fd, this->_response.c_str(), this->_response.size());
 }
 
 /*
 ** --------------------------------- SETTERS ---------------------------------
 */
 
-void	Response::set_socket(int socket)
+void	Response::set_fd(int fd)
 {
-	this->_client_socket = socket;
+	this->_client_fd = fd;
 	return ;
 }

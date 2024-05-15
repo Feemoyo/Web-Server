@@ -27,9 +27,9 @@ private:
 	void			_find_other_locations(t_server &server, size_t start);
 
 public:
-					Config(void);
-					Config(char *argv);
-					~Config(void);
+							Config(void);
+							Config(char *argv);
+							~Config(void);
 
 	std::vector<t_server>	&get_servers(void);
 	t_server				&get_server(int index);

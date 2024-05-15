@@ -156,9 +156,9 @@ void	Servers::_process_request(size_t index, int &client_fd)
 		std::cerr << "Client closed connection on port: " << this->_servers[index].port << std::endl;
 	else
 	{
-		this->_request.set_buffer(buffer);
-		this->_response.set_socket(client_fd);
-		this->_response.set_file("." + this->_request.get_path());
+		this->_client.set_buffer(buffer);
+		this->_response.set_fd(client_fd);
+		this->_response.set_file("." + this->_client.get_path());
 		this->_response.send_response();
 	}
 	return ;

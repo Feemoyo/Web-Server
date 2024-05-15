@@ -1,11 +1,11 @@
 #pragma once
 
-#ifndef SERVERSHANDLER_HPP
-# define SERVERSHANDLER_HPP
+#ifndef SERVERS_HPP
+# define SERVERS_HPP
 
 # include "Config.hpp"
 # include "Response.hpp"
-# include "Request.hpp"
+# include "Client.hpp"
 
 class	Servers
 {
@@ -13,7 +13,7 @@ private:
 	std::vector<t_server>		_servers;
 	std::vector<struct pollfd>	_fds;
 	Response					_response;
-	Request						_request;
+	Client						_client;
 
 			Servers(void);
 
