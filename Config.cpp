@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/14 19:28:25 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/14 22:39:51 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,7 +256,6 @@ void	Config::_find_other_locations(t_server &server, size_t start)
 
 	while (end < end_server)
 	{
-		// std::cout << "debug: Config constructor" << std::endl;
 		start = this->_content.find("location", start) + strlen("location");
 		end = this->_content.find("{", start);
 		ref = this->_content.substr(start, end - start);

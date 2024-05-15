@@ -60,14 +60,18 @@ void	Servers::_init_socket(void)
 	return ;
 }
 
-void	Servers::_init_bind(void)
+bool	Servers::_init_bind(void)
 {
 	for (size_t i = 0; i < this->_servers.size(); i ++)
 	{
 		if (bind(this->_servers[i].server_socket, reinterpret_cast<sockaddr *>(&this->_servers[i].server_addr), sizeof(this->_servers[i].server_addr)) < 0)
+		{
 			std::cerr << "Bind failed on server port: " << this->_servers[i].port << std::endl;
+			close_servers();
+			return (false);
+		}
 	}
-	return ;
+	return (true);
 }
 
 void	Servers::_init_listen(void)
@@ -101,11 +105,13 @@ void	Servers::_init_fds(void)
 void	Servers::run_servers(void)
 {
 	_init_socket();
-	_init_bind();
+	if (_init_bind() == false)
+		return;
 	_init_listen();
 	_init_fds();
 	while (true)
 	{
+		std::cout << "Webserv running..." << std::endl;
 		if (poll(this->_fds.data(), this->_fds.size(), -1) < 0)
 		{
 			std::cerr << "Poll fail" << std::endl;
