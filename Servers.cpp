@@ -140,27 +140,27 @@ void	Servers::_accept_connection(size_t index)
 		close(client_fd);
 		return ;
 	}
-	_process_request(index, client_fd);
+	_request_handler(index, client_fd);
 	close(client_fd);
 	return ;
 }
 
-void	Servers::_process_request(size_t index, int &client_fd)
+void	Servers::_request_handler(size_t index, int &client_fd)
 {
-	char	buffer[1024];
-	ssize_t	bytes_read = recv(client_fd, buffer, sizeof(buffer), 0);
+	// char	buffer[1024];
+	// ssize_t	bytes_read = recv(client_fd, buffer, sizeof(buffer), 0);
 
-	if (bytes_read < 0)
-		std::cerr << "Reading from client fail on port: " << this->_servers[index].port << std::endl;
-	else if (bytes_read == 0)
-		std::cerr << "Client closed connection on port: " << this->_servers[index].port << std::endl;
-	else
-	{
-		this->_client.set_buffer(buffer);
+	// if (bytes_read < 0)
+	// 	std::cerr << "Reading from client fail on port: " << this->_servers[index].port << std::endl;
+	// else if (bytes_read == 0)
+	// else
+	// {
+		(void)index;
+		this->_client.request_process(client_fd);
 		this->_response.set_fd(client_fd);
-		this->_response.set_file("." + this->_client.get_path());
+		this->_response.set_file(this->_client.get_path(this->_server[i].locations));
 		this->_response.send_response();
-	}
+	// }
 	return ;
 }
 

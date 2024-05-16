@@ -23,12 +23,6 @@ Client::Client(void)
 	return ;
 }
 
-Client::Client(char *buffer)
-{
-	this->set_buffer(buffer);
-	return ;
-}
-
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
 */
@@ -42,8 +36,12 @@ Client::~Client(void)
 ** --------------------------------- METHODS ----------------------------------
 */
 
-void	Client::set_buffer(char *buffer)
+void	Client::request_process(int &client_fd)
 {
+	char	buffer[1024];
+	ssize_t	bytes_read = recv(client_fd, buffer, sizeof(buffer), 0);
+	
+	(void)bytes_read;
 	std::istringstream stream(buffer);
 	std::string line;
 
@@ -76,16 +74,36 @@ void	Client::print_map(void)
 	return ;
 }
 
-std::string	Client::get_path(void)
+std::string	Client::get_path(std::map<std::string, t_location> locations)
 {
 	std::size_t auxFindGET1 = this->_buffer_map["Request"].find("/", 0);
 	std::size_t auxFindGET2 = this->_buffer_map["Request"].find(" ", auxFindGET1);
 	std::string path = this->_buffer_map["Request"].substr(auxFindGET1, auxFindGET2 - auxFindGET1);
+
+	//verificar se path é uma localização valida
+	// struct stat buffer;
+    // if (stat(path.c_str(), &buffer) == 0) {
+    //     if (!S_ISREG(buffer.st_mode) && (buffer.st_mode & S_IRUSR))
+	// 	{
+    //         this->set_status_code("403 Forbidden");
+    //     }
+    // }
+	// else
+	// {
+	// 	this->set_status_code("404 Not Found");
+	
+	// }
+
+	std::map<std::string, t_location>::iterator	it;
+	for (it = locations.begin(); it != locations.end(), it++)
+	{
+		if (it != std::string::npos)
+	}
 
 	if (!path.compare("/"))
 		path = "/www/index.html";
 
 	print_map();
 
-	return (path);
+	return ("." + path);
 }

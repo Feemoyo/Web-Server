@@ -12,10 +12,9 @@ private:
 
 public:
 					Client(void);
-					Client(char *buffer);
 					~Client(void);
 
-	void			set_buffer(char *buffer);
+	void			request_process(int &client_fd);
 	
 	// temos espaço para um getter de todas infos de um request ex: Content-Type.
 	std::string		get_path(void);
