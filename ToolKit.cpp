@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ToolKit.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:01:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/14 03:58:09 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/15 16:51:27 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,12 @@ std::string	&ToolKit::get_file_path(void)
 	return (this->_file_path);
 }
 
+// std::string	&ToolKit::get_file_extension(void)
+// {
+// 	return (this->_file_extension);
+// }
+
+
 std::string	&ToolKit::get_status_code(void)
 {
 	return (this->_status_code);
@@ -97,6 +103,7 @@ void	ToolKit::set_file(std::string path, std::string name)
 {
 	this->_file_path = path;
 	this->_file_name = name;
+	// this->_file_extension = name.substr(name.find_last_of('.') + 1);
 	_extract_content();
 	return ;
 }
@@ -105,8 +112,8 @@ void	ToolKit::set_file(std::string path_and_name)
 {
 	this->_file_path = path_and_name.substr(0, path_and_name.find_last_of('/') + 1);
 	this->_file_name = path_and_name.substr(path_and_name.find_last_of('/') + 1);
+	// this->_file_extension = path_and_name.substr(path_and_name.find_last_of('.') + 1);
 	_extract_content();
-
 	return ;
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/14 22:39:51 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/15 16:58:15 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,7 +177,6 @@ void	Config::_find_config_port(t_server &server, size_t start)
 void	Config::_find_config_server_name(t_server &server, size_t start)
 {
 	size_t		end;
-	std::string	ref;
 
 	start = this->_content.find("server_name", start) + strlen("server_name");
 	end = this->_content.find("root", start);
@@ -188,7 +187,6 @@ void	Config::_find_config_server_name(t_server &server, size_t start)
 void	Config::_find_config_root(t_server &server, size_t start)
 {
 	size_t		end;
-	std::string	ref;
 
 	start = this->_content.find("root", start) + strlen("root");
 	end = this->_content.find("client_max_body_size", start);
@@ -218,7 +216,7 @@ void	Config::_find_config_errors_location(t_server &server, size_t start)
 	ref = this->_content.substr(start, end - start);
 	t_location	errors;
 
-	errors.path = "/errors/";
+	errors.path = ("." + ref);
 	errors.default_file = ref;
 	start = this->_content.find(ref + "allowed_methods", start) + strlen(ref.c_str()) + strlen("allowed_methods");
 	end = this->_content.find("}", start);
@@ -238,7 +236,7 @@ void	Config::_find_config_default_index_location(t_server &server, size_t start)
 	ref = this->_content.substr(start, end - start);
 	t_location	index;
 
-	index.path = ref;
+	index.path = ("." + ref);
 	index.default_file = "index.html";
 	start = this->_content.find("index.htmlallowed_methods", start) + strlen("index.htmlallowed_methods");
 	end = this->_content.find("}", start);
@@ -263,7 +261,7 @@ void	Config::_find_other_locations(t_server &server, size_t start)
 		{
 			t_location	locat;
 
-			locat.path = ref;
+			locat.path = ("." + ref);
 			start = this->_content.find("default", end) + strlen("default");
 			end = this->_content.find("allowed_methods", start);
 			ref = this->_content.substr(start, end - start);

@@ -7,20 +7,22 @@
 
 class	Response : public ToolKit
 {
-	private:
-		int			_client_socket;
-		std::string	_header;
-		std::string	_response;
+private:
+	int			_client_fd;
+	std::string	_header;
+	std::string	_response;
+	std::string	_root;
 
-		void		_make_response(void);
+	void		_make_response(void);
 
-	public:
-					Response(void);
-					Response(int client_socket);
-					~Response(void);
+public:
+				Response(void);
+				Response(int client_fd);
+				~Response(void);
 
-		void		set_socket(int socket);
-		void		send_response(void);
+	void		send_response(void);
+
+	void		set_fd(int fd);
 
 };
 
