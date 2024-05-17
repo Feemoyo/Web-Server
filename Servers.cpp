@@ -127,41 +127,50 @@ void	Servers::run_servers(void)
 	return ;
 }
 
-void	Servers::_accept_connection(size_t index)
+void    Servers::_accept_connection(size_t index)
 {
-	struct sockaddr_in	client_addr;
-	socklen_t			client_len = sizeof(client_addr);
-	int					client_fd = accept(this->_fds[index].fd, (struct sockaddr*)&client_addr, &client_len);
+    struct sockaddr_in    client_addr;
+    socklen_t            client_len = sizeof(client_addr);
+    int                    client_fd = accept(this->_fds[index].fd, (struct sockaddr*)&client_addr, &client_len);
 
-	if (client_fd < 0)
-	{
-		std::cerr << "Accept fail on port: " << this->_servers[index].port << std::endl;
-		close_servers();
-		close(client_fd);
-		return ;
-	}
-	_request_handler(index, client_fd);
-	close(client_fd);
-	return ;
+    if (client_fd < 0)
+    {
+        std::cerr << "Accept fail on port: " << this->_servers[index].port << std::endl;
+        close_servers();
+        close(client_fd);
+        return ;
+    }
+    if (_process_client(index, client_fd) == true)
+        _process_response(index, client_fd);
+    close(client_fd);
+    return ;
 }
 
-void	Servers::_request_handler(size_t index, int &client_fd)
+bool    Servers::_process_client(size_t index, int &client_fd)
 {
-	// char	buffer[1024];
-	// ssize_t	bytes_read = recv(client_fd, buffer, sizeof(buffer), 0);
+    char    buffer[1024];
+    ssize_t    bytes_read = recv(client_fd, buffer, sizeof(buffer), 0);
 
-	// if (bytes_read < 0)
-	// 	std::cerr << "Reading from client fail on port: " << this->_servers[index].port << std::endl;
-	// else if (bytes_read == 0)
-	// else
-	// {
-		(void)index;
-		this->_client.request_process(client_fd);
-		this->_response.set_fd(client_fd);
-		this->_response.set_file(this->_client.get_path(this->_server[i].locations));
-		this->_response.send_response();
-	// }
-	return ;
+    if (bytes_read < 0)
+    {
+        std::cerr << "Reading from client fail on port: " << this->_servers[index].port << std::endl;
+        return (false);
+    }
+    else if (bytes_read == 0)
+    {
+        std::cerr << "Client closed connection on port: " << this->_servers[index].port << std::endl;
+        return (false);
+    }
+    this->_client.set_buffer(buffer);
+    return (true);
+}
+
+void    Servers::_process_response(size_t index, int &client_fd)
+{
+        Response    resp(client_fd, this->_servers[index], "./" + this->_servers[index].root + this->_client.get_path());
+
+        resp.send_response();
+        return ;
 }
 
 void	Servers::close_servers(void)

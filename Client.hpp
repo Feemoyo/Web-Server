@@ -10,11 +10,14 @@ class	Client : public ToolKit
 private:
 	std::map<std::string, std::string>	_buffer_map;
 
+	std::string								_map_finder(std::string key, std::string value1, std::string value2);
+
 public:
 					Client(void);
 					~Client(void);
 
-	void			request_process(int &client_fd);
+	void			set_buffer(char *buffer);
+	void			format_content_type(void);
 	
 	// temos espaço para um getter de todas infos de um request ex: Content-Type.
 	std::string		get_path(void);

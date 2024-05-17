@@ -22,7 +22,8 @@ private:
 	void	_init_listen(void);
 	void	_init_fds(void);
 	void	_accept_connection(size_t index);
-	void	_request_handler(size_t index, int &client_fd);
+	bool    _process_client(size_t index, int &client_fd);
+	void    _process_response(size_t index, int &client_fd);
 
 public:
 			Servers(Config *&config);

@@ -6,13 +6,14 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:01:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/15 16:51:27 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/05/17 16:04:23 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ToolKit.hpp"
 
 std::string	ToolKit::_status_code = "";
+std::string	ToolKit::_content_type = "";
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -44,16 +45,22 @@ void	ToolKit::_extract_content(void)
 	if (!file.is_open())
 	{
 		std::cerr << "File cannot be opened" << std::endl;
+		std::cout << "*PATH: " << this->_file_path + this->_file_name << std::endl;
 		this->set_status_code("404 Not Found");
 		file.close();
 		file.open("./www/errors/404.html");
+		std::cout << "****PATH: " << this->_file_path + this->_file_name << std::endl;
+
 	}
 	else if (file.peek() == std::ifstream::traits_type::eof())
 	{
 		std::cerr << "File is empty" << std::endl;
+		std::cout << "*PATH: " << this->_file_path + this->_file_name << std::endl;
 		this->set_status_code("204 No Content");
 		file.close();
-		file.open("./www/errors/404.html");
+		file.open("./www/errors/204.html");
+		std::cout << "****PATH: " << this->_file_path + this->_file_name << std::endl;
+
 	}
 	else
 		this->set_status_code("200 OK");
@@ -95,6 +102,11 @@ std::string	&ToolKit::get_status_code(void)
 	return (this->_status_code);
 }
 
+std::string	&ToolKit::get_content_type(void)
+{
+	return (this->_content_type);
+}
+
 /*
 ** --------------------------------- SETTERS ---------------------------------
 */
@@ -120,5 +132,11 @@ void	ToolKit::set_file(std::string path_and_name)
 void	ToolKit::set_status_code(std::string code)
 {
 	this->_status_code = code;
+	return ;
+}
+
+void	ToolKit::set_content_type(std::string type)
+{
+	this->_content_type = type;
 	return ;
 }
