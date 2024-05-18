@@ -33,4 +33,7 @@ public:
 
 };
 
+std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs);
+std::ostream	&operator<<(std::ostream &lhs, const t_server &rhs);
+
 #endif

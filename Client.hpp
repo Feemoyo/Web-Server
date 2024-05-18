@@ -14,10 +14,10 @@ public:
 					Client(void);
 					~Client(void);
 
-	void			request_process(int &client_fd);
 
-	std::string		get_path(void);
+	void			set_buffer(char *buffer);
 	void			print_map(void);
+	std::string		get_path(void);
 
 };
 

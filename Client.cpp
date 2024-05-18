@@ -36,14 +36,10 @@ Client::~Client(void)
 ** --------------------------------- METHODS ----------------------------------
 */
 
-void	Client::request_process(int &client_fd)
+void	Client::set_buffer(char *buffer)
 {
-	char	buffer[1024];
-	ssize_t	bytes_read = recv(client_fd, buffer, sizeof(buffer), 0);
-	
-	(void)bytes_read;
-	std::istringstream stream(buffer);
-	std::string line;
+	std::istringstream	stream(buffer);
+	std::string 		line;
 
 	this->_buffer_map.clear();
 	std::getline(stream, line);
@@ -55,7 +51,6 @@ void	Client::request_process(int &client_fd)
 		{
 			std::string key = line.substr(0, first_space);
 			std::string value = line.substr(first_space + 2);
-
 			this->_buffer_map[key] = value;
 		}
 	}
@@ -70,7 +65,7 @@ void	Client::print_map(void)
 	return ;
 }
 
-std::string	Client::get_path(std::map<std::string, t_location> locations)
+std::string	Client::get_path(void)
 {
 	std::size_t auxFindGET1 = this->_buffer_map["Request"].find("/", 0);
 	std::size_t auxFindGET2 = this->_buffer_map["Request"].find(" ", auxFindGET1);

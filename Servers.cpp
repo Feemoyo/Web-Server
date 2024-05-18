@@ -167,10 +167,10 @@ void	Servers::_process_client(size_t index, int &client_fd)
 
 void	Servers::_process_response(size_t index, int &client_fd)
 {
-		Response	resp(client_fd, this->_servers[index], this->_client.get_path(), "GET");
-		
-		resp.run_response();
-		return ;
+	Response	resp(client_fd, this->_servers[index], this->_client.get_path(), "GET");
+	
+	resp.run_response();
+	return ;
 }
 
 void	Servers::close_servers(void)
