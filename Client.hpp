@@ -4,13 +4,14 @@
 # define CLIENT_HPP
 
 # include "ToolKit.hpp"
+# include "Mime.hpp"
 
 class	Client : public ToolKit
 {
 private:
 	std::map<std::string, std::string>	_buffer_map;
-
-	std::string								_map_finder(std::string key, std::string value1, std::string value2);
+	Mime								_mime;
+	std::string							_map_finder(std::string key, std::string value1, std::string value2);
 
 public:
 					Client(void);

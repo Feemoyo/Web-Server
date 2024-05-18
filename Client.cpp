@@ -70,8 +70,9 @@ void	Client::format_content_type(void)
 	std::string content_type = this->_map_finder("Request", ".", " ");
 	std::string accept = this->_buffer_map["Accept"];
 	std::string aux = accept.substr(accept.find(content_type.substr(1)), accept.find(content_type) + content_type.size());
-	std::cout << "CONTENT TYPE: " << aux << std::endl;
-	//TODO: fazer uma busca pelos mimes e retornar o content type correto
+	aux = this->_mime.get_mime_image(aux);
+	this->set_content_type(aux);
+	return ;
 }
 
 void	Client::print_map(void)
@@ -89,7 +90,10 @@ std::string	Client::get_path(void)
 	std::string path = this->_map_finder("Request", "/", " ");
 	//TODO: este /index.html deve ser algo padrao ou setado pelo .conf?
 	if (path == "/")
+	{
+		this->set_content_type("text/html");
 		return ("/index.html");
+	}
 	else
 		this->format_content_type();
 	return (path);

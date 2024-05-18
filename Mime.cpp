@@ -6,6 +6,8 @@
 
 Mime::Mime()
 {
+	this->_set_image_types();
+	return ;
 }
 
 
@@ -15,6 +17,7 @@ Mime::Mime()
 
 Mime::~Mime()
 {
+	return ;
 }
 
 
@@ -75,7 +78,6 @@ void	Mime::_set_image_types()
 	this->_add_mime_image("crw", "image/x-canon-crw");
 	this->_add_mime_image("ras", "image/x-cmu-raster");
 	this->_add_mime_image("cmx", "image/x-cmx");
-	this->_add_mime_image("erf", "image/x-epson-erf");
 	this->_add_mime_image("erf", "image/x-epson-erf");
 	this->_add_mime_image("fh", "image/x-freehand");
 	this->_add_mime_image("fh4", "image/x-freehand");

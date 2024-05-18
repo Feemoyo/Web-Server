@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 10:33:59 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/05/17 15:50:17 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/05/18 10:09:47 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,9 @@ void    Response::_make_response(void)
     //TODO: o Content-Type tem que ser dinamico e pode ser encontrado no request
     this->_header = "HTTP/1.1 ";
     this->_header += this->_status_code;
-    this->_header += "\nContent-Type:*/*\nContent-Length: ";
+    this->_header += "\nContent-Type:";
+    this->_header += this->get_content_type();
+    this->_header += "\nContent-Length: ";
     this->_header += handler.str();
     this->_header += " \n\n";
     this->_response = this->_header;
