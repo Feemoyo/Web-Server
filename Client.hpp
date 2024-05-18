@@ -15,8 +15,7 @@ public:
 					~Client(void);
 
 	void			request_process(int &client_fd);
-	
-	// temos espaço para um getter de todas infos de um request ex: Content-Type.
+
 	std::string		get_path(void);
 	void			print_map(void);
 

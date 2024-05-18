@@ -76,35 +76,7 @@ std::string	Client::get_path(std::map<std::string, t_location> locations)
 	std::size_t auxFindGET2 = this->_buffer_map["Request"].find(" ", auxFindGET1);
 	std::string path = this->_buffer_map["Request"].substr(auxFindGET1, auxFindGET2 - auxFindGET1);
 
-	//verificar se path é uma localização valida
-	// struct stat buffer;
-    // if (stat(path.c_str(), &buffer) == 0) {
-    //     if (!S_ISREG(buffer.st_mode) && (buffer.st_mode & S_IRUSR))
-	// 	{
-    //         this->set_status_code("403 Forbidden");
-    //     }
-    // }
-	// else
-	// {
-	// 	this->set_status_code("404 Not Found");
-	
-	// }
-
-	std::map<std::string, t_location>::iterator	it;
-	for (it = locations.begin(); it != locations.end(), it++)
-	{
-		if (it != std::string::npos)
-	}
-
 	if (!path.compare("/"))
-<<<<<<< HEAD
 		path = "/index.html";
 	return (path);
-=======
-		path = "/www/index.html";
-
-	print_map();
-
-	return ("." + path);
->>>>>>> 5f2e937bea34b791c0ed59030e27378718e9a643
 }

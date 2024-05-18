@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/05/17 16:23:58 by rferrero         ###   ########.fr       */
-=======
-/*   Updated: 2024/05/15 16:58:15 by fmoreira         ###   ########.fr       */
->>>>>>> 5f2e937bea34b791c0ed59030e27378718e9a643
+/*   Updated: 2024/05/17 23:45:12 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,11 +216,7 @@ void	Config::_find_config_errors_location(t_server &server, size_t start)
 	ref = this->_content.substr(start, end - start);
 	t_location	errors;
 
-<<<<<<< HEAD
 	errors.path = "/errors/";
-=======
-	errors.path = ("." + ref);
->>>>>>> 5f2e937bea34b791c0ed59030e27378718e9a643
 	errors.default_file = ref;
 	start = this->_content.find(ref + "allowed_methods", start) + strlen(ref.c_str()) + strlen("allowed_methods");
 	end = this->_content.find("}", start);
