@@ -61,7 +61,6 @@ void	Client::set_buffer(char *buffer)
 			this->_buffer_map[key] = value;
 		}
 	}
-
 	return ;
 }
 
@@ -69,10 +68,7 @@ void	Client::print_map(void)
 {
 	std::map<std::string, std::string>::iterator it;
 	for (it = this->_buffer_map.begin(); it != this->_buffer_map.end(); ++it)
-	{
 		std::cout << it->first << ": " << it->second << std::endl;
-	}
-
 	return ;
 }
 
@@ -83,9 +79,6 @@ std::string	Client::get_path(void)
 	std::string path = this->_buffer_map["Request"].substr(auxFindGET1, auxFindGET2 - auxFindGET1);
 
 	if (!path.compare("/"))
-		path = "/www/index.html";
-
-	print_map();
-
+		path = "/index.html";
 	return (path);
 }

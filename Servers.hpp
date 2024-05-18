@@ -12,7 +12,6 @@ class	Servers
 private:
 	std::vector<t_server>		_servers;
 	std::vector<struct pollfd>	_fds;
-	Response					_response;
 	Client						_client;
 
 			Servers(void);
@@ -22,7 +21,9 @@ private:
 	void	_init_listen(void);
 	void	_init_fds(void);
 	void	_accept_connection(size_t index);
-	void	_process_request(size_t index, int &client_fd);
+
+	void	_process_client(size_t index, int &client_fd);
+	void	_process_response(size_t index, int &client_fd);
 
 public:
 			Servers(Config *&config);

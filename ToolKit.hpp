@@ -12,7 +12,8 @@ protected:
 	std::string				_file_path;
 	std::string				_file_name;
 
-	static std::string		_status_code;
+	static	std::string		_status_code;
+	static	std::string		_status_msg;
 
 	void				_extract_content(void);
 	

@@ -19,6 +19,7 @@
 # include <cctype>
 
 # include <sys/socket.h>
+# include <sys/stat.h>
 # include <netinet/in.h>
 # include <unistd.h>
 # include <poll.h>

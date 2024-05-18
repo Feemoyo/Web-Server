@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/15 16:19:05 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/17 16:23:58 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ void	Config::_find_config_root(t_server &server, size_t start)
 
 	start = this->_content.find("root", start) + strlen("root");
 	end = this->_content.find("client_max_body_size", start);
-	server.root = this->_content.substr(start, end - start);
+	server.root = ("./" + this->_content.substr(start, end - start));
 	return ;
 }
 
@@ -216,7 +216,7 @@ void	Config::_find_config_errors_location(t_server &server, size_t start)
 	ref = this->_content.substr(start, end - start);
 	t_location	errors;
 
-	errors.path = ref;
+	errors.path = "/errors/";
 	errors.default_file = ref;
 	start = this->_content.find(ref + "allowed_methods", start) + strlen(ref.c_str()) + strlen("allowed_methods");
 	end = this->_content.find("}", start);
