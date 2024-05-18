@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ToolKit.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:01:03 by rferrero          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/05/17 22:33:31 by rferrero         ###   ########.fr       */
-=======
-/*   Updated: 2024/05/15 16:51:27 by fmoreira         ###   ########.fr       */
->>>>>>> 5f2e937bea34b791c0ed59030e27378718e9a643
+/*   Updated: 2024/05/17 23:40:31 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,17 +43,11 @@ void	ToolKit::_extract_content(void)
 	std::ifstream	file((this->_file_path + this->_file_name).c_str());
 	std::string		line;
 
-	std::cout << "PATH: " << this->_file_path << std::endl;
-	std::cout << "FILE: " << this->_file_name << std::endl;
-
 	std::getline(file, line);
 	this->_content = line + '\n';
 	while (std::getline(file, line))
 		this->_content += line + '\n';
 	file.close();
-
-	std::cout << "CONTENT: " << this->_content << std::endl;
-	
 	return ;
 }
 

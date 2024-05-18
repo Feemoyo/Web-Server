@@ -140,17 +140,12 @@ void	Servers::_accept_connection(size_t index)
 		close(client_fd);
 		return ;
 	}
-<<<<<<< HEAD
 	_process_client(index, client_fd);
 	_process_response(index, client_fd);
-=======
-	_request_handler(index, client_fd);
->>>>>>> 5f2e937bea34b791c0ed59030e27378718e9a643
 	close(client_fd);
 	return ;
 }
 
-<<<<<<< HEAD
 void	Servers::_process_client(size_t index, int &client_fd)
 {
 	char	buffer[1024];
@@ -167,24 +162,6 @@ void	Servers::_process_client(size_t index, int &client_fd)
 		return ;
 	}
 	this->_client.set_buffer(buffer);
-=======
-void	Servers::_request_handler(size_t index, int &client_fd)
-{
-	// char	buffer[1024];
-	// ssize_t	bytes_read = recv(client_fd, buffer, sizeof(buffer), 0);
-
-	// if (bytes_read < 0)
-	// 	std::cerr << "Reading from client fail on port: " << this->_servers[index].port << std::endl;
-	// else if (bytes_read == 0)
-	// else
-	// {
-		(void)index;
-		this->_client.request_process(client_fd);
-		this->_response.set_fd(client_fd);
-		this->_response.set_file(this->_client.get_path(this->_server[i].locations));
-		this->_response.send_response();
-	// }
->>>>>>> 5f2e937bea34b791c0ed59030e27378718e9a643
 	return ;
 }
 
