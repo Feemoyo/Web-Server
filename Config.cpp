@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/05/17 16:23:58 by rferrero         ###   ########.fr       */
+=======
+/*   Updated: 2024/05/15 16:58:15 by fmoreira         ###   ########.fr       */
+>>>>>>> 5f2e937bea34b791c0ed59030e27378718e9a643
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,7 +220,11 @@ void	Config::_find_config_errors_location(t_server &server, size_t start)
 	ref = this->_content.substr(start, end - start);
 	t_location	errors;
 
+<<<<<<< HEAD
 	errors.path = "/errors/";
+=======
+	errors.path = ("." + ref);
+>>>>>>> 5f2e937bea34b791c0ed59030e27378718e9a643
 	errors.default_file = ref;
 	start = this->_content.find(ref + "allowed_methods", start) + strlen(ref.c_str()) + strlen("allowed_methods");
 	end = this->_content.find("}", start);
@@ -236,7 +244,7 @@ void	Config::_find_config_default_index_location(t_server &server, size_t start)
 	ref = this->_content.substr(start, end - start);
 	t_location	index;
 
-	index.path = ref;
+	index.path = ("." + ref);
 	index.default_file = "index.html";
 	start = this->_content.find("index.htmlallowed_methods", start) + strlen("index.htmlallowed_methods");
 	end = this->_content.find("}", start);
@@ -261,7 +269,7 @@ void	Config::_find_other_locations(t_server &server, size_t start)
 		{
 			t_location	locat;
 
-			locat.path = ref;
+			locat.path = ("." + ref);
 			start = this->_content.find("default", end) + strlen("default");
 			end = this->_content.find("allowed_methods", start);
 			ref = this->_content.substr(start, end - start);

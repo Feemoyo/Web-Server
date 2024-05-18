@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 10:33:59 by fmoreira          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/05/17 23:28:40 by rferrero         ###   ########.fr       */
+=======
+/*   Updated: 2024/05/15 16:58:46 by fmoreira         ###   ########.fr       */
+>>>>>>> 5f2e937bea34b791c0ed59030e27378718e9a643
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +25,12 @@ Response::Response(void)
 	return ;
 }
 
+<<<<<<< HEAD
 Response::Response(int client_fd, t_server &server, std::string path_and_name, std::string method)
 :_client_fd(client_fd), _server(server), _method(method)
+=======
+Response::Response(int client_fd)
+>>>>>>> 5f2e937bea34b791c0ed59030e27378718e9a643
 {
 	size_t	start_file = path_and_name.find_last_of("/") + 1;
 	
