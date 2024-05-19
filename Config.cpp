@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/18 00:38:41 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/19 13:08:29 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,9 @@ static void	_find_methods(std::string ref, t_location &location)
 	start = ref.find("GET");
 	if (start != std::string::npos)
 		location.methods.push_back("GET");
-	
 	start = ref.find("POST");
 	if (start != std::string::npos)
 		location.methods.push_back("POST");
-
 	start = ref.find("DELETE");
 	if (start != std::string::npos)
 		location.methods.push_back("DELETE");
