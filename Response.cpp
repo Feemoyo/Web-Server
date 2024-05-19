@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 10:33:59 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/05/18 14:06:42 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/18 23:18:50 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ Response::Response(void)
 }
 
 Response::Response(int client_fd, t_server &server, std::string path_and_name, std::string method)
-:_client_fd(client_fd), _server(server), _method(method)
+:_client_fd(client_fd), _server(server), _method(method), _ready(false)
 {
 	size_t	start_file = path_and_name.find_last_of("/") + 1;
 	
@@ -47,11 +47,26 @@ Response::~Response(void)
 void	Response::run_response(void)
 {
 	_check_directory_location();
-	_check_file_location();
-	_check_file_empty();
 	_check_allowed_methods();
+	_check_file_location();
 
-	set_file((this->_server.root + this->_path), this->_filename);
+	std::cout << "ANTES: " << (this->_server.root + this->_path + this->_filename) << std::endl;
+
+	if (this->_status_code == "200")
+		set_file((this->_server.root + this->_path), this->_filename);
+	else
+	{
+		std::string		save_code = this->_status_code;
+		std::string		save_msg = this->_status_msg;
+		while (this->_status_code != "200")
+			_check_errors_location_file();
+	
+		this->_status_code = save_code;
+		this->_status_msg = save_msg;
+		set_file((this->_server.root + this->_path), this->_filename);
+	}
+
+	std::cout << "DEPOIS: " << (this->_server.root + this->_path + this->_filename) << std::endl;
 
 	_make_response();
 	_send_response();
@@ -62,42 +77,45 @@ void	Response::_check_directory_location(void)
 {
 	if (this->_server.locations.find(this->_path) == this->_server.locations.end())
 	{
-		this->_path = "/errors/";
-		this->_filename = this->_server.locations.find("/errors/")->second.default_file;
+		// this->_path = "/errors/";
+		// this->_filename = this->_server.locations.find("/errors/")->second.default_file;
 		this->_status_code = "404";
 		this->_status_msg = "Not Found";
+	}
+	return ;
+}
+
+void	Response::_check_allowed_methods(void)
+{
+	if (find(this->_server.locations.find(this->_path)->second.methods.begin(), this->_server.locations.find(this->_path)->second.methods.end(), this->_method) == this->_server.locations.find(this->_path)->second.methods.end())
+	{
+		// this->_path = "/errors/";
+		// this->_filename = "405.html";
+		this->_status_code = "405";
+		this->_status_msg = "Method Not Allowed";
 	}
 	return ;
 }
 
 void	Response::_check_file_location(void)
 {
-	std::string	full_path = (this->_server.root + this->_path + this->_filename);
+	std::string		full_path = (this->_server.root + this->_path + this->_filename);
+	std::ifstream	file(full_path.c_str());
+	struct stat		info;
 
-	//	Verificar o autoindex.
-	// std::cout << "FULL PATH: " << full_path << std::endl;
-	
-	struct stat	info;
+	std::cout << "FULL PATH: " << full_path << std::endl;
 
 	if (stat(full_path.c_str(), &info) != 0 || !S_ISREG(info.st_mode))
 	{
-		this->_path = "/errors/";
-		this->_filename = this->_server.locations.find("/errors/")->second.default_file;
+		// this->_path = "/errors/";
+		// this->_filename = this->_server.locations.find("/errors/")->second.default_file;
 		this->_status_code = "404";
 		this->_status_msg = "Not Found";
 	}
-	return ;
-}
-
-void	Response::_check_file_empty(void)
-{
-	std::string	full_path = (this->_server.root + this->_path + this->_filename);
-	std::ifstream	file(full_path.c_str());
-
-	if (!file.is_open() || (file.peek() == std::ifstream::traits_type::eof()))
+	else if (!file.is_open() || (file.peek() == std::ifstream::traits_type::eof()))
 	{
-		this->_path = "/errors/";
-		this->_filename = "204.html";
+		// this->_path = "/errors/";
+		// this->_filename = "204.html";
 		this->_status_code = "302";
 		this->_status_msg = "Found";
 	}
@@ -110,15 +128,11 @@ void	Response::_check_file_empty(void)
 	return ;
 }
 
-void	Response::_check_allowed_methods(void)
+void	Response::_check_errors_location_file(void)
 {
-	if (find(this->_server.locations.find(this->_path)->second.methods.begin(), this->_server.locations.find(this->_path)->second.methods.end(), this->_method) == this->_server.locations.find(this->_path)->second.methods.end())
-	{
-		this->_path = "/errors/";
-		this->_filename = "405.html";
-		this->_status_code = "405";
-		this->_status_msg = "Method Not Allowed";
-	}
+	this->_path = "/errors/";
+	this->_filename = (this->_status_code + ".html");
+	_check_file_location();
 	return ;
 }
 
@@ -129,7 +143,7 @@ void	Response::_make_response(void)
 
 	file_content = this->get_content();
 	handler << file_content.size();
-	
+
 	this->_header = "HTTP/1.1 ";
 	this->_header += this->_status_code + " ";
 	this->_header += this->_status_msg;
