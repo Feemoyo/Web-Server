@@ -14,7 +14,6 @@ public:
 					Client(void);
 					~Client(void);
 
-
 	void			set_buffer(char *buffer);
 	void			print_map(void);
 	std::string		get_path(void);

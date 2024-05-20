@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 10:33:59 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/05/20 00:58:00 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/20 01:01:31 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ Response::Response(void)
 }
 
 Response::Response(int client_fd, t_server &server, std::string path_and_name, std::string method)
-:_client_fd(client_fd), _server(server), _method(method), _ready(false)
-{
+:_client_fd(client_fd), _server(server), _method(method)
+{ 
 	size_t	start_file = path_and_name.find_last_of("/") + 1;
 	
 	this->_path = path_and_name.substr(0, start_file);
@@ -55,7 +55,6 @@ void	Response::run_response(void)
 		std::string		save_msg = this->_status_msg;
 		while (this->_status_code != "200")
 			_check_errors_location_file();
-	
 		this->_status_code = save_code;
 		this->_status_msg = save_msg;
 	}
@@ -113,6 +112,8 @@ void	Response::_check_file_location(void)
 void	Response::_check_errors_location_file(void)
 {
 	this->_path = "/errors/";
+	if (this->_status_code == "204")
+		this->_status_code = "302";
 	this->_filename = (this->_status_code + ".html");
 	_check_file_location();
 	return ;
@@ -134,7 +135,6 @@ void	Response::_make_response(void)
 	this->_header += " \n\n";
 	this->_response = this->_header;
 	this->_response += file_content;
-
 	return ;
 }
 

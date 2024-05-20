@@ -19,7 +19,6 @@
 Client::Client(void)
 {
 	this->_buffer_map.clear();
-
 	return ;
 }
 

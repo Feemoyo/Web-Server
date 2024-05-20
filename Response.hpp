@@ -17,8 +17,6 @@ private:
 	std::string	_header;
 	std::string	_response;
 
-	bool		_ready;
-
 				Response(void);
 
 	void		_check_directory_location(void);
