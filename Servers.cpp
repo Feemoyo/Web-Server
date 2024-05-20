@@ -141,7 +141,7 @@ void	Servers::_accept_connection(size_t index)
 		return ;
 	}
 	_process_client(index, client_fd);
-	_process_response(index, client_fd);
+	_process_response(index, client_fd, "GET");
 	close(client_fd);
 	return ;
 }
@@ -165,9 +165,9 @@ void	Servers::_process_client(size_t index, int &client_fd)
 	return ;
 }
 
-void	Servers::_process_response(size_t index, int &client_fd)
+void	Servers::_process_response(size_t index, int &client_fd, std::string method)
 {
-	Response	resp(client_fd, this->_servers[index], this->_client.get_path(), "GET");
+	Response	resp(client_fd, this->_servers[index], this->_client.get_path(), method);
 	
 	resp.run_response();
 	return ;
