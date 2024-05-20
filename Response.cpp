@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 10:33:59 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/05/20 01:01:31 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/20 01:02:40 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,8 +112,6 @@ void	Response::_check_file_location(void)
 void	Response::_check_errors_location_file(void)
 {
 	this->_path = "/errors/";
-	if (this->_status_code == "204")
-		this->_status_code = "302";
 	this->_filename = (this->_status_code + ".html");
 	_check_file_location();
 	return ;
