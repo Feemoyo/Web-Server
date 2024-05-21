@@ -1,19 +1,18 @@
 #pragma once
 
-#ifndef SERVERSHANDLER_HPP
-# define SERVERSHANDLER_HPP
+#ifndef SERVERS_HPP
+# define SERVERS_HPP
 
 # include "Config.hpp"
 # include "Response.hpp"
-# include "Request.hpp"
+# include "Client.hpp"
 
 class	Servers
 {
 private:
 	std::vector<t_server>		_servers;
 	std::vector<struct pollfd>	_fds;
-	Response					_response;
-	Request						_request;
+	Client						_client;
 
 			Servers(void);
 
@@ -22,7 +21,9 @@ private:
 	void	_init_listen(void);
 	void	_init_fds(void);
 	void	_accept_connection(size_t index);
-	void	_process_request(size_t index, int &client_fd);
+
+	void	_process_client(size_t index, int &client_fd);
+	void	_process_response(size_t index, int &client_fd, std::string method);
 
 public:
 			Servers(Config *&config);

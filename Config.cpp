@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/14 22:39:51 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/19 13:08:29 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,9 @@ static void	_find_methods(std::string ref, t_location &location)
 	start = ref.find("GET");
 	if (start != std::string::npos)
 		location.methods.push_back("GET");
-	
 	start = ref.find("POST");
 	if (start != std::string::npos)
 		location.methods.push_back("POST");
-
 	start = ref.find("DELETE");
 	if (start != std::string::npos)
 		location.methods.push_back("DELETE");
@@ -177,7 +175,6 @@ void	Config::_find_config_port(t_server &server, size_t start)
 void	Config::_find_config_server_name(t_server &server, size_t start)
 {
 	size_t		end;
-	std::string	ref;
 
 	start = this->_content.find("server_name", start) + strlen("server_name");
 	end = this->_content.find("root", start);
@@ -188,11 +185,10 @@ void	Config::_find_config_server_name(t_server &server, size_t start)
 void	Config::_find_config_root(t_server &server, size_t start)
 {
 	size_t		end;
-	std::string	ref;
 
 	start = this->_content.find("root", start) + strlen("root");
 	end = this->_content.find("client_max_body_size", start);
-	server.root = this->_content.substr(start, end - start);
+	server.root = ("./" + this->_content.substr(start, end - start));
 	return ;
 }
 
@@ -238,7 +234,7 @@ void	Config::_find_config_default_index_location(t_server &server, size_t start)
 	ref = this->_content.substr(start, end - start);
 	t_location	index;
 
-	index.path = ref;
+	index.path = (ref);
 	index.default_file = "index.html";
 	start = this->_content.find("index.htmlallowed_methods", start) + strlen("index.htmlallowed_methods");
 	end = this->_content.find("}", start);
@@ -263,7 +259,7 @@ void	Config::_find_other_locations(t_server &server, size_t start)
 		{
 			t_location	locat;
 
-			locat.path = ref;
+			locat.path = (ref);
 			start = this->_content.find("default", end) + strlen("default");
 			end = this->_content.find("allowed_methods", start);
 			ref = this->_content.substr(start, end - start);
@@ -302,26 +298,3 @@ std::string	&Config::get_content(void)
 	return (this->_content);
 }
 
-/*
-** -------------------------------- OVERLOADS ---------------------------------
-*/
-
-std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs)
-{
-	lhs << "Location " << rhs.path << std::endl;
-	lhs << "Default file: " << rhs.default_file << std::endl;
-	for (size_t i = 0; i < rhs.methods.size(); i++)
-		lhs << rhs.methods[i] << " ";
-	return (lhs);
-}
-
-std::ostream	&operator<<(std::ostream &lhs, const t_server &rhs)
-{
-	lhs << "Server " << rhs.server_name << std::endl;
-	lhs << "Port: " << rhs.port << std::endl;
-	lhs << "Root: " << rhs.root << std::endl;
-	lhs << "Max client body size: " << rhs.max_body_size << std::endl;
-	for (std::map<std::string, t_location>::const_iterator it = rhs.locations.begin(); it != rhs.locations.end(); it++)
-		lhs << (*it).first << " " << (*it).second << std::endl;
-	return (lhs);
-}

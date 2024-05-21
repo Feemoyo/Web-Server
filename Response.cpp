@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 10:33:59 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/05/14 04:05:03 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/20 01:02:40 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,16 @@
 
 Response::Response(void)
 {
-	this->_response = "";
-	this->set_file("./www/index.html");
 	return ;
 }
 
-Response::Response(int client_socket)
-{
-	this->_client_socket = client_socket;
-	this->_response = "";
-	this->set_file("./www/index.html");
+Response::Response(int client_fd, t_server &server, std::string path_and_name, std::string method)
+:_client_fd(client_fd), _server(server), _method(method)
+{ 
+	size_t	start_file = path_and_name.find_last_of("/") + 1;
+	
+	this->_path = path_and_name.substr(0, start_file);
+	this->_filename = path_and_name.substr(start_file);
 	return ;
 }
 
@@ -44,38 +44,100 @@ Response::~Response(void)
 ** --------------------------------- METHODS ----------------------------------
 */
 
+void	Response::run_response(void)
+{
+	_check_directory_location();
+	_check_allowed_methods();
+	_check_file_location();
+	if (this->_status_code != "200")
+	{
+		std::string		save_code = this->_status_code;
+		std::string		save_msg = this->_status_msg;
+		while (this->_status_code != "200")
+			_check_errors_location_file();
+		this->_status_code = save_code;
+		this->_status_msg = save_msg;
+	}
+	set_file((this->_server.root + this->_path), this->_filename);
+	_make_response();
+	_send_response();
+	return ;
+}
+
+void	Response::_check_directory_location(void)
+{
+	if (this->_server.locations.find(this->_path) == this->_server.locations.end())
+	{
+		this->_status_code = "404";
+		this->_status_msg = "Not Found";
+	}
+	return ;
+}
+
+void	Response::_check_allowed_methods(void)
+{
+	if (find(this->_server.locations.find(this->_path)->second.methods.begin(), this->_server.locations.find(this->_path)->second.methods.end(), this->_method) == this->_server.locations.find(this->_path)->second.methods.end())
+	{
+		this->_status_code = "405";
+		this->_status_msg = "Method Not Allowed";
+	}
+	return ;
+}
+
+void	Response::_check_file_location(void)
+{
+	std::string		full_path = (this->_server.root + this->_path + this->_filename);
+	std::ifstream	file(full_path.c_str());
+	struct stat		info;
+
+	if (stat(full_path.c_str(), &info) != 0 || !S_ISREG(info.st_mode))
+	{
+		this->_status_code = "404";
+		this->_status_msg = "Not Found";
+	}
+	else if (!file.is_open() || (file.peek() == std::ifstream::traits_type::eof()))
+	{
+		this->_status_code = "302";
+		this->_status_msg = "Found";
+	}
+	else
+	{
+		this->_status_code = "200";
+		this->_status_msg = "OK";
+	}
+	file.close();
+	return ;
+}
+
+void	Response::_check_errors_location_file(void)
+{
+	this->_path = "/errors/";
+	this->_filename = (this->_status_code + ".html");
+	_check_file_location();
+	return ;
+}
+
 void	Response::_make_response(void)
 {
-	std::string	file_content;
+	std::string			file_content;
 	std::ostringstream	handler;
 
 	file_content = this->get_content();
 	handler << file_content.size();
-	
-	//TODO: o Content-Type tem que ser dinamico e pode ser encontrado no request
+
 	this->_header = "HTTP/1.1 ";
-	this->_header += this->_status_code;
+	this->_header += this->_status_code + " ";
+	this->_header += this->_status_msg;
 	this->_header += "\nContent-Type: */*\nContent-Length: ";
 	this->_header += handler.str();
 	this->_header += " \n\n";
 	this->_response = this->_header;
 	this->_response += file_content;
-
 	return ;
 }
 
-void	Response::send_response(void)
+void	Response::_send_response(void)
 {
-	this->_make_response();
-	write(this->_client_socket, this->_response.c_str(), this->_response.size());
-}
-
-/*
-** --------------------------------- SETTERS ---------------------------------
-*/
-
-void	Response::set_socket(int socket)
-{
-	this->_client_socket = socket;
+	write(this->_client_fd, this->_response.c_str(), this->_response.size());
 	return ;
 }
