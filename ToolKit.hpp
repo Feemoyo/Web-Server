@@ -14,6 +14,7 @@ protected:
 
 	static std::string		_status_code;
 	static std::string		_content_type;
+	static	std::string		_status_msg;
 
 	void				_extract_content(void);
 	
@@ -34,5 +35,8 @@ public:
 	void				set_content_type(std::string type);
 
 };
+
+std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs);
+std::ostream	&operator<<(std::ostream &lhs, const t_server &rhs);
 
 #endif

@@ -146,31 +146,31 @@ void    Servers::_accept_connection(size_t index)
     return ;
 }
 
-bool    Servers::_process_client(size_t index, int &client_fd)
+void	Servers::_process_client(size_t index, int &client_fd)
 {
-    char    buffer[1024];
-    ssize_t    bytes_read = recv(client_fd, buffer, sizeof(buffer), 0);
+	char	buffer[1024];
+	ssize_t	bytes_read = recv(client_fd, buffer, sizeof(buffer), 0);
 
-    if (bytes_read < 0)
-    {
-        std::cerr << "Reading from client fail on port: " << this->_servers[index].port << std::endl;
-        return (false);
-    }
-    else if (bytes_read == 0)
-    {
-        std::cerr << "Client closed connection on port: " << this->_servers[index].port << std::endl;
-        return (false);
-    }
-    this->_client.set_buffer(buffer);
-    return (true);
+	if (bytes_read < 0)
+	{
+		std::cerr << "Reading from client fail on port: " << this->_servers[index].port << std::endl;
+		return ;
+	}
+	else if (bytes_read == 0)
+	{
+		std::cerr << "Client closed connection on port: " << this->_servers[index].port << std::endl;
+		return ;
+	}
+	this->_client.set_buffer(buffer);
+	return ;
 }
 
-void    Servers::_process_response(size_t index, int &client_fd)
+void	Servers::_process_response(size_t index, int &client_fd, std::string method)
 {
-        Response    resp(client_fd, this->_servers[index], "./" + this->_servers[index].root + this->_client.get_path());
-
-        resp.send_response();
-        return ;
+	Response	resp(client_fd, this->_servers[index], this->_client.get_path(), method);
+	
+	resp.run_response();
+	return ;
 }
 
 void	Servers::close_servers(void)
