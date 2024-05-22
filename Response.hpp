@@ -29,6 +29,7 @@ private:
 	void		_send_response(void);
 
 public:
+				Response(void);
 				Response(int client_fd, t_server &server, std::string path_and_name, std::string method);
 				~Response(void);
 

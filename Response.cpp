@@ -13,12 +13,12 @@
 #include "Response.hpp"
 
 /*
-** ------------------------------- CONSTRUCTOR --------------------------------
+ ------------------------------- CONSTRUCTOR --------------------------------
 */
 
 Response::Response(void)
 {
-	return ;
+    return ;
 }
 
 Response::Response(int client_fd, t_server &server, std::string path_and_name, std::string method)
@@ -32,17 +32,39 @@ Response::Response(int client_fd, t_server &server, std::string path_and_name, s
 }
 
 /*
-** -------------------------------- DESTRUCTOR --------------------------------
+ -------------------------------- DESTRUCTOR --------------------------------
 */
 
 Response::~Response(void)
 {
-	return ;
+    return ;
 }
 
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
+
+void    Response::_make_response(void)
+{
+    std::string            file_content;
+    std::ostringstream    handler;
+
+    file_content = this->get_content();
+    handler << file_content.size();
+
+    //TODO: o Content-Type tem que ser dinamico e pode ser encontrado no request
+    this->_header = "HTTP/1.1 ";
+    this->_header += this->_status_code + " ";
+    this->_header += this->_status_msg;
+    this->_header += "\nContent-Type:";
+    this->_header += this->get_content_type();
+    this->_header += "\nContent-Length: ";
+    this->_header += handler.str();
+    this->_header += " \n\n";
+    this->_response = this->_header;
+    this->_response += file_content;
+
+    return ;
 
 void	Response::run_response(void)
 {
@@ -114,25 +136,6 @@ void	Response::_check_errors_location_file(void)
 	this->_path = "/errors/";
 	this->_filename = (this->_status_code + ".html");
 	_check_file_location();
-	return ;
-}
-
-void	Response::_make_response(void)
-{
-	std::string			file_content;
-	std::ostringstream	handler;
-
-	file_content = this->get_content();
-	handler << file_content.size();
-
-	this->_header = "HTTP/1.1 ";
-	this->_header += this->_status_code + " ";
-	this->_header += this->_status_msg;
-	this->_header += "\nContent-Type: */*\nContent-Length: ";
-	this->_header += handler.str();
-	this->_header += " \n\n";
-	this->_response = this->_header;
-	this->_response += file_content;
 	return ;
 }
 

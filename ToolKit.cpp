@@ -13,6 +13,7 @@
 #include "ToolKit.hpp"
 
 std::string	ToolKit::_status_code = "";
+std::string	ToolKit::_content_type = "";
 std::string	ToolKit::_status_msg = "";
 
 /*
@@ -75,6 +76,11 @@ std::string	&ToolKit::get_status_code(void)
 	return (this->_status_code);
 }
 
+std::string	&ToolKit::get_content_type(void)
+{
+	return (this->_content_type);
+}
+
 /*
 ** --------------------------------- SETTERS ---------------------------------
 */
@@ -92,6 +98,12 @@ void	ToolKit::set_file(std::string path_and_name)
 	this->_file_path = path_and_name.substr(0, path_and_name.find_last_of('/') + 1);
 	this->_file_name = path_and_name.substr(path_and_name.find_last_of('/') + 1);
 	_extract_content();
+	return ;
+}
+
+void	ToolKit::set_content_type(std::string type)
+{
+	this->_content_type = type;
 	return ;
 }
 

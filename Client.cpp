@@ -35,6 +35,24 @@ Client::~Client(void)
 ** --------------------------------- METHODS ----------------------------------
 */
 
+std::string	Client::_map_finder(std::string key, std::string value1, std::string value2)
+{
+	std::size_t auxFindGET1 = this->_buffer_map[key].find(value1, 0);
+	std::size_t auxFindGET2 = this->_buffer_map[key].find(value2, auxFindGET1);
+	return(this->_buffer_map[key].substr(auxFindGET1, auxFindGET2 - auxFindGET1));
+  return ;
+}
+
+void	Client::format_content_type(void)
+{
+	std::string content_type = this->_map_finder("Request", ".", " ");
+	std::string accept = this->_buffer_map["Accept"];
+	std::string aux = accept.substr(accept.find(content_type.substr(1)), accept.find(content_type) + content_type.size());
+	aux = this->_mime.get_mime_image(aux);
+	this->set_content_type(aux);
+  return ;
+}
+
 void	Client::set_buffer(char *buffer)
 {
 	std::istringstream	stream(buffer);
@@ -66,11 +84,14 @@ void	Client::print_map(void)
 
 std::string	Client::get_path(void)
 {
-	std::size_t auxFindGET1 = this->_buffer_map["Request"].find("/", 0);
-	std::size_t auxFindGET2 = this->_buffer_map["Request"].find(" ", auxFindGET1);
-	std::string path = this->_buffer_map["Request"].substr(auxFindGET1, auxFindGET2 - auxFindGET1);
-
-	if (!path.compare("/"))
-		path = "/index.html";
+	std::string path = this->_map_finder("Request", "/", " ");
+	//TODO: este /index.html deve ser algo padrao ou setado pelo .conf?
+	if (path == "/")
+	{
+		this->set_content_type("text/html");
+		return ("/index.html");
+	}
+	else
+		this->format_content_type();
 	return (path);
 }

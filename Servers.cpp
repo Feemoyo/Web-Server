@@ -127,23 +127,23 @@ void	Servers::run_servers(void)
 	return ;
 }
 
-void	Servers::_accept_connection(size_t index)
+void    Servers::_accept_connection(size_t index)
 {
-	struct sockaddr_in	client_addr;
-	socklen_t			client_len = sizeof(client_addr);
-	int					client_fd = accept(this->_fds[index].fd, (struct sockaddr*)&client_addr, &client_len);
+    struct sockaddr_in    client_addr;
+    socklen_t            client_len = sizeof(client_addr);
+    int                    client_fd = accept(this->_fds[index].fd, (struct sockaddr*)&client_addr, &client_len);
 
-	if (client_fd < 0)
-	{
-		std::cerr << "Accept fail on port: " << this->_servers[index].port << std::endl;
-		close_servers();
-		close(client_fd);
-		return ;
-	}
-	_process_client(index, client_fd);
-	_process_response(index, client_fd, "GET");
-	close(client_fd);
-	return ;
+    if (client_fd < 0)
+    {
+        std::cerr << "Accept fail on port: " << this->_servers[index].port << std::endl;
+        close_servers();
+        close(client_fd);
+        return ;
+    }
+    if (_process_client(index, client_fd) == true)
+        _process_response(index, client_fd);
+    close(client_fd);
+    return ;
 }
 
 void	Servers::_process_client(size_t index, int &client_fd)
