@@ -134,7 +134,12 @@ void	ToolKit::status_code_handler(std::string status_code, std::string html_path
 	statusCodes.insert(std::make_pair("510", "Not Extended"));
 	statusCodes.insert(std::make_pair("511", "Network Authentication Required"));
 
+	if (statusCodes.find(status_code) == statusCodes.end())
+		status_code = "404";
+
 }
+
+
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
