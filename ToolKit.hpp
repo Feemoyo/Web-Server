@@ -10,7 +10,7 @@ class ToolKit
 		std::string				_file_path;
 		std::string				_file_name;
 
-		std::string				_status_code;
+		static std::string		_status_code;
 
 		void					_extract_content(void);
 		

@@ -1,5 +1,6 @@
 #include "ToolKit.hpp"
 
+
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
@@ -11,7 +12,7 @@ ToolKit::ToolKit()
 // ToolKit::ToolKit( const ToolKit & src )
 // {
 // }
-
+std::string ToolKit::_status_code = "";
 
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
