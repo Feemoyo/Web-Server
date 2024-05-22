@@ -46,6 +46,6 @@ fclean:				clean
 re:					fclean all
 
 valgrind:			${NAME}
-					${VALGRIND} ${VALFLAGS} ./${NAME} test.txt s1 "Hello World"
+					${VALGRIND} ${VALFLAGS} ./${NAME} server.conf
 
 .PHONY:				all clean fclean re valgrind

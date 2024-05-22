@@ -6,34 +6,43 @@
 # include <iostream>
 # include <fstream>
 # include <sstream>
+# include <ostream>
 # include <string>
 # include <vector>
 # include <map>
+# include <list>
+# include <algorithm>
 
 # include <cstring>
 # include <cstdlib>
 # include <csignal>
+# include <cctype>
 
 # include <sys/socket.h>
+# include <sys/stat.h>
 # include <netinet/in.h>
 # include <unistd.h>
 # include <poll.h>
 
+# define MAX_CLIENTS 10
+
 typedef struct	s_location
 {
 	std::string					path;
+	std::string					default_file;
 	std::vector<std::string>	methods;
-	std::string					index_file;
-	bool						autoindex;
 }	t_location;
 
 typedef struct	s_server
 {
-	std::string							port;
+	int									port;
 	std::string							server_name;
 	std::string							root;
-	std::map<std::string, std::string>	errors;
+	int									max_body_size;
 	std::map<std::string, t_location>	locations;
+
+	int									server_socket;
+	sockaddr_in							server_addr;
 }	t_server;
 
 typedef	enum	e_type
@@ -44,5 +53,8 @@ typedef	enum	e_type
 	PNG,
 	SVG
 }	t_type;
+
+std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs);
+std::ostream	&operator<<(std::ostream &lhs, const t_server &rhs);
 
 #endif

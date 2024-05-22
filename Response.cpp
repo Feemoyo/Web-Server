@@ -6,90 +6,142 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 10:33:59 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/05/02 19:32:47 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/05/22 08:55:40 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Response.hpp"
 
+/*
+ ------------------------------- CONSTRUCTOR --------------------------------
+*/
+
 Response::Response(void)
 {
-	this->_response = "";
-	this->_file_path = "./www/index.html";
+    return ;
+}
+
+Response::Response(int client_fd, t_server &server, std::string path_and_name, std::string method)
+:_client_fd(client_fd), _server(server), _method(method)
+{ 
+	size_t	start_file = path_and_name.find_last_of("/") + 1;
+	
+	this->_path = path_and_name.substr(0, start_file);
+	this->_filename = path_and_name.substr(start_file);
 	return ;
 }
 
-Response::Response(int client_socket)
-{
-	this->_client_socket = client_socket;
-	this->_response = "";
-	this->_file_path = "./www/index.html";
-	return ;
-}
+/*
+ -------------------------------- DESTRUCTOR --------------------------------
+*/
 
 Response::~Response(void)
 {
-	return ;
+    return ;
 }
 
-void	Response::set_socket(int socket)
+/*
+** --------------------------------- METHODS ----------------------------------
+*/
+
+void    Response::_make_response(void)
 {
-	this->_client_socket = socket;
-	return ;
+    std::string            file_content;
+    std::ostringstream    handler;
+
+    file_content = this->get_content();
+    handler << file_content.size();
+
+    //TODO: o Content-Type tem que ser dinamico e pode ser encontrado no request
+    this->_header = "HTTP/1.1 ";
+    this->_header += this->_status_code + " ";
+    this->_header += this->_status_msg;
+    this->_header += "\nContent-Type:";
+    this->_header += this->get_content_type();
+    this->_header += "\nContent-Length: ";
+    this->_header += handler.str();
+    this->_header += " \n\n";
+    this->_response = this->_header;
+    this->_response += file_content;
+
+    return ;
 }
 
-void	Response::_make_response(void)
+void	Response::run_response(void)
 {
-	std::string	file_content;
-	std::ostringstream	handler;
-
-	file_content = this->read_file();
-	handler << file_content.size();
-	
-	//TODO: o Content-Type tem que ser dinamico e pode ser encontrado no request
-	this->_header = "HTTP/1.1 200 OK\nContent-Type: */*\nContent-Length: ";
-	this->_header += handler.str();
-	this->_header += " \n\n";
-	this->_response = this->_header;
-	this->_response += file_content;
-
-	return ;
-}
-
-void	Response::send_response(void)
-{
-	this->_make_response();
-	write(this->_client_socket, this->_response.c_str(), this->_response.size());
-}
-
-std::string	Response::read_file(void) const
-{
-	std::ifstream	file;
-	std::string		line;
-	std::string		file_content;
-
-	file.open(this->_file_path.c_str());
-	std::cout << "File path: " << this->_file_path << std::endl;
-	if (!file.is_open())
+	_check_directory_location();
+	_check_allowed_methods();
+	_check_file_location();
+	if (this->_status_code != "200")
 	{
-		std::cerr << "Error opening file" << std::endl;
-		return ("");
+		std::string		save_code = this->_status_code;
+		std::string		save_msg = this->_status_msg;
+		while (this->_status_code != "200")
+			_check_errors_location_file();
+		this->_status_code = save_code;
+		this->_status_msg = save_msg;
 	}
-	while (std::getline(file, line))
+	set_file((this->_server.root + this->_path), this->_filename);
+	_make_response();
+	_send_response();
+	return ;
+}
+
+void	Response::_check_directory_location(void)
+{
+	if (this->_server.locations.find(this->_path) == this->_server.locations.end())
 	{
-		file_content += line;
+		this->_status_code = "404";
+		this->_status_msg = "Not Found";
+	}
+	return ;
+}
+
+void	Response::_check_allowed_methods(void)
+{
+	if (find(this->_server.locations.find(this->_path)->second.methods.begin(), this->_server.locations.find(this->_path)->second.methods.end(), this->_method) == this->_server.locations.find(this->_path)->second.methods.end())
+	{
+		this->_status_code = "405";
+		this->_status_msg = "Method Not Allowed";
+	}
+	return ;
+}
+
+void	Response::_check_file_location(void)
+{
+	std::string		full_path = (this->_server.root + this->_path + this->_filename);
+	std::ifstream	file(full_path.c_str());
+	struct stat		info;
+
+	if (stat(full_path.c_str(), &info) != 0 || !S_ISREG(info.st_mode))
+	{
+		this->_status_code = "404";
+		this->_status_msg = "Not Found";
+	}
+	else if (!file.is_open() || (file.peek() == std::ifstream::traits_type::eof()))
+	{
+		this->_status_code = "302";
+		this->_status_msg = "Found";
+	}
+	else
+	{
+		this->_status_code = "200";
+		this->_status_msg = "OK";
 	}
 	file.close();
-	return (file_content);
+	return ;
 }
 
-void	Response::set_file_path(std::string path)
+void	Response::_check_errors_location_file(void)
 {
-	if (path == "/")
-	{
-		this->_file_path = "./www/index.html";
-		return ;
-	}
-	this->_file_path = "." + path;
+	this->_path = "/errors/";
+	this->_filename = (this->_status_code + ".html");
+	_check_file_location();
+	return ;
+}
+
+void	Response::_send_response(void)
+{
+	write(this->_client_fd, this->_response.c_str(), this->_response.size());
 	return ;
 }
