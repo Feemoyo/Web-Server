@@ -40,7 +40,6 @@ std::string	Client::_map_finder(std::string key, std::string value1, std::string
 	std::size_t auxFindGET1 = this->_buffer_map[key].find(value1, 0);
 	std::size_t auxFindGET2 = this->_buffer_map[key].find(value2, auxFindGET1);
 	return(this->_buffer_map[key].substr(auxFindGET1, auxFindGET2 - auxFindGET1));
-  return ;
 }
 
 void	Client::format_content_type(void)
