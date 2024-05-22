@@ -29,6 +29,7 @@ public:
 	std::string			&get_status_code(void);
 	std::string			&get_content_type(void);
 
+	void				status_code_handler(std::string status_code, std::string html_path);
 	void				set_file(std::string path, std::string name);
 	void				set_file(std::string path_and_name);
 	void				set_status_code(std::string code);
