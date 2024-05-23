@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ToolKit.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: csantos- <csantos-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:01:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/22 20:58:58 by csantos-         ###   ########.fr       */
+/*   Updated: 2024/05/22 22:14:31 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,11 +128,14 @@ void ToolKit::status_code_distributor(std::string status_code)
 	{
 		this->_status_code = it->first;
 		this->_status_msg = it->second;
+		if (it->first == "404")
+			this->_content_type = "text/html";
 	}
 	else
 	{
 		this->_status_code = "404";
-		this->_status_code = "Not Found";
+		this->_status_msg = "Not Found";
+		this->_content_type = "text/html";
 	}
 
 }

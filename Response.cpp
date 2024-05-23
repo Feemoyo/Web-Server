@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: csantos- <csantos-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 10:33:59 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/05/22 21:02:00 by csantos-         ###   ########.fr       */
+/*   Updated: 2024/05/22 21:15:45 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ Response::Response(void)
 Response::Response(int client_fd, t_server &server, std::string path_and_name, std::string method)
 :_client_fd(client_fd), _server(server), _method(method)
 { 
+	this->status_code_mapper();
 	size_t	start_file = path_and_name.find_last_of("/") + 1;
 	
 	this->_path = path_and_name.substr(0, start_file);
