@@ -39,20 +39,21 @@ std::string	Client::_map_finder(std::string key, std::string value1, std::string
 {
 	std::size_t auxFindGET1 = this->_buffer_map[key].find(value1, 0);
 	std::size_t auxFindGET2 = this->_buffer_map[key].find(value2, auxFindGET1);
-	std::cout << "auxFindGET1: " << auxFindGET1 << std::endl;
-	std::cout << "auxFindGET2: " << auxFindGET2 << std::endl;
+	// std::cout << "auxFindGET1: " << auxFindGET1 << std::endl;
+	// std::cout << "auxFindGET2: " << auxFindGET2 << std::endl;
 	return(this->_buffer_map[key].substr(auxFindGET1, auxFindGET2 - auxFindGET1));
 }
 
 void	Client::format_content_type(void)
 {
+	//GOHORSE
 	std::string content_type = this->_map_finder("Request", ".", " ");
-	std::cout << "content_type: " << content_type << std::endl;
+	//std::cout << "content_type: " << content_type << std::endl;
 	std::string accept = this->_buffer_map["Accept"];
-	std::cout << "controle: " << accept << std::endl;
+	//std::cout << "controle: " << accept << std::endl;
 	// std::string aux = accept.substr(accept.find(content_type.substr(1)), accept.find(content_type) + content_type.size());
 	std::string aux = content_type.substr(1);
-	std::cout << "aux: " << aux << std::endl;
+	//std::cout << "aux: " << aux << std::endl;
 	aux = this->_mime.get_mime_image(aux);
 	this->set_content_type(aux);
   return ;
@@ -65,7 +66,7 @@ void	Client::set_buffer(char *buffer)
 
 	this->_buffer_map.clear();
 	std::getline(stream, line);
-	std::cout << "line: " << line << std::endl;
+	// std::cout << "line: " << line << std::endl;
 	this->_buffer_map["Request"] = line;
 	while (std::getline(stream, line))
 	{
@@ -97,6 +98,7 @@ std::string	Client::get_path(void)
 		this->set_content_type("text/html");
 		return ("/index.html");
 	}
+	//GOHORSE
 	else
 		this->format_content_type();
 	return (path);
