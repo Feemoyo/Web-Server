@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 10:33:59 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/05/22 21:15:45 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/05/23 15:34:29 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void    Response::_make_response(void)
     file_content = this->get_content();
     handler << file_content.size();
 
-    //TODO: o Content-Type tem que ser dinamico e pode ser encontrado no request
+    //TODO: verificar se este bloco de codigo esta otimizado
     this->_header = "HTTP/1.1 ";
     this->_header += this->_status_code + " ";
     this->_header += this->_status_msg;
@@ -92,6 +92,7 @@ void	Response::_check_directory_location(void)
 {
 	if (this->_server.locations.find(this->_path) == this->_server.locations.end())
 	{
+		std::cout << "check_directory_location: 404" << std::endl;
 		status_code_distributor("404");
 	}
 	return ;
@@ -114,6 +115,8 @@ void	Response::_check_file_location(void)
 
 	if (stat(full_path.c_str(), &info) != 0 || !S_ISREG(info.st_mode))
 	{
+		//TODO: o teste de abrir um arquivo vazio esta caindo nesta condição e retornando 404 no lugar de 
+		std::cout << "check_file_location: 404" << std::endl;
 		status_code_distributor("404");
 	}
 	else if (!file.is_open() || (file.peek() == std::ifstream::traits_type::eof()))
