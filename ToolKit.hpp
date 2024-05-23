@@ -17,6 +17,10 @@ protected:
 	static	std::string		_status_msg;
 
 	void				_extract_content(void);
+
+private:
+
+	std::map<std::string, std::string> statusCodes;
 	
 public:
 
@@ -29,7 +33,8 @@ public:
 	std::string			&get_status_code(void);
 	std::string			&get_content_type(void);
 
-	void				status_code_handler(std::string status_code, std::string html_path);
+	void				status_code_mapper(void);
+	void				status_code_distributor(std::string status_code);
 	void				set_file(std::string path, std::string name);
 	void				set_file(std::string path_and_name);
 	void				set_status_code(std::string code);
