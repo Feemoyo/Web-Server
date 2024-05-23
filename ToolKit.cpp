@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ToolKit.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: csantos- <csantos-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:01:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/18 00:17:47 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/22 20:58:58 by csantos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,8 @@ void	ToolKit::_extract_content(void)
 	return ;
 }
 
-void	ToolKit::status_code_handler(std::string status_code, std::string html_path)
+void	ToolKit::status_code_mapper(void)
 {
-	std::map<std::string, std::string> statusCodes;
 
 	statusCodes.insert(std::make_pair("100", "Continue"));
 	statusCodes.insert(std::make_pair("101", "Switching Protocols"));
@@ -119,12 +118,24 @@ void	ToolKit::status_code_handler(std::string status_code, std::string html_path
 	statusCodes.insert(std::make_pair("510", "Not Extended"));
 	statusCodes.insert(std::make_pair("511", "Network Authentication Required"));
 
-	if (statusCodes.find(status_code) == statusCodes.end())
-		status_code = "404";
-
 }
 
+void ToolKit::status_code_distributor(std::string status_code)
+{
+	std::map<std::string, std::string>::iterator	it = statusCodes.find(status_code);
+	
+	if (it != statusCodes.end())
+	{
+		this->_status_code = it->first;
+		this->_status_msg = it->second;
+	}
+	else
+	{
+		this->_status_code = "404";
+		this->_status_code = "Not Found";
+	}
 
+}
 
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
