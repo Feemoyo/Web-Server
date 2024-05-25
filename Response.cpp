@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 10:33:59 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/05/23 15:34:29 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/05/25 07:39:58 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ void	Response::_check_directory_location(void)
 {
 	if (this->_server.locations.find(this->_path) == this->_server.locations.end())
 	{
+		//TODO: ao abrir o /test/empty-index/ (um arquivo index vazio) esta caindo nesta condição e settando 404 no lugar de 302
 		std::cout << "check_directory_location: 404" << std::endl;
 		status_code_distributor("404");
 	}
