@@ -39,8 +39,7 @@ std::string	Client::_map_finder(std::string key, std::string value1, std::string
 {
 	std::size_t auxFindGET1 = this->_buffer_map[key].find(value1, 0);
 	std::size_t auxFindGET2 = this->_buffer_map[key].find(value2, auxFindGET1);
-	// std::cout << "auxFindGET1: " << auxFindGET1 << std::endl;
-	// std::cout << "auxFindGET2: " << auxFindGET2 << std::endl;
+
 	return(this->_buffer_map[key].substr(auxFindGET1, auxFindGET2 - auxFindGET1));
 }
 
@@ -66,7 +65,6 @@ void	Client::set_buffer(char *buffer)
 
 	this->_buffer_map.clear();
 	std::getline(stream, line);
-	// std::cout << "line: " << line << std::endl;
 	this->_buffer_map["Request"] = line;
 	while (std::getline(stream, line))
 	{
@@ -84,6 +82,7 @@ void	Client::set_buffer(char *buffer)
 void	Client::print_map(void)
 {
 	std::map<std::string, std::string>::iterator it;
+
 	for (it = this->_buffer_map.begin(); it != this->_buffer_map.end(); ++it)
 		std::cout << it->first << ": " << it->second << std::endl;
 	return ;

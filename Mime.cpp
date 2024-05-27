@@ -20,12 +20,6 @@ Mime::~Mime()
 	return ;
 }
 
-
-/*
-** --------------------------------- OVERLOAD ---------------------------------
-*/
-
-
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
@@ -121,11 +115,7 @@ void	Mime::_set_image_types()
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-std::string	Mime::get_mime_image(std::string extension)
+std::string	&Mime::get_mime_image(std::string extension)
 {
 	return (this->_mime_image[extension]);
 }
-
-
-
-/* ************************************************************************** */

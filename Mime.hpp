@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef MIME_HPP
 # define MIME_HPP
 
@@ -5,20 +7,17 @@
 
 class Mime
 {
-	private:
-		std::map<std::string, std::string> _mime_image;
+private:
+	std::map<std::string, std::string> _mime_image;
 
-		void								_add_mime_image(std::string extension, std::string mime_type);
-		void								_set_image_types();
-	public:
+	void			_add_mime_image(std::string extension, std::string mime_type);
+	void			_set_image_types();
 
-		Mime();
-		~Mime();
-		std::string							get_mime_image(std::string extension);
-
-
+public:
+					Mime();
+					~Mime();
+	std::string		&get_mime_image(std::string extension);
 
 };
 
-
-#endif /* ************************************************************ MIME_H */
+#endif

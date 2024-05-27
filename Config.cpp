@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/19 13:08:29 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/05/27 12:39:40 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,6 @@ void	Config::_remove_white_spaces(void)
 	return ;
 }
 
-//TODO: Melhorar o encerramento em caso de erro
 bool	Config::_verify_brackets(void)
 {
 	if (this->_count_occurrences(this->_content, '{') != this->_count_occurrences(this->_content, '}'))
@@ -148,60 +147,27 @@ void	Config::_server_block(void)
 	{
 		t_server	server;
 
-		_find_config_port(server, this->_total_servers[i]);
-		_find_config_server_name(server, this->_total_servers[i]);
-		_find_config_root(server, this->_total_servers[i]);
-		_find_config_max_body_size(server, this->_total_servers[i]);
+		server.port = _string_to_int(_find_in_config_file(this->_total_servers[i], "listen", "server_name"));
+		server.server_name = _find_in_config_file(this->_total_servers[i], "server_name", "root");
+		server.root = ("./" + _find_in_config_file(this->_total_servers[i], "root", "client_max_body_size"));
+		server.max_body_size = _string_to_int(_find_in_config_file(this->_total_servers[i], "client_max_body_size", "location/"));
+
 		_find_config_errors_location(server, this->_total_servers[i]);
 		_find_config_default_index_location(server, this->_total_servers[i]);
 		_find_other_locations(server, this->_total_servers[i]);
+
 		this->_servers.push_back(server);
 	}
 	return ;
 }
 
-void	Config::_find_config_port(t_server &server, size_t start)
-{
-	size_t		end;
-	std::string	ref;
-
-	start = this->_content.find("listen", start) + strlen("listen");
-	end = this->_content.find("server_name", start);
-	ref = this->_content.substr(start, end - start);
-	server.port = _string_to_int(ref);
-	return ;
-}
-
-void	Config::_find_config_server_name(t_server &server, size_t start)
+std::string	Config::_find_in_config_file(size_t start, std::string ref_start, std::string ref_end)
 {
 	size_t		end;
 
-	start = this->_content.find("server_name", start) + strlen("server_name");
-	end = this->_content.find("root", start);
-	server.server_name = this->_content.substr(start, end - start);
-	return ;
-}
-
-void	Config::_find_config_root(t_server &server, size_t start)
-{
-	size_t		end;
-
-	start = this->_content.find("root", start) + strlen("root");
-	end = this->_content.find("client_max_body_size", start);
-	server.root = ("./" + this->_content.substr(start, end - start));
-	return ;
-}
-
-void	Config::_find_config_max_body_size(t_server &server, size_t start)
-{
-	size_t		end;
-	std::string	ref;
-
-	start = this->_content.find("client_max_body_size", start) + strlen("client_max_body_size");
-	end = this->_content.find("location/", start);
-	ref = this->_content.substr(start, end - start);
-	server.max_body_size = _string_to_int(ref);
-	return ;
+	start = this->_content.find(ref_start, start) + strlen(ref_start.c_str());
+	end = this->_content.find(ref_end, start);
+	return (this->_content.substr(start, end - start));
 }
 
 void	Config::_find_config_errors_location(t_server &server, size_t start)

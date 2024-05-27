@@ -18,10 +18,7 @@ private:
 	void			_find_total_servers(void);
 
 	void			_server_block(void);
-	void			_find_config_port(t_server &server, size_t start);
-	void			_find_config_server_name(t_server &server, size_t start);
-	void			_find_config_root(t_server &server, size_t start);
-	void			_find_config_max_body_size(t_server &server, size_t start);
+	std::string		_find_in_config_file(size_t start, std::string ref_start, std::string ref_end);
 	void			_find_config_errors_location(t_server &server, size_t start);
 	void			_find_config_default_index_location(t_server &server, size_t start);
 	void			_find_other_locations(t_server &server, size_t start);
