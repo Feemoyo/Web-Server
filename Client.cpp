@@ -47,12 +47,8 @@ void	Client::format_content_type(void)
 {
 	//GOHORSE
 	std::string content_type = this->_map_finder("Request", ".", " ");
-	//std::cout << "content_type: " << content_type << std::endl;
 	std::string accept = this->_buffer_map["Accept"];
-	//std::cout << "controle: " << accept << std::endl;
-	// std::string aux = accept.substr(accept.find(content_type.substr(1)), accept.find(content_type) + content_type.size());
 	std::string aux = content_type.substr(1);
-	//std::cout << "aux: " << aux << std::endl;
 	aux = this->_mime.get_mime_image(aux);
 	this->set_content_type(aux);
   return ;
@@ -91,13 +87,17 @@ void	Client::print_map(void)
 std::string	Client::get_path(void)
 {
 	std::string path = this->_map_finder("Request", "/", " ");
-	//TODO: este /index.html deve ser algo padrao ou setado pelo .conf? GET /srthsryjsryj.html
+	//TODO: validar se o index.html deve ser algo padrao ou setado pelo .conf GET /test/index.html
 	if (path == "/")
 	{
 		this->set_content_type("text/html");
 		return ("/index.html");
 	}
-	//GOHORSE
+	else if (std::strchr(path.c_str(), '.') == NULL)
+	{
+		this->set_content_type("text/html");
+		return (path + "/index.html");
+	}
 	else
 		this->format_content_type();
 	return (path);
