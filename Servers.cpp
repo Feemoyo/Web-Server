@@ -127,7 +127,7 @@ void	Servers::run_servers(void)
 	return ;
 }
 
-void	Servers::_accept_connection(size_t index)
+void	Servers::_accept_connection (size_t index)
 {
 	struct sockaddr_in	client_addr;
 	socklen_t			client_len = sizeof(client_addr);
@@ -162,6 +162,7 @@ void	Servers::_process_client(size_t index, int &client_fd)
 		return ;
 	}
 	this->_client.set_buffer(buffer);
+	this->_client.print_map();
 	return ;
 }
 

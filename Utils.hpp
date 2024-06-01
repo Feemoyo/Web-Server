@@ -45,15 +45,6 @@ typedef struct	s_server
 	sockaddr_in							server_addr;
 }	t_server;
 
-typedef	enum	e_type
-{
-	INVALID,
-	CONF,
-	HTML,
-	PNG,
-	SVG
-}	t_type;
-
 std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs);
 std::ostream	&operator<<(std::ostream &lhs, const t_server &rhs);
 

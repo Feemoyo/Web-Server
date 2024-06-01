@@ -45,7 +45,6 @@ std::string	Client::_map_finder(std::string key, std::string value1, std::string
 
 void	Client::format_content_type(void)
 {
-	//GOHORSE
 	std::string content_type = this->_map_finder("Request", ".", " ");
 	std::string accept = this->_buffer_map["Accept"];
 	std::string aux = content_type.substr(1);
