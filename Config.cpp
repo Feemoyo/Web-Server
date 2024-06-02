@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/27 12:39:40 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/06/02 15:32:01 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,19 +172,14 @@ std::string	Config::_find_in_config_file(size_t start, std::string ref_start, st
 
 void	Config::_find_config_errors_location(t_server &server, size_t start)
 {
-	size_t		end;
 	std::string	ref;
 
-	start = this->_content.find("location/errors/{default", start) + strlen("location/errors/{default");
-	end = this->_content.find("allowed_methods", start);
-	ref = this->_content.substr(start, end - start);
+	ref = _find_in_config_file(start, "location/errors/{default", "allowed_methods");
 	t_location	errors;
 
 	errors.path = "/errors/";
 	errors.default_file = ref;
-	start = this->_content.find(ref + "allowed_methods", start) + strlen(ref.c_str()) + strlen("allowed_methods");
-	end = this->_content.find("}", start);
-	ref = this->_content.substr(start, end - start);
+	ref = _find_in_config_file(start, (ref + "allowed_methods"), "}");
 	_find_methods(ref, errors);
 	server.locations.insert(std::pair<std::string, t_location>(errors.path, errors));
 	return ;
@@ -192,19 +187,14 @@ void	Config::_find_config_errors_location(t_server &server, size_t start)
 
 void	Config::_find_config_default_index_location(t_server &server, size_t start)
 {
-	size_t		end;
 	std::string	ref;
 
-	start = this->_content.find("location", start) + strlen("location");
-	end = this->_content.find("{defaultindex.html", start);
-	ref = this->_content.substr(start, end - start);
+	ref = _find_in_config_file(start, "location", "{defaultindex.html");
 	t_location	index;
 
 	index.path = (ref);
 	index.default_file = "index.html";
-	start = this->_content.find("index.htmlallowed_methods", start) + strlen("index.htmlallowed_methods");
-	end = this->_content.find("}", start);
-	ref = this->_content.substr(start, end - start);
+	ref = _find_in_config_file(start, "index.htmlallowed_methods", "}");
 	_find_methods(ref, index);
 	server.locations.insert(std::pair<std::string, t_location>(index.path, index));
 	return ;
@@ -226,9 +216,7 @@ void	Config::_find_other_locations(t_server &server, size_t start)
 			t_location	locat;
 
 			locat.path = (ref);
-			start = this->_content.find("default", end) + strlen("default");
-			end = this->_content.find("allowed_methods", start);
-			ref = this->_content.substr(start, end - start);
+			ref = _find_in_config_file(end, "default", "allowed_methods");
 			locat.default_file = ref;
 			start = this->_content.find("allowed_methods", start) + strlen("allowed_methods");
 			end = this->_content.find("}", start);

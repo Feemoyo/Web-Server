@@ -162,7 +162,7 @@ void	Servers::_process_client(size_t index, int &client_fd)
 		return ;
 	}
 	this->_client.set_buffer(buffer);
-	this->_client.print_map();
+	// this->_client.print_map();
 	return ;
 }
 
