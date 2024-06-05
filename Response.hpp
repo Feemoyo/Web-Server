@@ -8,7 +8,7 @@
 class	Response : public ToolKit
 {
 private:
-	t_response	response;
+	t_response	_response;
 
 				Response(void);
 

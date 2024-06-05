@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/06/05 15:05:54 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/06/05 20:19:59 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,11 @@ Response::Response(int client_fd, t_server &server, std::string path_and_name, s
 	size_t	start_file = path_and_name.find_last_of("/") + 1;
 
 	this->status_code_mapper();
-	this->response.client = client_fd;
-	this->response.server = server;
-	this->response.method = method;
-	this->response.path = path_and_name.substr(0, start_file);
-	this->response.filename = path_and_name.substr(start_file);
+	this->_response.client = client_fd;
+	this->_response.server = server;
+	this->_response.method = method;
+	this->_response.path = path_and_name.substr(0, start_file);
+	this->_response.filename = path_and_name.substr(start_file);
 	return ;
 }
 
@@ -61,7 +61,7 @@ void	Response::run_response(void)
 		this->_status_code = save_code;
 		this->_status_msg = save_msg;
 	}
-	set_file((this->response.server.root + this->response.path), this->response.filename);
+	set_file((this->_response.server.root + this->_response.path), this->_response.filename);
 	_make_response();
 	_send_response();
 	return ;
@@ -69,7 +69,7 @@ void	Response::run_response(void)
 
 void	Response::_check_directory_location(void)
 {
-	if (this->response.server.locations.find(this->response.path) == this->response.server.locations.end())
+	if (this->_response.server.locations.find(this->_response.path) == this->_response.server.locations.end())
 		status_code_distributor("404");
 	return ;
 }
@@ -78,14 +78,14 @@ void	Response::_check_allowed_methods(void)
 {
 	if (this->_status_code == "404")
 		return ;
-	else if (find(this->response.server.locations.find(this->response.path)->second.methods.begin(), this->response.server.locations.find(this->response.path)->second.methods.end(), this->response.method) == this->response.server.locations.find(this->response.path)->second.methods.end())
+	else if (find(this->_response.server.locations.find(this->_response.path)->second.methods.begin(), this->_response.server.locations.find(this->_response.path)->second.methods.end(), this->_response.method) == this->_response.server.locations.find(this->_response.path)->second.methods.end())
 		status_code_distributor("405");
 	return ;
 }
 
 void	Response::_check_file_location(void)
 {
-	std::string		full_path = (this->response.server.root + this->response.path + this->response.filename);
+	std::string		full_path = (this->_response.server.root + this->_response.path + this->_response.filename);
 	std::ifstream	file(full_path.c_str());
 	struct stat		info;
 
@@ -101,8 +101,8 @@ void	Response::_check_file_location(void)
 
 void	Response::_check_errors_location_file(void)
 {
-	this->response.path = "/errors/";
-	this->response.filename = (this->_status_code + ".html");
+	this->_response.path = "/errors/";
+	this->_response.filename = (this->_status_code + ".html");
 	_check_file_location();
 	return ;
 }
@@ -115,22 +115,22 @@ void	Response::_make_response(void)
 	file_content = this->get_content();
 	handler << file_content.size();
 
-	this->response.header = "HTTP/1.1 ";
-	this->response.header += this->_status_code + " ";
-	this->response.header += this->_status_msg;
-	this->response.header += "\nContent-Type:";
-	this->response.header += this->get_content_type();
-	this->response.header += "\nContent-Length: ";
-	this->response.header += handler.str();
-	this->response.header += " \n\n";
-	this->response.body = this->response.header;
-	this->response.body += file_content;
+	this->_response.header = "HTTP/1.1 ";
+	this->_response.header += this->_status_code + " ";
+	this->_response.header += this->_status_msg;
+	this->_response.header += "\nContent-Type:";
+	this->_response.header += this->get_content_type();
+	this->_response.header += "\nContent-Length: ";
+	this->_response.header += handler.str();
+	this->_response.header += " \n\n";
+	this->_response.body = this->_response.header;
+	this->_response.body += file_content;
 
 	return ;
 }
 
 void	Response::_send_response(void)
 {
-	write(this->response.client, this->response.body.c_str(), this->response.body.size());
+	write(this->_response.client, this->_response.body.c_str(), this->_response.body.size());
 	return ;
 }
