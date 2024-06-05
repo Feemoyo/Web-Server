@@ -30,6 +30,7 @@ typedef struct	s_location
 {
 	std::string					path;
 	std::string					default_file;
+	bool						directory;
 	std::vector<std::string>	methods;
 }	t_location;
 
@@ -38,12 +39,26 @@ typedef struct	s_server
 	int									port;
 	std::string							server_name;
 	std::string							root;
+	bool								directory;
 	int									max_body_size;
 	std::map<std::string, t_location>	locations;
 
 	int									server_socket;
 	sockaddr_in							server_addr;
 }	t_server;
+
+typedef struct s_response
+{
+	int				client;
+	t_server		server;
+	std::string		path;
+	std::string		filename;
+	std::string		method;
+	std::string		header;
+	std::string		body;
+
+} t_response;
+
 
 std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs);
 std::ostream	&operator<<(std::ostream &lhs, const t_server &rhs);

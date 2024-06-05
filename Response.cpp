@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/24 10:33:59 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/05/31 21:59:28 by fmoreira         ###   ########.fr       */
+/*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
+/*   Updated: 2024/06/05 15:05:54 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,19 @@
 
 Response::Response(void)
 {
-    return ;
+	return ;
 }
 
 Response::Response(int client_fd, t_server &server, std::string path_and_name, std::string method)
-:_client_fd(client_fd), _server(server), _method(method)
-{ 
-	this->status_code_mapper();
+{
 	size_t	start_file = path_and_name.find_last_of("/") + 1;
-	this->_path = path_and_name.substr(0, start_file);
-	this->_filename = path_and_name.substr(start_file);
+
+	this->status_code_mapper();
+	this->response.client = client_fd;
+	this->response.server = server;
+	this->response.method = method;
+	this->response.path = path_and_name.substr(0, start_file);
+	this->response.filename = path_and_name.substr(start_file);
 	return ;
 }
 
@@ -37,34 +40,12 @@ Response::Response(int client_fd, t_server &server, std::string path_and_name, s
 
 Response::~Response(void)
 {
-    return ;
+	return ;
 }
 
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
-
-void    Response::_make_response(void)
-{
-    std::string            file_content;
-    std::ostringstream    handler;
-
-    file_content = this->get_content();
-    handler << file_content.size();
-
-    this->_header = "HTTP/1.1 ";
-    this->_header += this->_status_code + " ";
-    this->_header += this->_status_msg;
-    this->_header += "\nContent-Type:";
-    this->_header += this->get_content_type();
-    this->_header += "\nContent-Length: ";
-    this->_header += handler.str();
-    this->_header += " \n\n";
-    this->_response = this->_header;
-    this->_response += file_content;
-
-    return ;
-}
 
 void	Response::run_response(void)
 {
@@ -80,7 +61,7 @@ void	Response::run_response(void)
 		this->_status_code = save_code;
 		this->_status_msg = save_msg;
 	}
-	set_file((this->_server.root + this->_path), this->_filename);
+	set_file((this->response.server.root + this->response.path), this->response.filename);
 	_make_response();
 	_send_response();
 	return ;
@@ -88,21 +69,23 @@ void	Response::run_response(void)
 
 void	Response::_check_directory_location(void)
 {
-	if (this->_server.locations.find(this->_path) == this->_server.locations.end())
+	if (this->response.server.locations.find(this->response.path) == this->response.server.locations.end())
 		status_code_distributor("404");
 	return ;
 }
 
 void	Response::_check_allowed_methods(void)
 {
-	if (find(this->_server.locations.find(this->_path)->second.methods.begin(), this->_server.locations.find(this->_path)->second.methods.end(), this->_method) == this->_server.locations.find(this->_path)->second.methods.end())
+	if (this->_status_code == "404")
+		return ;
+	else if (find(this->response.server.locations.find(this->response.path)->second.methods.begin(), this->response.server.locations.find(this->response.path)->second.methods.end(), this->response.method) == this->response.server.locations.find(this->response.path)->second.methods.end())
 		status_code_distributor("405");
 	return ;
 }
 
 void	Response::_check_file_location(void)
 {
-	std::string		full_path = (this->_server.root + this->_path + this->_filename);
+	std::string		full_path = (this->response.server.root + this->response.path + this->response.filename);
 	std::ifstream	file(full_path.c_str());
 	struct stat		info;
 
@@ -118,14 +101,36 @@ void	Response::_check_file_location(void)
 
 void	Response::_check_errors_location_file(void)
 {
-	this->_path = "/errors/";
-	this->_filename = (this->_status_code + ".html");
+	this->response.path = "/errors/";
+	this->response.filename = (this->_status_code + ".html");
 	_check_file_location();
+	return ;
+}
+
+void	Response::_make_response(void)
+{
+	std::string			file_content;
+	std::ostringstream	handler;
+
+	file_content = this->get_content();
+	handler << file_content.size();
+
+	this->response.header = "HTTP/1.1 ";
+	this->response.header += this->_status_code + " ";
+	this->response.header += this->_status_msg;
+	this->response.header += "\nContent-Type:";
+	this->response.header += this->get_content_type();
+	this->response.header += "\nContent-Length: ";
+	this->response.header += handler.str();
+	this->response.header += " \n\n";
+	this->response.body = this->response.header;
+	this->response.body += file_content;
+
 	return ;
 }
 
 void	Response::_send_response(void)
 {
-	write(this->_client_fd, this->_response.c_str(), this->_response.size());
+	write(this->response.client, this->response.body.c_str(), this->response.body.size());
 	return ;
 }

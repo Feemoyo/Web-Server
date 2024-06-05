@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 19:27:55 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/14 18:18:30 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/06/05 15:12:49 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,15 @@ void	_server_config_model(void)
 {
 	std::cout << "server\n{\n\tlisten\t\t\t\t\t80" << std::endl;
 	std::cout << "\tserver_name\t\t\t\tlocalhost" << std::endl;
-	std::cout << "\troot\t\t\t\t\twww\n\tclient_max_body_size\t200" << std::endl;
+	std::cout << "\troot\t\t\t\t\twww" << std::endl;
+	std::cout << "\tdirectory\t\t\t\ton\n\tclient_max_body_size\t\t\t200\n" << std::endl;
 	std::cout << "\tlocation /\n\t{\n\t\tdefault\t\t\t\tindex.html" << std::endl;
-	std::cout << "\t\tallowed_methods\t\tGET\n\t}\n" << std::endl;
+	std::cout << "\t\tdirectory\t\t\ton" << std::endl;
+	std::cout << "\t\tallowed_methods\t\t\tGET\n\t}\n" << std::endl;
 	std::cout << "\tlocation /errors/\n\t{\n\t\tdefault\t\t\t\t404.html" << std::endl;
-	std::cout << "\t\tallowed_methods\t\tGET\n\t}\n}" << std::endl;
-	return ;
+	std::cout << "\t\tdirectory\t\t\toff" << std::endl;
+	std::cout << "\t\tallowed_methods\t\t\tGET\n\t}\n}" << std::endl;
+	
 }
 
 void	_server_interrupt(int sig)

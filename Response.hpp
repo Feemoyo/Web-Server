@@ -8,14 +8,7 @@
 class	Response : public ToolKit
 {
 private:
-	int			_client_fd;
-	t_server	_server;
-	std::string	_path;
-	std::string	_filename;
-	std::string	_method;
-
-	std::string	_header;
-	std::string	_response;
+	t_response	response;
 
 				Response(void);
 

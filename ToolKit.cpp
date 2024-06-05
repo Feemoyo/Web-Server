@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ToolKit.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:01:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/05/22 22:14:31 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/06/05 14:05:34 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,15 @@ void	ToolKit::_extract_content(void)
 		this->_content += line + '\n';
 	file.close();
 	return ;
+}
+
+std::string	ToolKit::find_and_split(size_t str, std::string start, std::string end)
+{
+	size_t		ref_end;
+
+	str = this->_content.find(start, str) + strlen(start.c_str());
+	ref_end = this->_content.find(end, str);
+	return (this->_content.substr(str, ref_end - str));
 }
 
 void	ToolKit::status_code_mapper(void)

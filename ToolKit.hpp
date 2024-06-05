@@ -14,7 +14,7 @@ protected:
 
 	static std::string		_status_code;
 	static std::string		_content_type;
-	static	std::string		_status_msg;
+	static std::string		_status_msg;
 
 	void				_extract_content(void);
 
@@ -26,6 +26,8 @@ public:
 
 						ToolKit(void);
 	virtual 			~ToolKit(void);
+
+	std::string			find_and_split(size_t str, std::string start, std::string end);
 
 	std::string			&get_content(void);
 	std::string			&get_file_name(void);
