@@ -3,39 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 19:27:55 by rferrero          #+#    #+#             */
-/*   Updated: 2024/06/05 15:12:49 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/06/13 20:05:34 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Config.hpp"
 #include "Servers.hpp"
 
-Servers		*webserv;
+// Servers		*webserv;
 Config		*conf;
 
 void	_server_config_model(void)
 {
-	std::cout << "server\n{\n\tlisten\t\t\t\t\t80" << std::endl;
-	std::cout << "\tserver_name\t\t\t\tlocalhost" << std::endl;
-	std::cout << "\troot\t\t\t\t\twww" << std::endl;
-	std::cout << "\tdirectory\t\t\t\ton\n\tclient_max_body_size\t\t\t200\n" << std::endl;
-	std::cout << "\tlocation /\n\t{\n\t\tdefault\t\t\t\tindex.html" << std::endl;
-	std::cout << "\t\tdirectory\t\t\ton" << std::endl;
-	std::cout << "\t\tallowed_methods\t\t\tGET\n\t}\n" << std::endl;
-	std::cout << "\tlocation /errors/\n\t{\n\t\tdefault\t\t\t\t404.html" << std::endl;
-	std::cout << "\t\tdirectory\t\t\toff" << std::endl;
-	std::cout << "\t\tallowed_methods\t\t\tGET\n\t}\n}" << std::endl;
+	std::cout << "server\n{\n\tlisten\t\t\t\t\t80" << "\n";;
+	std::cout << "\tserver_name\t\t\t\tlocalhost" << "\n";;
+	std::cout << "\troot\t\t\t\t\twww" << "\n";;
+	std::cout << "\tdirectory\t\t\t\ton\n\tclient_max_body_size\t\t\t200\n" << "\n";;
+	std::cout << "\tlocation /\n\t{\n\t\tdefault\t\t\t\tindex.html" << "\n";;
+	std::cout << "\t\tdirectory\t\t\ton" << "\n";;
+	std::cout << "\t\tallowed_methods\t\t\tGET\n\t}\n" << "\n";;
+	std::cout << "\tlocation /errors/\n\t{\n\t\tdefault\t\t\t\t404.html" << "\n";;
+	std::cout << "\t\tdirectory\t\t\toff" << "\n";;
+	std::cout << "\t\tallowed_methods\t\t\tGET\n\t}\n}" << "\n";;
 	
 }
 
 void	_server_interrupt(int sig)
 {
-	std::cout << "\nServer Interrupted\nSignal: " << (sig + 128) << std::endl;
-	webserv->close_servers();
-	delete webserv;
+	std::cout << "\nServer Interrupted\nSignal: " << (sig + 128) << "\n";;
+	// webserv->close_servers();
+	// delete webserv;
 	delete conf;
 	exit(EXIT_SUCCESS);
 }
@@ -44,8 +44,8 @@ int main(int argc, char **argv)
 {
 	if (argc != 2)
 	{
-		std::cout << "Need a .conf file to run the server" << std::endl;
-		std::cout << ".conf file exemple:" << std::endl;
+		std::cout << "Need a .conf file to run the server" << "\n";;
+		std::cout << ".conf file exemple:" << "\n";;
 		_server_config_model();
 		return (EXIT_FAILURE);
 	}
@@ -56,11 +56,11 @@ int main(int argc, char **argv)
 	sigaction(SIGINT, &interrupt_handler, 0);
 
 	conf = new Config(argv[1]);
-	webserv = new Servers(conf);
+	// webserv = new Servers(conf);
 
-	webserv->run_servers();
+	// webserv->run_servers();
 
 	delete conf;
-	delete webserv;
+	// delete webserv;
 	return (EXIT_SUCCESS);
 }

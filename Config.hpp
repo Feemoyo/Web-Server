@@ -8,12 +8,19 @@
 class	Config : public ToolKit
 {
 private:
-	std::vector<t_server>	_servers;
-	std::vector<size_t>		_total_servers;
+	std::vector<t_server>		_servers;
+	std::vector<std::string>	_server_string;
 
-	void			_config_total_servers(void);
-	void			_config_servers(void);
-	void			_config_locations(t_server &server, size_t start);
+	bool			_config_total_servers(void);
+	bool			_config_servers(void);
+	bool			_is_there_a_valid_port(std::string &serv, int &port);
+	bool			_is_there_a_server_name(std::string &serv, std::string &name);
+	void			_set_server_root(std::string &serv, std::string &root);
+	void			_set_dir_visibility(std::string &serv, bool &dir);
+	void			_set_max_body_size(std::string &serv, int &max_body_size);
+	void			_config_locations(std::string &serv, t_server server);
+
+	// void			_config_locations(t_server &server, size_t start);
 	void			_config_methods(std::string ref, t_location &location);
 
 public:

@@ -27,7 +27,7 @@ public:
 						ToolKit(void);
 	virtual 			~ToolKit(void);
 
-	std::string			find_and_split(size_t str, std::string start, std::string end);
+	std::string			find_and_split(std::string &content, size_t str, std::string start, std::string end);
 
 	std::string			&get_content(void);
 	std::string			&get_file_name(void);

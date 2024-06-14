@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ToolKit.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:01:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/06/05 14:05:34 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/06/13 20:05:34 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,13 +53,13 @@ void	ToolKit::_extract_content(void)
 	return ;
 }
 
-std::string	ToolKit::find_and_split(size_t str, std::string start, std::string end)
+std::string	ToolKit::find_and_split(std::string &content, size_t str, std::string start, std::string end)
 {
 	size_t		ref_end;
 
-	str = this->_content.find(start, str) + strlen(start.c_str());
-	ref_end = this->_content.find(end, str);
-	return (this->_content.substr(str, ref_end - str));
+	str = content.find(start, str) + strlen(start.c_str());
+	ref_end = content.find(end, str);
+	return (content.substr(str, ref_end - str));
 }
 
 void	ToolKit::status_code_mapper(void)
@@ -210,8 +210,8 @@ void	ToolKit::set_content_type(std::string type)
 
 std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs)
 {
-	lhs << "Location " << rhs.path << std::endl;
-	lhs << "Default file: " << rhs.default_file << std::endl;
+	lhs << "Location " << rhs.path << "\n";;
+	lhs << "Default file: " << rhs.default_file << "\n";;
 	for (size_t i = 0; i < rhs.methods.size(); i++)
 		lhs << rhs.methods[i] << " ";
 	return (lhs);
@@ -219,11 +219,11 @@ std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs)
 
 std::ostream	&operator<<(std::ostream &lhs, const t_server &rhs)
 {
-	lhs << "Server " << rhs.server_name << std::endl;
-	lhs << "Port: " << rhs.port << std::endl;
-	lhs << "Root: " << rhs.root << std::endl;
-	lhs << "Max client body size: " << rhs.max_body_size << std::endl;
+	lhs << "Server " << rhs.server_name << "\n";;
+	lhs << "Port: " << rhs.port << "\n";;
+	lhs << "Root: " << rhs.root << "\n";;
+	lhs << "Max client body size: " << rhs.max_body_size << "\n";;
 	for (std::map<std::string, t_location>::const_iterator it = rhs.locations.begin(); it != rhs.locations.end(); it++)
-		lhs << (*it).first << " " << (*it).second << std::endl;
+		lhs << (*it).first << " " << (*it).second << "\n";;
 	return (lhs);
 }

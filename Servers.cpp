@@ -49,7 +49,7 @@ void	Servers::_init_socket(void)
 		this->_servers[i].server_socket = socket(AF_INET, SOCK_STREAM, 0);
 		if (this->_servers[i].server_socket < 0)
 		{
-			std::cerr << "Socket creation failed on server port:" << this->_servers[i].port << std::endl;
+			std::cerr << "Socket creation failed on server port:" << this->_servers[i].port << "\n";;
 			close(this->_servers[i].server_socket);
 			continue ;
 		}
@@ -66,7 +66,7 @@ bool	Servers::_init_bind(void)
 	{
 		if (bind(this->_servers[i].server_socket, reinterpret_cast<sockaddr *>(&this->_servers[i].server_addr), sizeof(this->_servers[i].server_addr)) < 0)
 		{
-			std::cerr << "Bind failed on server port: " << this->_servers[i].port << std::endl;
+			std::cerr << "Bind failed on server port: " << this->_servers[i].port << "\n";;
 			close_servers();
 			return (false);
 		}
@@ -80,7 +80,7 @@ void	Servers::_init_listen(void)
 	{
 		if (listen(this->_servers[i].server_socket, MAX_CLIENTS) < 0)
 		{
-			std::cerr << "Listen failed on port: " << this->_servers[i].port << std::endl;
+			std::cerr << "Listen failed on port: " << this->_servers[i].port << "\n";;
 			close_servers();
 			break ;
 		}
@@ -111,10 +111,10 @@ void	Servers::run_servers(void)
 	_init_fds();
 	while (true)
 	{
-		std::cout << "Webserv running..." << std::endl;
+		std::cout << "Webserv running..." << "\n";;
 		if (poll(this->_fds.data(), this->_fds.size(), -1) < 0)
 		{
-			std::cerr << "Poll fail" << std::endl;
+			std::cerr << "Poll fail" << "\n";;
 			close_servers();
 			break ;
 		}
@@ -135,7 +135,7 @@ void	Servers::_accept_connection (size_t index)
 
 	if (client_fd < 0)
 	{
-		std::cerr << "Accept fail on port: " << this->_servers[index].port << std::endl;
+		std::cerr << "Accept fail on port: " << this->_servers[index].port << "\n";;
 		close_servers();
 		close(client_fd);
 		return ;
@@ -153,12 +153,12 @@ void	Servers::_process_client(size_t index, int &client_fd)
 
 	if (bytes_read < 0)
 	{
-		std::cerr << "Reading from client fail on port: " << this->_servers[index].port << std::endl;
+		std::cerr << "Reading from client fail on port: " << this->_servers[index].port << "\n";;
 		return ;
 	}
 	else if (bytes_read == 0)
 	{
-		std::cerr << "Client closed connection on port: " << this->_servers[index].port << std::endl;
+		std::cerr << "Client closed connection on port: " << this->_servers[index].port << "\n";;
 		return ;
 	}
 	this->_client.set_buffer(buffer);
