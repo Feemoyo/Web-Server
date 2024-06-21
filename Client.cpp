@@ -63,13 +63,25 @@ void	Client::set_buffer(char *buffer)
 	this->_buffer_map["Request"] = line;
 	while (std::getline(stream, line))
 	{
+		// std::cout << line << std::endl;
 		std::size_t first_space = line.find(':');
+		// std::cout << first_space << std::endl;
+		//quando não encontra o .find(':')
 		if (first_space != std::string::npos)
 		{
 			std::string key = line.substr(0, first_space);
 			std::string value = line.substr(first_space + 2);
 			this->_buffer_map[key] = value;
 		}
+		else if (!line.empty())
+		{
+			std::cout << line << std::endl;
+			this->_buffer_map["Payload"] = line;
+			//TODO: metodo para pegar o payload do post
+			
+		}
+		//TODO:o payload do post deve ser direcionado para 
+
 	}
 	return ;
 }
