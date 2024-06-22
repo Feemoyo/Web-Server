@@ -6,14 +6,14 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 19:27:55 by rferrero          #+#    #+#             */
-/*   Updated: 2024/06/13 20:05:34 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/06/22 18:59:11 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Config.hpp"
 #include "Servers.hpp"
 
-// Servers		*webserv;
+Servers		*webserv;
 Config		*conf;
 
 void	_server_config_model(void)
@@ -34,8 +34,8 @@ void	_server_config_model(void)
 void	_server_interrupt(int sig)
 {
 	std::cout << "\nServer Interrupted\nSignal: " << (sig + 128) << "\n";;
-	// webserv->close_servers();
-	// delete webserv;
+	webserv->close_servers();
+	delete webserv;
 	delete conf;
 	exit(EXIT_SUCCESS);
 }
@@ -56,11 +56,14 @@ int main(int argc, char **argv)
 	sigaction(SIGINT, &interrupt_handler, 0);
 
 	conf = new Config(argv[1]);
-	// webserv = new Servers(conf);
+	if (conf->is_good_to_run() == true)
+	{
+		webserv = new Servers(conf);
+		webserv->run_servers();
+	}
 
-	// webserv->run_servers();
 
 	delete conf;
-	// delete webserv;
+	delete webserv;
 	return (EXIT_SUCCESS);
 }

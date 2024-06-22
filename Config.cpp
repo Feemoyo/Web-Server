@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/06/14 15:30:54 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/06/22 19:03:46 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,15 +91,12 @@ Config::Config(void)
 
 Config::Config(char *argv)
 {
+	this->_good_to_run = false;
 	set_file("./", argv);
 	_remove_comments(this->_content);
 	_remove_white_spaces(this->_content);
-	if (!_verify_brackets(this->_content))
-		return ;
-	if (!_config_total_servers())
-		return ;
-	if (!_config_servers())
-		return ;
+	if (_verify_brackets(this->_content) && _config_total_servers() && _config_servers())
+		this->_good_to_run = true;
 	return ;
 }
 
@@ -157,9 +154,8 @@ bool	Config::_config_servers(void)
 		_set_dir_visibility(this->_server_string[i], server.directory);
 		_set_max_body_size(this->_server_string[i], server.max_body_size);
 
-		_config_locations(this->_server_string[i], server);
-		// _config_locations(server, this->_total_servers[i]);
-
+		if (!_config_locations(this->_server_string[i], server))
+			return (false);
 		this->_servers.push_back(server);
 	}
 	return (true);
@@ -262,12 +258,15 @@ void	Config::_set_max_body_size(std::string &serv, int &max_body_size)
 	return ;
 }
 
-void	Config::_config_locations(std::string &serv, t_server server)
+bool	Config::_config_locations(std::string &serv, t_server &server)
 {
 	size_t		start = serv.find("location");
 
 	if (start == std::string::npos)
-		return ;
+	{
+		std::cerr << "Server "<< server.server_name << " need at last one location with a default file" << "\n";
+		return (false);
+	}
 	else
 	{
 		size_t		end_server = serv.find("}};", start);
@@ -281,67 +280,48 @@ void	Config::_config_locations(std::string &serv, t_server server)
 
 			start = locations.find("location", start);
 			end = locations.find("{", start);
-			if (start + 8 >= end)
+			if (start + strlen("location") >= end)
 			{
 				std::cerr << "Location need a path on server " << server.server_name << "\n";
-				return ;
+				return (false);
 			}
 			locat.path = find_and_split(locations, start, "location", "{");
 
-			end = locations.find(";", start + strlen("location") + strlen(locat.path.c_str()));
+			end = locations.find(";", start);
 			start = locations.find("default", start);
-			if (start > end || start == std::string::npos)
+			if (start + strlen("default") >= end || start == std::string::npos)
 			{
 				std::cerr << "Location " << locat.path << " need a default file" << "\n";
-				return ;
+				return (false);
 			}
 			locat.default_file = find_and_split(locations, start, "default", ";");
 
-			end = locations.find(";", end + strlen("default") + strlen(locat.default_file.c_str()));
+			size_t	end2;
+
+			end2 = locations.find(";", end);
 			start = locations.find("directory", start);
-			if (start > end || start == std::string::npos || end == std::string::npos)
+			if (start > end2 || start == std::string::npos || end2 == std::string::npos)
 				locat.directory = false;
 			else
 				locat.directory = _is_directory_visible(find_and_split(locations, start, "directory", ";"));
-
-			std::cout << "SERVER: " << server.server_name << "\nLocation: " << locat.path << "\nDir: " << locat.directory << "\n";
-
+			start = locations.find("allowed_methods", end);
+			if (start == std::string::npos)
+				locat.methods.push_back("GET");
+			else
+			{
+				start = start + strlen("allowed_methods");
+				end = locations.find(";", start);
+				std::string	ref = locations.substr(start, end - start);
+				_config_methods(ref, locat);
+			}
 			start = locations.find("}", end);
 			end = locations.find("{", start);
 			server.locations.insert(std::pair<std::string, t_location>(locat.path, locat));
 		}
 
 	}
-	return ;
+	return (true);
 }
-// void	Config::_config_locations(t_server &server, size_t start)
-// {
-	// size_t		end = this->_content.find("{", start);
-	// size_t		end_server = (this->_content.find("}}", start));
-	// std::string	ref;
-
-	// while (end < end_server)
-	// {
-	// 	t_location	locat;
-
-	// 	start = this->_content.find("location", start) + strlen("location");
-	// 	end = this->_content.find("{", start);
-
-	// 	locat.path = this->_content.substr(start, end - start);
-	// 	ref = find_and_split(end, "default", "directory");
-	// 	locat.default_file = ref;
-	// 	locat.directory = _is_directory_visible(find_and_split(end, "directory", "allowed_methods"));
-
-	// 	start = this->_content.find("allowed_methods", start) + strlen("allowed_methods");
-	// 	end = this->_content.find("}", start);
-	// 	ref = this->_content.substr(start, end - start);
-
-	// 	_config_methods(ref, locat);
-
-	// 	server.locations.insert(std::pair<std::string, t_location>(locat.path, locat));
-	// }
-// 	return ;
-// }
 
 void	Config::_config_methods(std::string ref, t_location &location)
 {
@@ -371,4 +351,9 @@ t_server	&Config::get_server(int index)
 size_t	Config::get_total_servers(void)
 {
 	return (this->_server_string.size());
+}
+
+bool	&Config::is_good_to_run(void)
+{
+	return (this->_good_to_run);
 }
