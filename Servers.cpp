@@ -142,6 +142,7 @@ void	Servers::_accept_connection (size_t index)
 	}
 	_process_client(index, client_fd);
 	//TODO COMPLETO: deixar o parametro "GET" dinamico
+	std::cout << "Method: " << this->_client.get_method() << std::endl;
 	_process_response(index, client_fd, this->_client.get_method());
 	close(client_fd);
 	return ;
@@ -166,7 +167,7 @@ void	Servers::_process_client(size_t index, int &client_fd)
 		return ;
 	}
 	this->_client.set_buffer(buffer);
-	this->_client.print_map();
+	// this->_client.print_map();
 	return ;
 }
 

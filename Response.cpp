@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/06/18 21:16:23 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/06/22 21:05:08 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,19 +49,14 @@ Response::~Response(void)
 
 void	Response::run_response(void)
 {
+	//TODO: mudar para boleanos e mudar o status code dinamicamente
 	_check_directory_location();
 	_check_allowed_methods();
 	_check_file_location();
 	if (this->_status_code != "200")
-	{
-		std::string		save_code = this->_status_code;
-		std::string		save_msg = this->_status_msg;
-		while (this->_status_code != "200")
-			_check_errors_location_file();
-		this->_status_code = save_code;
-		this->_status_msg = save_msg;
-	}
+		_check_errors_location_file();
 	set_file((this->_response.server.root + this->_response.path), this->_response.filename);
+	std::cout << (this->_response.server.root + this->_response.path) << this->_response.filename << "\n";
 	_make_response();
 	_send_response();
 	return ;
@@ -78,8 +73,15 @@ void	Response::_check_allowed_methods(void)
 {
 	if (this->_status_code == "404")
 		return ;
-	else if (find(this->_response.server.locations.find(this->_response.path)->second.methods.begin(), this->_response.server.locations.find(this->_response.path)->second.methods.end(), this->_response.method) == this->_response.server.locations.find(this->_response.path)->second.methods.end())
-		status_code_distributor("405");
+	else
+	{
+		std::map<std::string, t_location>::iterator i = this->_response.server.locations.find(this->_response.path);
+		if (i != this->_response.server.locations.end())
+		{
+			if (find(i->second.methods.begin(), i->second.methods.end(), this->_response.method) == i->second.methods.end())
+				status_code_distributor("405");
+		}	
+	}
 	return ;
 }
 
@@ -93,8 +95,9 @@ void	Response::_check_file_location(void)
 		status_code_distributor("404");
 	else if (!file.is_open() || (file.peek() == std::ifstream::traits_type::eof()))
 		status_code_distributor("302");
-	else
-		status_code_distributor("200");
+	//TODO: resolver os status code
+	// else
+	// 	status_code_distributor("200");
 	file.close();
 	return ;
 }

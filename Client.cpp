@@ -91,6 +91,7 @@ void	Client::set_buffer(std::vector<char> buffer)
 	this->_buffer_map["Request"] = line;
 	while (std::getline(stream, line))
 	{
+		// std::cout << "line: " << line << std::endl;
 		std::size_t first_space = line.find(':');
 		if (first_space != std::string::npos)
 		{
@@ -98,10 +99,10 @@ void	Client::set_buffer(std::vector<char> buffer)
 			std::string value = line.substr(first_space + 2);
 			this->_buffer_map[key] = value;
 		}
-		else if (!line.empty() && line != "\r" && line != "\n" && line != "\r\n")
+		else if (line.empty() && line != "\r" && line != "\n" && line != "\r\n")
 		{
-			//TODO: entender por que cai no payload quando não tem payload
 			//TODO: parsear o payload
+			// std::cout << "payload:" << line << "hello" << std::endl;
 			this->_buffer_map["Payload"] = line;
 		}
 	}
@@ -124,12 +125,12 @@ std::string	Client::get_path(void)
 	if (path == "/")
 	{
 		this->set_content_type("text/html");
-		return ("/index.html");
+		return ("index.html");
 	}
 	else if (std::strchr(path.c_str(), '.') == NULL)
 	{
 		this->set_content_type("text/html");
-		return (path + "/index.html");
+		return (path + "index.html");
 	}
 	else
 		this->format_content_type();
@@ -138,6 +139,5 @@ std::string	Client::get_path(void)
 
 std::string	Client::get_method(void)
 {
-	//TODO: talvez adicionar um trycatch pra validar os metodos aceitos
 	return (this->_map_finder("Request", "", " "));
 }
