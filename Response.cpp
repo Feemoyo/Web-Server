@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/06/22 21:05:08 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/06/23 00:10:38 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	Response::run_response(void)
 	if (this->_status_code != "200")
 		_check_errors_location_file();
 	set_file((this->_response.server.root + this->_response.path), this->_response.filename);
-	std::cout << (this->_response.server.root + this->_response.path) << this->_response.filename << "\n";
+	// std::cout << (this->_response.server.root + this->_response.path) << this->_response.filename << "\n";
 	_make_response();
 	_send_response();
 	return ;
@@ -96,8 +96,8 @@ void	Response::_check_file_location(void)
 	else if (!file.is_open() || (file.peek() == std::ifstream::traits_type::eof()))
 		status_code_distributor("302");
 	//TODO: resolver os status code
-	// else
-	// 	status_code_distributor("200");
+	else
+		status_code_distributor("200");
 	file.close();
 	return ;
 }

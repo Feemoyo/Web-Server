@@ -18,7 +18,6 @@ public:
 					Client(void);
 					~Client(void);
 
-	void			set_buffer(char *buffer);
 	void			set_buffer(std::vector<char> buffer);
 	void			format_content_type(void);
 	
