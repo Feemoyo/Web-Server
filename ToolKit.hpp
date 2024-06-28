@@ -40,6 +40,7 @@ public:
 	void				set_file(std::string path, std::string name);
 	void				set_file(std::string path_and_name);
 	void				set_status_code(std::string code);
+	void				set_content(std::string new_content);
 	void				set_content_type(std::string type);
 
 };

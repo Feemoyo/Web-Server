@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:01:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/06/13 20:05:34 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/06/28 13:21:24 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,6 +195,12 @@ void	ToolKit::set_file(std::string path_and_name)
 	this->_file_path = path_and_name.substr(0, path_and_name.find_last_of('/') + 1);
 	this->_file_name = path_and_name.substr(path_and_name.find_last_of('/') + 1);
 	_extract_content();
+	return ;
+}
+
+void	ToolKit::set_content(std::string new_content)
+{
+	this->_content = new_content;
 	return ;
 }
 

@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 19:27:55 by rferrero          #+#    #+#             */
-/*   Updated: 2024/06/22 18:59:11 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/06/23 17:42:00 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,16 @@ Config		*conf;
 
 void	_server_config_model(void)
 {
-	std::cout << "server\n{\n\tlisten\t\t\t\t\t80" << "\n";;
-	std::cout << "\tserver_name\t\t\t\tlocalhost" << "\n";;
-	std::cout << "\troot\t\t\t\t\twww" << "\n";;
-	std::cout << "\tdirectory\t\t\t\ton\n\tclient_max_body_size\t\t\t200\n" << "\n";;
-	std::cout << "\tlocation /\n\t{\n\t\tdefault\t\t\t\tindex.html" << "\n";;
-	std::cout << "\t\tdirectory\t\t\ton" << "\n";;
-	std::cout << "\t\tallowed_methods\t\t\tGET\n\t}\n" << "\n";;
-	std::cout << "\tlocation /errors/\n\t{\n\t\tdefault\t\t\t\t404.html" << "\n";;
-	std::cout << "\t\tdirectory\t\t\toff" << "\n";;
-	std::cout << "\t\tallowed_methods\t\t\tGET\n\t}\n}" << "\n";;
+	std::cout << "server\n{\n\tlisten\t\t\t\t\t80;" << "\n";;
+	std::cout << "\tserver_name\t\t\t\tlocalhost;" << "\n";;
+	std::cout << "\troot\t\t\t\t\twww;" << "\n";;
+	std::cout << "\tdirectory\t\t\t\ton\n\tclient_max_body_size\t\t\t200;\n" << "\n";;
+	std::cout << "\tlocation /\n\t{\n\t\tdefault\t\t\t\tindex.html;" << "\n";;
+	std::cout << "\t\tdirectory\t\t\ton;" << "\n";;
+	std::cout << "\t\tallowed_methods\t\t\tGET;\n\t}\n" << "\n";;
+	std::cout << "\tlocation /errors/\n\t{\n\t\tdefault\t\t\t\t404.html;" << "\n";;
+	std::cout << "\t\tdirectory\t\t\toff;" << "\n";;
+	std::cout << "\t\tallowed_methods\t\t\tGET\n\t}\n};" << "\n";;
 	
 }
 

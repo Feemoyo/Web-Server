@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/06/05 20:19:59 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/06/28 14:14:42 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,19 +49,14 @@ Response::~Response(void)
 
 void	Response::run_response(void)
 {
+	this->_status_code = "200";
 	_check_directory_location();
 	_check_allowed_methods();
 	_check_file_location();
 	if (this->_status_code != "200")
-	{
-		std::string		save_code = this->_status_code;
-		std::string		save_msg = this->_status_msg;
-		while (this->_status_code != "200")
-			_check_errors_location_file();
-		this->_status_code = save_code;
-		this->_status_msg = save_msg;
-	}
-	set_file((this->_response.server.root + this->_response.path), this->_response.filename);
+		_check_errors_location_file();
+	else
+		set_file((this->_response.server.root + this->_response.path), this->_response.filename);
 	_make_response();
 	_send_response();
 	return ;
@@ -78,7 +73,9 @@ void	Response::_check_allowed_methods(void)
 {
 	if (this->_status_code == "404")
 		return ;
-	else if (find(this->_response.server.locations.find(this->_response.path)->second.methods.begin(), this->_response.server.locations.find(this->_response.path)->second.methods.end(), this->_response.method) == this->_response.server.locations.find(this->_response.path)->second.methods.end())
+	else if (find(this->_response.server.locations.find(this->_response.path)->second.methods.begin(), \
+				this->_response.server.locations.find(this->_response.path)->second.methods.end(), \
+				this->_response.method) == this->_response.server.locations.find(this->_response.path)->second.methods.end())
 		status_code_distributor("405");
 	return ;
 }
@@ -93,17 +90,26 @@ void	Response::_check_file_location(void)
 		status_code_distributor("404");
 	else if (!file.is_open() || (file.peek() == std::ifstream::traits_type::eof()))
 		status_code_distributor("302");
-	else
-		status_code_distributor("200");
 	file.close();
 	return ;
 }
 
 void	Response::_check_errors_location_file(void)
 {
-	this->_response.path = "/errors/";
-	this->_response.filename = (this->_status_code + ".html");
-	_check_file_location();
+	std::map<std::string, t_location>::iterator	it;
+
+	it = this->_response.server.locations.find("/errors/");
+	if (it == this->_response.server.locations.end())
+	{
+		std::string	new_content = ("<!DOCTYPE html>\n<html>\n\t<head>\n\t\t<meta charset=\"UTF-8\">\n\t\t<title>" + (std::string)this->_status_code + " " + (std::string)this->_status_msg + "</title>\n\t\t<link rel=\"icon\" href=\"/imgs/icon.svg\" type=\"image/png\">\n\t</head>\n\t<body>\n\t\t<h1 style=\"background-color: black; text-align: center; color: white;\"></h1>\n\t\t<p style=\"font-size: 8;\">" + (std::string)this->_status_code + " " + (std::string)this->_status_msg + "</p>\n\t</body>\n</html>\n");
+		this->set_content(new_content);
+	}
+	else
+	{
+		this->_response.path = "/errors/";
+		this->_response.filename = ((std::string)this->_status_code + ".html");
+		this->set_file((this->_response.server.root + this->_response.path), this->_response.filename);
+	}
 	return ;
 }
 
@@ -125,7 +131,6 @@ void	Response::_make_response(void)
 	this->_response.header += " \n\n";
 	this->_response.body = this->_response.header;
 	this->_response.body += file_content;
-
 	return ;
 }
 
