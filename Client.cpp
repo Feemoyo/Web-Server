@@ -55,7 +55,6 @@ void	Client::format_content_type(void)
 
 void	Client::set_buffer(std::vector<char> buffer)
 {
-	//TODO: validar o nome str para deixar mais intuitivo
 	std::string str(buffer.begin(), buffer.end());
 	std::istringstream	stream(str);
 	std::string 		line;
@@ -65,6 +64,8 @@ void	Client::set_buffer(std::vector<char> buffer)
 	this->_buffer_map["Request"] = line;
 	while (std::getline(stream, line))
 	{
+		if (line == "\r" || line == "\n" || line == "\r\n")
+			break ;
 		std::size_t first_space = line.find(':');
 		if (first_space != std::string::npos)
 		{
@@ -72,14 +73,17 @@ void	Client::set_buffer(std::vector<char> buffer)
 			std::string value = line.substr(first_space + 2);
 			this->_buffer_map[key] = value;
 		}
-		else if (!line.empty() && line != "\r" && line != "\n" && line != "\r\n")
+		
+	}
+	while (std::getline(stream, line))
+	{
+		if (!line.empty())
 		{
-			//TODO: parsear o payload
-			//TODO: entender o que fazer quando payload é gigante :(
-			std::cout << "payload:" << line << "hello" << std::endl;
+			//TODO: parsear o payload e tirar o gohorse
 			this->_buffer_map["Payload"] = line;
 		}
 	}
+
 	return ;
 }
 
@@ -95,7 +99,6 @@ void	Client::print_map(void)
 std::string	Client::get_path(void)
 {
 	std::string path = this->_map_finder("Request", "/", " ");
-	//TODO: validar se o index.html deve ser algo padrao ou setado pelo .conf GET /test/index.html
 	if (path == "/")
 	{
 		this->set_content_type("text/html");
