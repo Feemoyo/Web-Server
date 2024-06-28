@@ -92,7 +92,7 @@ void	Client::print_map(void)
 	std::map<std::string, std::string>::iterator it;
 
 	for (it = this->_buffer_map.begin(); it != this->_buffer_map.end(); ++it)
-		std::cout << it->first << ": " << it->second << std::endl;
+		std::cout << it->first << ": " << it->second << "\n";;
 	return ;
 }
 

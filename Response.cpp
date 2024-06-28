@@ -49,14 +49,14 @@ Response::~Response(void)
 
 void	Response::run_response(void)
 {
-	//TODO: mudar para boleanos e mudar o status code dinamicamente
+	this->_status_code = "200";
 	_check_directory_location();
 	_check_allowed_methods();
 	_check_file_location();
 	if (this->_status_code != "200")
 		_check_errors_location_file();
-	set_file((this->_response.server.root + this->_response.path), this->_response.filename);
-	// std::cout << (this->_response.server.root + this->_response.path) << this->_response.filename << "\n";
+	else
+		set_file((this->_response.server.root + this->_response.path), this->_response.filename);
 	_make_response();
 	_send_response();
 	return ;
@@ -73,15 +73,10 @@ void	Response::_check_allowed_methods(void)
 {
 	if (this->_status_code == "404")
 		return ;
-	else
-	{
-		std::map<std::string, t_location>::iterator i = this->_response.server.locations.find(this->_response.path);
-		if (i != this->_response.server.locations.end())
-		{
-			if (find(i->second.methods.begin(), i->second.methods.end(), this->_response.method) == i->second.methods.end())
-				status_code_distributor("405");
-		}	
-	}
+	else if (find(this->_response.server.locations.find(this->_response.path)->second.methods.begin(), \
+				this->_response.server.locations.find(this->_response.path)->second.methods.end(), \
+				this->_response.method) == this->_response.server.locations.find(this->_response.path)->second.methods.end())
+		status_code_distributor("405");
 	return ;
 }
 
@@ -95,18 +90,26 @@ void	Response::_check_file_location(void)
 		status_code_distributor("404");
 	else if (!file.is_open() || (file.peek() == std::ifstream::traits_type::eof()))
 		status_code_distributor("302");
-	//TODO: resolver os status code
-	else
-		status_code_distributor("200");
 	file.close();
 	return ;
 }
 
 void	Response::_check_errors_location_file(void)
 {
-	this->_response.path = "/errors/";
-	this->_response.filename = (this->_status_code + ".html");
-	_check_file_location();
+	std::map<std::string, t_location>::iterator	it;
+
+	it = this->_response.server.locations.find("/errors/");
+	if (it == this->_response.server.locations.end())
+	{
+		std::string	new_content = ("<!DOCTYPE html>\n<html>\n\t<head>\n\t\t<meta charset=\"UTF-8\">\n\t\t<title>" + (std::string)this->_status_code + " " + (std::string)this->_status_msg + "</title>\n\t\t<link rel=\"icon\" href=\"/imgs/icon.svg\" type=\"image/png\">\n\t</head>\n\t<body>\n\t\t<h1 style=\"background-color: black; text-align: center; color: white;\"></h1>\n\t\t<p style=\"font-size: 8;\">" + (std::string)this->_status_code + " " + (std::string)this->_status_msg + "</p>\n\t</body>\n</html>\n");
+		this->set_content(new_content);
+	}
+	else
+	{
+		this->_response.path = "/errors/";
+		this->_response.filename = ((std::string)this->_status_code + ".html");
+		this->set_file((this->_response.server.root + this->_response.path), this->_response.filename);
+	}
 	return ;
 }
 
@@ -128,7 +131,6 @@ void	Response::_make_response(void)
 	this->_response.header += " \n\n";
 	this->_response.body = this->_response.header;
 	this->_response.body += file_content;
-
 	return ;
 }
 

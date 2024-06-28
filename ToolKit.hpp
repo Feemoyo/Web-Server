@@ -27,7 +27,7 @@ public:
 						ToolKit(void);
 	virtual 			~ToolKit(void);
 
-	std::string			find_and_split(size_t str, std::string start, std::string end);
+	std::string			find_and_split(std::string &content, size_t str, std::string start, std::string end);
 
 	std::string			&get_content(void);
 	std::string			&get_file_name(void);
@@ -40,6 +40,7 @@ public:
 	void				set_file(std::string path, std::string name);
 	void				set_file(std::string path_and_name);
 	void				set_status_code(std::string code);
+	void				set_content(std::string new_content);
 	void				set_content_type(std::string type);
 
 };
