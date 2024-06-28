@@ -53,9 +53,10 @@ void	Client::format_content_type(void)
   return ;
 }
 
-void	Client::set_buffer(char *buffer)
+void	Client::set_buffer(std::vector<char> buffer)
 {
-	std::istringstream	stream(buffer);
+	std::string str(buffer.begin(), buffer.end());
+	std::istringstream	stream(str);
 	std::string 		line;
 
 	this->_buffer_map.clear();
@@ -63,6 +64,8 @@ void	Client::set_buffer(char *buffer)
 	this->_buffer_map["Request"] = line;
 	while (std::getline(stream, line))
 	{
+		if (line == "\r" || line == "\n" || line == "\r\n")
+			break ;
 		std::size_t first_space = line.find(':');
 		if (first_space != std::string::npos)
 		{
@@ -70,7 +73,17 @@ void	Client::set_buffer(char *buffer)
 			std::string value = line.substr(first_space + 2);
 			this->_buffer_map[key] = value;
 		}
+		
 	}
+	while (std::getline(stream, line))
+	{
+		if (!line.empty())
+		{
+			//TODO: parsear o payload e tirar o gohorse
+			this->_buffer_map["Payload"] = line;
+		}
+	}
+
 	return ;
 }
 
@@ -86,18 +99,22 @@ void	Client::print_map(void)
 std::string	Client::get_path(void)
 {
 	std::string path = this->_map_finder("Request", "/", " ");
-	//TODO: validar se o index.html deve ser algo padrao ou setado pelo .conf GET /test/index.html
 	if (path == "/")
 	{
 		this->set_content_type("text/html");
-		return ("/index.html");
+		return ("index.html");
 	}
 	else if (std::strchr(path.c_str(), '.') == NULL)
 	{
 		this->set_content_type("text/html");
-		return (path + "/index.html");
+		return (path + "index.html");
 	}
 	else
 		this->format_content_type();
 	return (path);
+}
+
+std::string	Client::get_method(void)
+{
+	return (this->_map_finder("Request", "", " "));
 }

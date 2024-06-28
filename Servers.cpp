@@ -141,27 +141,34 @@ void	Servers::_accept_connection (size_t index)
 		return ;
 	}
 	_process_client(index, client_fd);
-	_process_response(index, client_fd, "GET");
+	_process_response(index, client_fd, this->_client.get_method());
 	close(client_fd);
 	return ;
 }
 
 void	Servers::_process_client(size_t index, int &client_fd)
 {
-	char	buffer[1024];
-	ssize_t	bytes_read = recv(client_fd, buffer, sizeof(buffer), 0);
+	std::vector<char>	buffer(4096, 0);
+	ssize_t	bytes_read;
+	
+	while(true)
+	{
+		bytes_read = recv(client_fd, buffer.data(), buffer.size() - 1, 0);
 
-	if (bytes_read < 0)
-	{
-		std::cerr << "Reading from client fail on port: " << this->_servers[index].port << "\n";;
-		return ;
-	}
-	else if (bytes_read == 0)
-	{
-		std::cerr << "Client closed connection on port: " << this->_servers[index].port << "\n";;
-		return ;
+		if (bytes_read < 0)
+		{
+			std::cerr << "Reading from client fail on port: " << this->_servers[index].port << std::endl;
+			break ;
+		}
+		else if (bytes_read == 0)
+		{
+			std::cerr << "Client closed connection on port: " << this->_servers[index].port << std::endl;
+			break ;
+		}
+		std::cout << "Client message: \n" << buffer.data() << std::endl;
 	}
 	this->_client.set_buffer(buffer);
+	// this->_client.print_map();
 	return ;
 }
 
