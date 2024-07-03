@@ -18,13 +18,13 @@ public:
 					Client(void);
 					~Client(void);
 
-	void			set_buffer(std::vector<char> buffer);
+	bool			set_buffer(std::vector<char> buffer, bool &payload);
 	void			format_content_type(void);
 	
 	std::string		get_path(void);
 	std::string		get_method(void);
+	void			clear_buffer(void);
 	void			print_map(void);
-
 };
 
 #endif

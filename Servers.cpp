@@ -148,9 +148,11 @@ void	Servers::_accept_connection (size_t index)
 
 void	Servers::_process_client(size_t index, int &client_fd)
 {
-	std::vector<char>	buffer(4096, 0);
+	std::vector<char>	buffer(8192, 0);
 	ssize_t	bytes_read;
+	bool	payload = false;
 	
+	this->_client.clear_buffer();
 	while(true)
 	{
 		bytes_read = recv(client_fd, buffer.data(), buffer.size() - 1, 0);
@@ -165,9 +167,9 @@ void	Servers::_process_client(size_t index, int &client_fd)
 			std::cerr << "Client closed connection on port: " << this->_servers[index].port << std::endl;
 			break ;
 		}
-		std::cout << "Client message: \n" << buffer.data() << std::endl;
+		if (!this->_client.set_buffer(buffer, payload))
+			break ;
 	}
-	this->_client.set_buffer(buffer);
 	// this->_client.print_map();
 	return ;
 }

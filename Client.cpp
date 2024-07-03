@@ -53,47 +53,51 @@ void	Client::format_content_type(void)
   return ;
 }
 
-void	Client::set_buffer(std::vector<char> buffer)
+bool	Client::set_buffer(std::vector<char> buffer, bool &payload) 
 {
-	std::string str(buffer.begin(), buffer.end());
+	std::string 		str(buffer.begin(), buffer.end());
 	std::istringstream	stream(str);
 	std::string 		line;
+	std::string 		aux;
 
-	this->_buffer_map.clear();
-	std::getline(stream, line);
-	this->_buffer_map["Request"] = line;
-	while (std::getline(stream, line))
+	if (!payload)
 	{
-		if (line == "\r" || line == "\n" || line == "\r\n")
-			break ;
-		std::size_t first_space = line.find(':');
-		if (first_space != std::string::npos)
-		{
-			std::string key = line.substr(0, first_space);
-			std::string value = line.substr(first_space + 2);
-			this->_buffer_map[key] = value;
-		}
-		
+		std::getline(stream, line);
+		this->_buffer_map["Request"] = line;
 	}
 	while (std::getline(stream, line))
 	{
-		if (!line.empty())
+		if (_buffer_map["Request"].find("POST") != std::string::npos && (line == "\r" || payload))
 		{
-			//TODO: parsear o payload e tirar o gohorse
-			this->_buffer_map["Payload"] = line;
+			line.erase(std::remove_if(line.begin(), line.end(), static_cast<int(*)(int)>(&std::isspace)), line.end());
+			this->_buffer_map["Payload"] += line.substr(0, line.find('\0'));
+			payload = true;
+		}
+		else
+		{
+			std::size_t first_space = line.find(':');
+			if (first_space != std::string::npos)
+			{
+				std::string key = line.substr(0, first_space);
+				std::string value = line.substr(first_space + 2);
+				this->_buffer_map[key] = value;
+			}
 		}
 	}
 
-	return ;
-}
+	//TODO: transformar em função
+	std::stringstream	toInt(this->_buffer_map["Content-Length"]);
+	size_t 				content_length;
+	toInt >> content_length;
+	//
 
-void	Client::print_map(void)
-{
-	std::map<std::string, std::string>::iterator it;
+	// std::cout << "Content-Length: " << content_length << std::endl;
+	// std::cout << "Payload: " << this->_buffer_map["Payload"].size() << std::endl;
+	//TODO: explorar o motivo do payload ficar maior que o content-length
 
-	for (it = this->_buffer_map.begin(); it != this->_buffer_map.end(); ++it)
-		std::cout << it->first << ": " << it->second << "\n";;
-	return ;
+	if (content_length == (this->_buffer_map["Payload"].size()))
+		payload = false;
+	return (payload);
 }
 
 std::string	Client::get_path(void)
@@ -117,4 +121,19 @@ std::string	Client::get_path(void)
 std::string	Client::get_method(void)
 {
 	return (this->_map_finder("Request", "", " "));
+}
+
+void	Client::clear_buffer(void)
+{
+	this->_buffer_map.clear();
+	return ;
+}
+
+void	Client::print_map(void)
+{
+	std::map<std::string, std::string>::iterator it;
+
+	for (it = this->_buffer_map.begin(); it != this->_buffer_map.end(); ++it)
+		std::cout << it->first << ": " << it->second << "\n";;
+	return ;
 }
