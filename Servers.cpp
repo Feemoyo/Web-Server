@@ -155,6 +155,7 @@ void	Servers::_process_client(size_t index, int &client_fd)
 	this->_client.clear_buffer();
 	while(true)
 	{
+		buffer.assign(buffer.size(), 0);
 		bytes_read = recv(client_fd, buffer.data(), buffer.size() - 1, 0);
 
 		if (bytes_read < 0)

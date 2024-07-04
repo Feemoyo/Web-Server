@@ -91,10 +91,6 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 	toInt >> content_length;
 	//
 
-	// std::cout << "Content-Length: " << content_length << std::endl;
-	// std::cout << "Payload: " << this->_buffer_map["Payload"].size() << std::endl;
-	//TODO: explorar o motivo do payload ficar maior que o content-length
-
 	if (content_length == (this->_buffer_map["Payload"].size()))
 		payload = false;
 	return (payload);
