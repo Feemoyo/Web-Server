@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:01:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/04 03:16:40 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/07/04 07:40:03 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ ToolKit::~ToolKit(void)
 */
 
 
-void	ToolKit::this->_extract_content(void)
+void	ToolKit::_extract_content(void)
 {
 	std::ifstream	file((this->_file_path + this->_file_name).c_str());
 	std::string		line;
