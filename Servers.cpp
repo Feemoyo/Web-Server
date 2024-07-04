@@ -171,7 +171,8 @@ void	Servers::_process_client(size_t index, int &client_fd)
 		if (!this->_client.set_buffer(buffer, payload))
 			break ;
 	}
-	// this->_client.print_map();
+	this->_client.decode_payload();
+	this->_client.print_map();
 	return ;
 }
 

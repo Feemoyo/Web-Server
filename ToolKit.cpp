@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ToolKit.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:01:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/06/28 13:21:24 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/07/04 01:44:07 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ std::string	ToolKit::find_and_split(std::string &content, size_t str, std::strin
 
 void	ToolKit::status_code_mapper(void)
 {
-
 	statusCodes.insert(std::make_pair("100", "Continue"));
 	statusCodes.insert(std::make_pair("101", "Switching Protocols"));
 	statusCodes.insert(std::make_pair("102", "Processing"));
@@ -132,7 +131,7 @@ void	ToolKit::status_code_mapper(void)
 void ToolKit::status_code_distributor(std::string status_code)
 {
 	std::map<std::string, std::string>::iterator	it = statusCodes.find(status_code);
-	
+
 	if (it != statusCodes.end())
 	{
 		this->_status_code = it->first;
@@ -208,6 +207,19 @@ void	ToolKit::set_content_type(std::string type)
 {
 	this->_content_type = type;
 	return ;
+}
+
+/*
+** --------------------------------- UTILITIES ---------------------------------
+*/
+
+size_t	ToolKit::str_to_size_t(std::string str)
+{
+	size_t		size;
+
+	std::istringstream(str) >> size;
+
+	return (size);
 }
 
 /*

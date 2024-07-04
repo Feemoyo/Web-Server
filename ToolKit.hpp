@@ -43,6 +43,7 @@ public:
 	void				set_content(std::string new_content);
 	void				set_content_type(std::string type);
 
+	size_t				str_to_size_t(std::string str);
 };
 
 std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs);

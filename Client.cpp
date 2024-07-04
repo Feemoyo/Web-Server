@@ -43,6 +43,44 @@ std::string	Client::_map_finder(std::string key, std::string value1, std::string
 	return(this->_buffer_map[key].substr(auxFindGET1, auxFindGET2 - auxFindGET1));
 }
 
+std::string	Client::_url_decode(const std::string &str)
+{
+	std::string result;
+	char hex[3] = {0, 0, 0};
+
+    result.reserve(str.length());
+    for (std::size_t i = 0; i < str.length(); ++i)
+	{
+        if (str[i] == '%')
+		{
+            if (i + 2 < str.length())
+			{
+                hex[0] = str[i + 1];
+				hex[1] = str[i + 2];
+                result += static_cast<char>(this->_from_hex(hex[0]) * 16 + this->_from_hex(hex[1]));
+                i += 2;
+            } 
+        } else if (str[i] == '+') {
+            result += ' ';
+        } else {
+            result += str[i];
+        }
+    }
+
+    return (result);
+}
+
+int	Client::_from_hex(char c)
+{
+	if (c >= '0' && c <= '9')
+		return (c - '0');
+	if (c >= 'a' && c <= 'f')
+		return (c - 'a' + 10);
+	if (c >= 'A' && c <= 'F')
+		return (c - 'A' + 10);
+	return (0);
+}
+
 void	Client::format_content_type(void)
 {
 	std::string content_type = this->_map_finder("Request", ".", " ");
@@ -85,13 +123,7 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 		}
 	}
 
-	//TODO: transformar em função
-	std::stringstream	toInt(this->_buffer_map["Content-Length"]);
-	size_t 				content_length;
-	toInt >> content_length;
-	//
-
-	if (content_length == (this->_buffer_map["Payload"].size()))
+	if (this->str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size()))
 		payload = false;
 	return (payload);
 }
@@ -122,6 +154,13 @@ std::string	Client::get_method(void)
 void	Client::clear_buffer(void)
 {
 	this->_buffer_map.clear();
+	return ;
+}
+
+void	Client::decode_payload(void)
+{
+	this->_buffer_map["Payload"] = this->_url_decode(this->_buffer_map["Payload"]);
+
 	return ;
 }
 

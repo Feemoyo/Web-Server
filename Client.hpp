@@ -11,8 +11,10 @@ class	Client : public ToolKit
 private:
 	std::map<std::string, std::string>	_buffer_map;
 	Mime								_mime;
+
 	std::string							_map_finder(std::string key, std::string value1, std::string value2);
-	
+	int									_from_hex(char c);
+	std::string							_url_decode(const std::string &str);
 
 public:
 					Client(void);
@@ -24,6 +26,7 @@ public:
 	std::string		get_path(void);
 	std::string		get_method(void);
 	void			clear_buffer(void);
+	void			decode_payload(void);
 	void			print_map(void);
 };
 
