@@ -172,7 +172,7 @@ void	Servers::_process_client(size_t index, int &client_fd)
 			break ;
 	}
 	this->_client.decode_payload();
-	// this->_client.print_map();
+	this->_client.print_map();
 	return ;
 }
 

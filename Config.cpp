@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/04 03:24:15 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/07/04 17:58:56 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,6 @@
 /*
 ** ----------------------------- STATIC FUNCTIONS -----------------------------
 */
-
-static bool	_is_space(char c)
-{
-	return (std::isspace(static_cast<unsigned char>(c)));
-}
 
 static void	_remove_comments(std::string &str)
 {
@@ -34,14 +29,6 @@ static void	_remove_comments(std::string &str)
 		str.erase(ref, end - ref);
 		ref = str.find('#');
 	}
-	return ;
-}
-
-//TODO: esta função poderia estar na toolkit pois este mesmo arquetipo é utilizado no codigo
-//TIPS: parabens ao dev, esta melhor do que a minha (Felipe)
-static void	_remove_white_spaces(std::string &str)
-{
-	str.erase(std::remove_if(str.begin(), str.end(), _is_space), str.end());
 	return ;
 }
 
@@ -66,16 +53,6 @@ static bool	_verify_brackets(std::string &str)
 	return (true);
 }
 
-//TODO: tambem poderia estar na toolkit
-static int	_string_to_int(std::string str)
-{
-	std::stringstream	ss(str);
-	int					ref;
-
-	ss >> ref;
-	return (ref);
-}
-
 static bool	_is_directory_visible(std::string str)
 {
 	if (str == "on")
@@ -97,7 +74,7 @@ Config::Config(char *argv)
 	this->_good_to_run = false;
 	set_file("./", argv);
 	_remove_comments(this->_content);
-	_remove_white_spaces(this->_content);
+	this->remove_white_spaces(this->_content);
 	if (_verify_brackets(this->_content) && _config_total_servers() && _config_servers())
 		this->_good_to_run = true;
 	return ;
@@ -174,7 +151,7 @@ bool	Config::_is_there_a_valid_port(std::string &serv, int &port)
 		std::cerr << "Fail to find server port" << "\n";;
 		return (false);
 	}
-	port = _string_to_int(find_and_split(serv, 0, "listen", ";"));
+	port = this->string_to_int(find_and_split(serv, 0, "listen", ";"));
 	if (port < 1024 || port > 49151)
 	{
 		std::cerr << "Invalid server port" << "\n";;
@@ -244,12 +221,12 @@ void	Config::_set_max_body_size(std::string &serv, int &max_body_size)
 	{
 		size_t	end_2 = serv.find(";location", ref);
 		if (end_2 != std::string::npos)
-			max_body_size = _string_to_int(find_and_split(serv, ref, "client_max_body_size", ";"));
+			max_body_size = this->string_to_int(find_and_split(serv, ref, "client_max_body_size", ";"));
 		else
 		{
 			size_t	end_3 = serv.find("};");
 			if (end_3 != std::string::npos)
-				max_body_size = _string_to_int(find_and_split(serv, ref, "client_max_body_size", ";"));
+				max_body_size = this->string_to_int(find_and_split(serv, ref, "client_max_body_size", ";"));
 		}
 	}
 	if (max_body_size > 200000)

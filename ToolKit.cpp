@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:01:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/04 07:40:03 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/07/04 18:07:13 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,10 @@ ToolKit::~ToolKit(void)
 ** --------------------------------- METHODS ----------------------------------
 */
 
+bool	ToolKit::_is_space(char c)
+{
+	return (std::isspace(static_cast<unsigned char>(c)));
+}
 
 void	ToolKit::_extract_content(void)
 {
@@ -146,6 +150,21 @@ void ToolKit::status_code_distributor(std::string status_code)
 		this->_content_type = "text/html";
 	}
 
+}
+
+int	ToolKit::string_to_int(std::string str)
+{
+	std::stringstream	ss(str);
+	int					ref;
+
+	ss >> ref;
+	return (ref);
+}
+
+void	ToolKit::remove_white_spaces(std::string &str)
+{
+	str.erase(std::remove_if(str.begin(), str.end(), this->_is_space), str.end());
+	return ;
 }
 
 /*

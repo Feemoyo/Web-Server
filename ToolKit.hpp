@@ -16,11 +16,12 @@ protected:
 	static std::string		_content_type;
 	static std::string		_status_msg;
 
-	void				_extract_content(void);
+	void					_extract_content(void);
 
 private:
 
-	std::map<std::string, std::string> statusCodes;
+	std::map<std::string, std::string>	statusCodes;
+	static bool							_is_space(char c);
 	
 public:
 
@@ -37,6 +38,8 @@ public:
 
 	void				status_code_mapper(void);
 	void				status_code_distributor(std::string status_code);
+	int					string_to_int(std::string str);
+	void				remove_white_spaces(std::string &str);
 	void				set_file(std::string path, std::string name);
 	void				set_file(std::string path_and_name);
 	void				set_status_code(std::string code);
