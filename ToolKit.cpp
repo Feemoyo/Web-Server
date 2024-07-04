@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:01:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/04 01:44:07 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/07/04 03:16:40 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ ToolKit::~ToolKit(void)
 */
 
 
-void	ToolKit::_extract_content(void)
+void	ToolKit::this->_extract_content(void)
 {
 	std::ifstream	file((this->_file_path + this->_file_name).c_str());
 	std::string		line;
@@ -185,7 +185,7 @@ void	ToolKit::set_file(std::string path, std::string name)
 {
 	this->_file_path = path;
 	this->_file_name = name;
-	_extract_content();
+	this->_extract_content();
 	return ;
 }
 
@@ -193,7 +193,7 @@ void	ToolKit::set_file(std::string path_and_name)
 {	 
 	this->_file_path = path_and_name.substr(0, path_and_name.find_last_of('/') + 1);
 	this->_file_name = path_and_name.substr(path_and_name.find_last_of('/') + 1);
-	_extract_content();
+	this->_extract_content();
 	return ;
 }
 

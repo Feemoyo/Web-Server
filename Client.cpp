@@ -128,6 +128,7 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 	return (payload);
 }
 
+//TODO: acredito que a get_path precisa validar o autoindex pra nao retornar index.html
 std::string	Client::get_path(void)
 {
 	std::string path = this->_map_finder("Request", "/", " ");

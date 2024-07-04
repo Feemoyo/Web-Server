@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/06/22 19:03:46 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/07/04 03:24:15 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ static void	_remove_comments(std::string &str)
 	return ;
 }
 
+//TODO: esta função poderia estar na toolkit pois este mesmo arquetipo é utilizado no codigo
+//TIPS: parabens ao dev, esta melhor do que a minha (Felipe)
 static void	_remove_white_spaces(std::string &str)
 {
 	str.erase(std::remove_if(str.begin(), str.end(), _is_space), str.end());
@@ -64,6 +66,7 @@ static bool	_verify_brackets(std::string &str)
 	return (true);
 }
 
+//TODO: tambem poderia estar na toolkit
 static int	_string_to_int(std::string str)
 {
 	std::stringstream	ss(str);
