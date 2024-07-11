@@ -135,7 +135,7 @@ std::string	Client::get_path(void)
 	if (path == "/")
 	{
 		this->set_content_type("text/html");
-		return ("index.html");
+		return ("/index.html");
 	}
 	else if (std::strchr(path.c_str(), '.') == NULL)
 	{
