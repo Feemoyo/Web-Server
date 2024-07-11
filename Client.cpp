@@ -124,7 +124,7 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 		}
 	}
 
-	if (this->str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size()))
+	if (this->_buffer_map["Payload"].empty() || this->str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size()))
 		payload = false;
 	return (payload);
 }
