@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/06/23 00:10:38 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/07/11 18:25:07 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <dirent.h>
 #include "Response.hpp"
 
 /*
@@ -23,14 +24,31 @@ Response::Response(void)
 
 Response::Response(int client_fd, t_server &server, std::string path_and_name, std::string method)
 {
-	size_t	start_file = path_and_name.find_last_of("/") + 1;
+	size_t	start = path_and_name.find_last_of("/") + 1;
 
 	this->status_code_mapper();
 	this->_response.client = client_fd;
 	this->_response.server = server;
 	this->_response.method = method;
-	this->_response.path = path_and_name.substr(0, start_file);
-	this->_response.filename = path_and_name.substr(start_file);
+	this->_response.path = path_and_name.substr(0, start);
+	this->_response.name = path_and_name.substr(start);
+	if (this->_response.name.find(".") == std::string::npos)
+	{
+		this->_response.is_file = false;
+		std::cout << "NOT A FILE" << "\n";
+	}
+	else
+	{
+		this->_response.is_file = true;
+		std::cout << "FILE" << "\n";
+	}
+	this->_status_code = "200";
+
+	std::cout << "INPUT: " << path_and_name << "\n";
+
+	std::cout << "Path: " << this->_response.path << "\n";
+	std::cout << "Name: " << this->_response.name << "\n";
+
 	return ;
 }
 
@@ -49,14 +67,17 @@ Response::~Response(void)
 
 void	Response::run_response(void)
 {
-	this->_status_code = "200";
 	_check_directory_location();
 	_check_allowed_methods();
-	_check_file_location();
+	if (this->_response.is_file == true)
+		_check_file_location();
 	if (this->_status_code != "200")
 		_check_errors_location_file();
 	else
-		set_file((this->_response.server.root + this->_response.path), this->_response.filename);
+	{
+		if (this->_response.is_file == true)
+			set_file((this->_response.server.root + this->_response.path), this->_response.name);
+	}
 	_make_response();
 	_send_response();
 	return ;
@@ -64,8 +85,12 @@ void	Response::run_response(void)
 
 void	Response::_check_directory_location(void)
 {
-	if (this->_response.server.locations.find(this->_response.path) == this->_response.server.locations.end())
-		status_code_distributor("404");
+	if (this->_response.is_file == true)
+	{
+		if (this->_response.server.locations.find(this->_response.path) == this->_response.server.locations.end())
+			status_code_distributor("404");
+	}
+		
 	return ;
 }
 
@@ -82,7 +107,7 @@ void	Response::_check_allowed_methods(void)
 
 void	Response::_check_file_location(void)
 {
-	std::string		full_path = (this->_response.server.root + this->_response.path + this->_response.filename);
+	std::string		full_path = (this->_response.server.root + this->_response.path + this->_response.name);
 	std::ifstream	file(full_path.c_str());
 	struct stat		info;
 
@@ -107,10 +132,39 @@ void	Response::_check_errors_location_file(void)
 	else
 	{
 		this->_response.path = "/errors/";
-		this->_response.filename = ((std::string)this->_status_code + ".html");
-		this->set_file((this->_response.server.root + this->_response.path), this->_response.filename);
+		this->_response.name = ((std::string)this->_status_code + ".html");
+		this->set_file((this->_response.server.root + this->_response.path), this->_response.name);
 	}
 	return ;
+}
+
+void	Response::_set_dir_file(std::string &full_dir_path)
+{
+	std::string		files_list;
+	struct dirent*	entry;
+	DIR				*dir = opendir(full_dir_path.c_str());
+
+	if (dir == NULL)
+	{
+		files_list = ("<!DOCTYPE html>\n<html>\n\t<head>\n\t\t<meta charset=\"UTF-8\">\n\t\t<title>404 Not Found Dir</title>\n\t\t<link rel=\"icon\" href=\"/imgs/icon.svg\" type=\"image/png\">\n\t</head>\n\t<body>\n\t\t<h1 style=\"background-color: black; text-align: center; color: white;\"></h1>\n\t\t<p style=\"font-size: 8;\">404 Not Found Dir</p>\n\t</body>\n</html>\n");
+		this->set_content(files_list);
+		return ;
+	}
+	while ((entry = readdir(dir)) != NULL)
+	{
+		if (entry->d_type == DT_REG)
+		{
+			std::string	filename = entry->d_name;
+			std::string	filepath = full_dir_path + "/" + filename;
+			files_list += "<a href=\"" + filepath + "\">" + filename + "</a><br/>\n";
+		}
+	}
+	closedir(dir);
+	
+	std::string	full_dir_html = "<!DOCTYPE html>\n<html>\n\t<head>\n\t\t<meta charset=\"UTF-8\">\n\t\t<title>Directory Files</title>\n\t</head>\n\t<body>\n\t\t";
+	full_dir_html += files_list;
+	full_dir_html += "\n\t</body>\n</html>\n";
+	this->set_content(full_dir_html);
 }
 
 void	Response::_make_response(void)

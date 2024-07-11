@@ -140,7 +140,10 @@ std::string	Client::get_path(void)
 	else if (std::strchr(path.c_str(), '.') == NULL)
 	{
 		this->set_content_type("text/html");
-		return (path + "index.html");
+		if (path.find_last_of("/") == path.size() - 1)
+			return (path + "index.html");
+		else
+			return (path + "/index.html");
 	}
 	else
 		this->format_content_type();
