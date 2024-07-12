@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/12 16:13:28 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/07/12 17:22:50 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -280,7 +280,7 @@ bool	Config::_config_locations(std::string &serv, t_server &server)
 
 			end2 = locations.find(";", end);
 			start = locations.find("directory", start);
-			if (start > end2 || start == std::string::npos || end2 == std::string::npos)
+			if (start == std::string::npos || end2 == std::string::npos || start - end2 > 2)
 				locat.directory = false;
 			else
 				locat.directory = _is_directory_visible(find_and_split(locations, start, "directory", ";"));

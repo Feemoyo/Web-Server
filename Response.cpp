@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <dirent.h>
+#include <fstream>
 #include "Response.hpp"
 
 /*
@@ -24,13 +26,14 @@ Response::Response(void)
 //TODO: pegar o max_body_size para validar com o content_length do payload
 Response::Response(int client_fd, t_server &server, std::string path_and_name, std::string method)
 {
-	size_t	start_file = path_and_name.find_last_of("/") + 1;
+	size_t	start = path_and_name.find_last_of("/") + 1;
+
 	this->status_code_mapper();
 	this->_response.client = client_fd;
 	this->_response.server = server;
 	this->_response.method = method;
-	this->_response.path = path_and_name.substr(0, start_file);
-	this->_response.filename = path_and_name.substr(start_file);
+	this->_response.path = path_and_name.substr(0, start);
+	this->_response.name = path_and_name.substr(start);
 	return ;
 }
 
@@ -49,17 +52,38 @@ Response::~Response(void)
 
 void	Response::run_response(void)
 {
-	this->_status_code = "200";
+	status_code_distributor("200");
+	if (this->_response.name.size() == 0)
+		_directory_validation();
+	else
+		_file_validation();
+	_make_response();
+	_send_response();
+	return ;
+}
+
+void	Response::_file_validation(void)
+{
+	_check_file_location();
+	_check_allowed_methods();
+	if (this->_status_code != "200")
+		_check_errors_location_file();
+	else
+		set_file((this->_response.server.root + this->_response.path), this->_response.name);
+	return ;
+}
+
+void	Response::_directory_validation(void)
+{
 	_check_directory_location();
 	_check_allowed_methods();
 	_check_file_location();
+  _check_directory_autoindex();
 	_check_max_body_size();
 	if (this->_status_code != "200")
 		_check_errors_location_file();
 	else
-		set_file((this->_response.server.root + this->_response.path), this->_response.filename);
-	_make_response();
-	_send_response();
+		_set_dir_content();
 	return ;
 }
 
@@ -80,18 +104,12 @@ void	Response::_check_allowed_methods(void)
 		status_code_distributor("405");
 	return ;
 }
-
-void	Response::_check_file_location(void)
+void	Response::_check_directory_autoindex(void)
 {
-	std::string		full_path = (this->_response.server.root + this->_response.path + this->_response.filename);
-	std::ifstream	file(full_path.c_str());
-	struct stat		info;
-
-	if (stat(full_path.c_str(), &info) != 0 || !S_ISREG(info.st_mode))
-		status_code_distributor("404");
-	else if (!file.is_open() || (file.peek() == std::ifstream::traits_type::eof()))
-		status_code_distributor("302");
-	file.close();
+	if (this->_status_code == "404")
+		return ;
+	else if (this->_response.server.locations.find(this->_response.path)->second.directory != true)
+		status_code_distributor("403");
 	return ;
 }
 
@@ -108,9 +126,58 @@ void	Response::_check_errors_location_file(void)
 	else
 	{
 		this->_response.path = "/errors/";
-		this->_response.filename = ((std::string)this->_status_code + ".html");
-		this->set_file((this->_response.server.root + this->_response.path), this->_response.filename);
+		this->_response.name = ((std::string)this->_status_code + ".html");
+		this->set_file((this->_response.server.root + this->_response.path), this->_response.name);
 	}
+	return ;
+}
+
+void	Response::_check_file_location(void)
+{
+	std::string		full_path = (this->_response.server.root + this->_response.path + this->_response.name);
+	std::ifstream	file(full_path.c_str());
+	struct stat		info;
+
+	if (stat(full_path.c_str(), &info) != 0 || !S_ISREG(info.st_mode))
+		status_code_distributor("404");
+	else if (!file.is_open() || (file.peek() == std::ifstream::traits_type::eof()))
+		status_code_distributor("302");
+	file.close();
+	return ;
+}
+
+std::string	Response::_get_dir_files(void)
+{
+	std::string	files_list;
+	DIR			*dir = opendir((this->_response.server.root + this->_response.path).c_str());
+
+	if (dir == NULL)
+	{
+		std::cerr << "Directory " << (this->_response.server.root + this->_response.path) << " opening fail" << "\n";
+		return ("");
+	}
+	struct dirent	*entry;
+	while ((entry = readdir(dir)) != NULL)
+	{
+		if (entry->d_type == DT_REG || entry->d_type == DT_DIR)
+		{
+			std::string	filename = entry->d_name;
+			std::string	filepath = filename;
+
+			files_list += "<a href=\"" + filepath + "\">" + filename + "</a><br/>\n";
+		}
+	}
+	closedir(dir);
+	return (files_list);
+}
+
+void	Response::_set_dir_content(void)
+{
+	std::string	full_html = ("<!DOCTYPE html>\n<html>\n\t<head>\n\t\t<meta charset=\"UTF-8\">\n\t\t<title>Files in Directory</title>\n\t\t<link rel=\"icon\" href=\"/imgs/icon.svg\" type=\"image/png\">\n\t</head>\n\t<body>\n\t\t");
+	std::string	files = _get_dir_files();
+	full_html += files;
+	full_html += ("\n\t</body>\n</html>\n");
+	this->set_content(full_html);
 	return ;
 }
 
