@@ -60,13 +60,12 @@ std::string	Client::_url_decode(const std::string &str)
 				result += static_cast<char>(this->_from_hex(hex[0]) * 16 + this->_from_hex(hex[1]));
 				i += 2;
 			} 
-		} else if (str[i] == '+') {
-			result += ' ';
-		} else {
-			result += str[i];
 		}
+		else if (str[i] == '+')
+			result += ' ';
+		else
+			result += str[i];
 	}
-
 	return (result);
 }
 
@@ -132,7 +131,6 @@ void		Client::set_body_size(void)
 {
 	if (!this->_buffer_map["Payload"].empty())
 		this->set_content_length(this->_buffer_map["Payload"].size());
-
 	return ;
 }
 
@@ -176,7 +174,6 @@ void	Client::clear_body_size(void)
 void	Client::decode_payload(void)
 {
 	this->_buffer_map["Payload"] = this->_url_decode(this->_buffer_map["Payload"]);
-
 	return ;
 }
 
