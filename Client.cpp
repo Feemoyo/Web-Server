@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Client.cpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/13 14:32:11 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/05/14 19:32:39 by rferrero         ###   ########.fr       */
-/*                                                                            */
+/*																			*/
+/*														:::	  ::::::::   */
+/*   Client.cpp										:+:	  :+:	:+:   */
+/*													+:+ +:+		 +:+	 */
+/*   By: rferrero <rferrero@student.42.fr>		  +#+  +:+	   +#+		*/
+/*												+#+#+#+#+#+   +#+		   */
+/*   Created: 2024/05/13 14:32:11 by fmoreira		  #+#	#+#			 */
+/*   Updated: 2024/05/14 19:32:39 by rferrero		 ###   ########.fr	   */
+/*																			*/
 /* ************************************************************************** */
 
 #include "Client.hpp"
@@ -48,26 +48,26 @@ std::string	Client::_url_decode(const std::string &str)
 	std::string result;
 	char hex[3] = {0, 0, 0};
 
-    result.reserve(str.length());
-    for (std::size_t i = 0; i < str.length(); ++i)
+	result.reserve(str.length());
+	for (std::size_t i = 0; i < str.length(); ++i)
 	{
-        if (str[i] == '%')
+		if (str[i] == '%')
 		{
-            if (i + 2 < str.length())
+			if (i + 2 < str.length())
 			{
-                hex[0] = str[i + 1];
+				hex[0] = str[i + 1];
 				hex[1] = str[i + 2];
-                result += static_cast<char>(this->_from_hex(hex[0]) * 16 + this->_from_hex(hex[1]));
-                i += 2;
-            } 
-        } else if (str[i] == '+') {
-            result += ' ';
-        } else {
-            result += str[i];
-        }
-    }
+				result += static_cast<char>(this->_from_hex(hex[0]) * 16 + this->_from_hex(hex[1]));
+				i += 2;
+			} 
+		} else if (str[i] == '+') {
+			result += ' ';
+		} else {
+			result += str[i];
+		}
+	}
 
-    return (result);
+	return (result);
 }
 
 int	Client::_from_hex(char c)
@@ -140,7 +140,10 @@ std::string	Client::get_path(void)
 	else if (std::strchr(path.c_str(), '.') == NULL)
 	{
 		this->set_content_type("text/html");
-		return (path + "index.html");
+		if (path.find_last_of("/") == path.size() - 1)
+			return (path);
+		else
+			return (path + "/");
 	}
 	else
 		this->format_content_type();

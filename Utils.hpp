@@ -52,7 +52,7 @@ typedef struct s_response
 	int				client;
 	t_server		server;
 	std::string		path;
-	std::string		filename;
+	std::string		name;
 	std::string		method;
 	std::string		header;
 	std::string		body;
