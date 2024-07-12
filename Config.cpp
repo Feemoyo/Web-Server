@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/04 17:58:56 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/07/12 16:13:28 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@ bool	Config::_is_there_a_valid_port(std::string &serv, int &port)
 		return (false);
 	}
 	port = this->string_to_int(find_and_split(serv, 0, "listen", ";"));
-	if (port < 1024 || port > 49151)
+	if ((port != 80 && port < 1024) || port > 49151)
 	{
 		std::cerr << "Invalid server port" << "\n";;
 		return (false);
