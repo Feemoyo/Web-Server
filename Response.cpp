@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/12 15:24:53 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/07/12 17:41:30 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ Response::Response(void)
 	return ;
 }
 
+//TODO: pegar o max_body_size para validar com o content_length do payload
 Response::Response(int client_fd, t_server &server, std::string path_and_name, std::string method)
 {
 	size_t	start_file = path_and_name.find_last_of("/") + 1;
@@ -109,6 +110,13 @@ void	Response::_check_errors_location_file(void)
 		this->_response.filename = ((std::string)this->_status_code + ".html");
 		this->set_file((this->_response.server.root + this->_response.path), this->_response.filename);
 	}
+	return ;
+}
+
+void	Response::_check_max_body_size(void)
+{
+	if (this->_response.body.size() > this->get_content_length())
+		status_code_distributor("413");
 	return ;
 }
 

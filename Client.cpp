@@ -128,6 +128,14 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 	return (payload);
 }
 
+void		Client::set_body_size(void)
+{
+	if (!this->_buffer_map["Payload"].empty())
+		this->set_content_length(this->_buffer_map["Payload"].size());
+
+	return ;
+}
+
 std::string	Client::get_path(void)
 {
 	std::string path = this->_map_finder("Request", "/", " ");
@@ -155,6 +163,11 @@ void	Client::clear_buffer(void)
 {
 	this->_buffer_map.clear();
 	return ;
+}
+
+void	Client::clear_body_size(void)
+{
+	this->set_content_length(0);
 }
 
 void	Client::decode_payload(void)

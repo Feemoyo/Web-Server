@@ -17,6 +17,7 @@ private:
 	void		_check_file_empty(void);
 	void		_check_allowed_methods(void);
 	void		_check_errors_location_file(void);
+	void		_check_max_body_size(void);
 
 	void		_make_response(void);
 	void		_send_response(void);
