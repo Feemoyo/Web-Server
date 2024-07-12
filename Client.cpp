@@ -141,15 +141,9 @@ std::string	Client::get_path(void)
 	{
 		this->set_content_type("text/html");
 		if (path.find_last_of("/") == path.size() - 1)
-<<<<<<< HEAD
 			return (path);
 		else
 			return (path + "/");
-=======
-			return (path + "index.html");
-		else
-			return (path + "/index.html");
->>>>>>> 4f669df38635351ec010d40c431bc52ea65aea74
 	}
 	else
 		this->format_content_type();

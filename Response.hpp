@@ -18,13 +18,9 @@ private:
 	void		_check_allowed_methods(void);
 	void		_check_directory_autoindex(void);
 	void		_check_errors_location_file(void);
-<<<<<<< HEAD
 	void		_check_file_location(void);
 	void		_set_dir_content(void);
 	std::string	_get_dir_files(void);
-=======
-	void		_set_dir_file(std::string &full_dir_path);
->>>>>>> 4f669df38635351ec010d40c431bc52ea65aea74
 
 	void		_make_response(void);
 	void		_send_response(void);
