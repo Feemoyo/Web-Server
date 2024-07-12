@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/06/23 00:10:38 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/07/12 15:24:53 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ Response::Response(void)
 Response::Response(int client_fd, t_server &server, std::string path_and_name, std::string method)
 {
 	size_t	start_file = path_and_name.find_last_of("/") + 1;
-
 	this->status_code_mapper();
 	this->_response.client = client_fd;
 	this->_response.server = server;
