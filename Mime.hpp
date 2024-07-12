@@ -8,15 +8,16 @@
 class Mime
 {
 private:
-	std::map<std::string, std::string> _mime_image;
+	std::map<std::string, std::string> _mime;
 
-	void			_add_mime_image(std::string extension, std::string mime_type);
+	void			_add_mime(std::string extension, std::string mime_type);
 	void			_set_image_types();
+	void			_set_html_type();
 
 public:
 					Mime();
 					~Mime();
-	std::string		&get_mime_image(std::string extension);
+	std::string		&get_mime(std::string extension);
 
 };
 

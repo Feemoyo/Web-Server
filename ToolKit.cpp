@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:01:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/04 18:07:13 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/07/12 17:29:22 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 std::string	ToolKit::_status_code = "";
 std::string	ToolKit::_content_type = "";
 std::string	ToolKit::_status_msg = "";
+size_t		ToolKit::_content_length = 0;
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -196,6 +197,11 @@ std::string	&ToolKit::get_content_type(void)
 	return (this->_content_type);
 }
 
+size_t		&ToolKit::get_content_length(void)
+{
+	return (this->_content_length);
+}
+
 /*
 ** --------------------------------- SETTERS ---------------------------------
 */
@@ -225,6 +231,12 @@ void	ToolKit::set_content(std::string new_content)
 void	ToolKit::set_content_type(std::string type)
 {
 	this->_content_type = type;
+	return ;
+}
+
+void	ToolKit::set_content_length(size_t size)
+{
+	this->_content_length = size;
 	return ;
 }
 

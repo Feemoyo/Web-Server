@@ -21,11 +21,13 @@ public:
 					~Client(void);
 
 	bool			set_buffer(std::vector<char> buffer, bool &payload);
+	void			set_body_size(void);
 	void			format_content_type(void);
 	
 	std::string		get_path(void);
 	std::string		get_method(void);
 	void			clear_buffer(void);
+	void			clear_body_size(void);
 	void			decode_payload(void);
 	void			print_map(void);
 };

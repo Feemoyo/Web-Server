@@ -152,7 +152,7 @@ bool	Config::_is_there_a_valid_port(std::string &serv, int &port)
 		return (false);
 	}
 	port = this->string_to_int(find_and_split(serv, 0, "listen", ";"));
-	if (port < 1024 || port > 49151)
+	if ((port != 80 && port < 1024) || port > 49151)
 	{
 		std::cerr << "Invalid server port" << "\n";;
 		return (false);

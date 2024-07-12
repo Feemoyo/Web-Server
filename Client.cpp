@@ -84,9 +84,8 @@ int	Client::_from_hex(char c)
 void	Client::format_content_type(void)
 {
 	std::string content_type = this->_map_finder("Request", ".", " ");
-	std::string accept = this->_buffer_map["Accept"];
 	std::string aux = content_type.substr(1);
-	aux = this->_mime.get_mime_image(aux);
+	aux = this->_mime.get_mime(aux);
 	this->set_content_type(aux);
   return ;
 }
@@ -129,6 +128,14 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 	return (payload);
 }
 
+void		Client::set_body_size(void)
+{
+	if (!this->_buffer_map["Payload"].empty())
+		this->set_content_length(this->_buffer_map["Payload"].size());
+
+	return ;
+}
+
 std::string	Client::get_path(void)
 {
 	std::string path = this->_map_finder("Request", "/", " ");
@@ -159,6 +166,11 @@ void	Client::clear_buffer(void)
 {
 	this->_buffer_map.clear();
 	return ;
+}
+
+void	Client::clear_body_size(void)
+{
+	this->set_content_length(0);
 }
 
 void	Client::decode_payload(void)

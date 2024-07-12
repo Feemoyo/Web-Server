@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/12 18:12:18 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/07/12 18:37:15 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ Response::Response(void)
 	return ;
 }
 
+//TODO: pegar o max_body_size para validar com o content_length do payload
 Response::Response(int client_fd, t_server &server, std::string path_and_name, std::string method)
 {
 	size_t	start = path_and_name.find_last_of("/") + 1;
@@ -76,7 +77,9 @@ void	Response::_directory_validation(void)
 {
 	_check_directory_location();
 	_check_allowed_methods();
-	_check_directory_autoindex();
+	_check_file_location();
+  _check_directory_autoindex();
+	_check_max_body_size();
 	if (this->_status_code != "200")
 		_check_errors_location_file();
 	else
@@ -175,6 +178,13 @@ void	Response::_set_dir_content(void)
 	full_html += files;
 	full_html += ("\n\t</body>\n</html>\n");
 	this->set_content(full_html);
+	return ;
+}
+
+void	Response::_check_max_body_size(void)
+{
+	if (this->get_content_length() > static_cast<size_t>(this->_response.server.max_body_size))
+		status_code_distributor("413");
 	return ;
 }
 

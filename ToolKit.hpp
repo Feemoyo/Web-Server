@@ -15,6 +15,7 @@ protected:
 	static std::string		_status_code;
 	static std::string		_content_type;
 	static std::string		_status_msg;
+	static size_t			_content_length;
 
 	void					_extract_content(void);
 
@@ -35,6 +36,7 @@ public:
 	std::string			&get_file_path(void);
 	std::string			&get_status_code(void);
 	std::string			&get_content_type(void);
+	size_t				&get_content_length(void);
 
 	void				status_code_mapper(void);
 	void				status_code_distributor(std::string status_code);
@@ -45,6 +47,7 @@ public:
 	void				set_status_code(std::string code);
 	void				set_content(std::string new_content);
 	void				set_content_type(std::string type);
+	void				set_content_length(size_t length);
 
 	size_t				str_to_size_t(std::string str);
 };

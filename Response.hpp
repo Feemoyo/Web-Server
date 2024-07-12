@@ -19,6 +19,7 @@ private:
 	void		_check_directory_autoindex(void);
 	void		_check_errors_location_file(void);
 	void		_check_file_location(void);
+  void		_check_max_body_size(void);
 	void		_set_dir_content(void);
 	std::string	_get_dir_files(void);
 

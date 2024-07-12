@@ -153,6 +153,7 @@ void	Servers::_process_client(size_t index, int &client_fd)
 	bool	payload = false;
 	
 	this->_client.clear_buffer();
+	this->_client.clear_body_size();
 	while(true)
 	{
 		buffer.assign(buffer.size(), 0);
@@ -172,6 +173,7 @@ void	Servers::_process_client(size_t index, int &client_fd)
 			break ;
 	}
 	this->_client.decode_payload();
+	this->_client.set_body_size();
 	// this->_client.print_map();
 	return ;
 }
