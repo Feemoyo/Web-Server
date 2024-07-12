@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/12 17:54:22 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/07/12 18:12:18 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,7 @@ std::string	Response::_get_dir_files(void)
 		if (entry->d_type == DT_REG || entry->d_type == DT_DIR)
 		{
 			std::string	filename = entry->d_name;
-			std::string	filepath = (this->_response.server.root + this->_response.path) + "/" + filename;
+			std::string	filepath = filename;
 
 			files_list += "<a href=\"" + filepath + "\">" + filename + "</a><br/>\n";
 		}
