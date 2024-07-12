@@ -11,7 +11,6 @@ Mime::Mime()
 	return ;
 }
 
-
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
 */
@@ -27,6 +26,7 @@ Mime::~Mime()
 void	Mime::_add_mime(std::string extension, std::string mime_type)
 {
 	this->_mime[extension] = mime_type;
+
 }
 
 void	Mime::_set_image_types()
@@ -116,6 +116,7 @@ void	Mime::_set_image_types()
 void	Mime::_set_html_type()
 {
 	this->_add_mime("html", "text/html");
+	this->_add_mime("csv", "text/csv");
 
 	return ;
 }

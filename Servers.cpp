@@ -153,7 +153,7 @@ void	Servers::_process_client(size_t index, int &client_fd)
 	bool	payload = false;
 	
 	this->_client.clear_buffer();
-	this->client.clear_body_size();
+	this->_client.clear_body_size();
 	while(true)
 	{
 		buffer.assign(buffer.size(), 0);

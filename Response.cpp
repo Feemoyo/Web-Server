@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/12 17:41:30 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/07/12 18:37:15 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ void	Response::run_response(void)
 	_check_directory_location();
 	_check_allowed_methods();
 	_check_file_location();
+	_check_max_body_size();
 	if (this->_status_code != "200")
 		_check_errors_location_file();
 	else
@@ -115,7 +116,7 @@ void	Response::_check_errors_location_file(void)
 
 void	Response::_check_max_body_size(void)
 {
-	if (this->_response.body.size() > this->get_content_length())
+	if (this->get_content_length() > static_cast<size_t>(this->_response.server.max_body_size))
 		status_code_distributor("413");
 	return ;
 }
