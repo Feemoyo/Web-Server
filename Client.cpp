@@ -105,7 +105,6 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 	{
 		if (_buffer_map["Request"].find("POST") != std::string::npos && (line == "\r" || payload))
 		{
-			// line.erase(std::remove_if(line.begin(), line.end(), static_cast<int(*)(int)>(&std::isspace)), line.end());
 			this->remove_white_spaces(line);
 			this->_buffer_map["Payload"] += line.substr(0, line.find('\0'));
 			payload = true;
@@ -129,6 +128,7 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 
 void		Client::set_body_size(void)
 {
+	std::cout << "Payload: " << this->_buffer_map["Payload"] << "\n";
 	if (!this->_buffer_map["Payload"].empty())
 		this->set_content_length(this->_buffer_map["Payload"].size());
 	return ;

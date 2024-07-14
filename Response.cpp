@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/12 19:53:50 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/07/14 13:35:04 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ Response::Response(void)
 	return ;
 }
 
-//TODO: pegar o max_body_size para validar com o content_length do payload
 Response::Response(int client_fd, t_server &server, std::string path_and_name, std::string method)
 {
 	size_t	start = path_and_name.find_last_of("/") + 1;
@@ -66,6 +65,7 @@ void	Response::_file_validation(void)
 {
 	_check_file_location();
 	_check_allowed_methods();
+	_check_max_body_size();
 	if (this->_status_code != "200")
 		_check_errors_location_file();
 	else
@@ -78,6 +78,8 @@ void	Response::_directory_validation(void)
 	_check_directory_location();
 	_check_allowed_methods();
 	_check_directory_autoindex();
+	_check_max_body_size();
+
 	if (this->_status_code != "200")
 		_check_errors_location_file();
 	else
@@ -118,7 +120,7 @@ void	Response::_check_errors_location_file(void)
 	it = this->_response.server.locations.find("/errors/");
 	if (it == this->_response.server.locations.end())
 	{
-		std::string	new_content = ("<!DOCTYPE html>\n<html>\n\t<head>\n\t\t<meta charset=\"UTF-8\">\n\t\t<title>" + (std::string)this->_status_code + " " + (std::string)this->_status_msg + "</title>\n\t\t<link rel=\"icon\" href=\"/imgs/icon.svg\" type=\"image/png\">\n\t</head>\n\t<body>\n\t\t<h1 style=\"background-color: black; text-align: center; color: white;\"></h1>\n\t\t<p style=\"font-size: 8;\">" + (std::string)this->_status_code + " " + (std::string)this->_status_msg + "</p>\n\t</body>\n</html>\n");
+		std::string	new_content = ("<!DOCTYPE html>\n<html>\n\t<head>\n\t\t<meta charset=\"UTF-8\">\n\t\t<title>" + (std::string)this->_status_code + " " + (std::string)this->_status_msg + "</title>\n\t\t</head>\n\t<body>\n\t\t<h1 style=\"background-color: black; text-align: center; color: white;\"></h1>\n\t\t<p style=\"font-size: 8;\">" + (std::string)this->_status_code + " " + (std::string)this->_status_msg + "</p>\n\t</body>\n</html>\n");
 		this->set_content(new_content);
 	}
 	else
@@ -141,6 +143,16 @@ void	Response::_check_file_location(void)
 	else if (!file.is_open() || (file.peek() == std::ifstream::traits_type::eof()))
 		status_code_distributor("302");
 	file.close();
+	return ;
+}
+
+void	Response::_check_max_body_size(void)
+{
+	std::cout << "Content length: " << this->get_content_length() << "\n";
+	std::cout << "Max body size: " << this->_response.server.max_body_size << "\n";
+	
+	if (this->get_content_length() > static_cast<size_t>(this->_response.server.max_body_size))
+		status_code_distributor("413");
 	return ;
 }
 
@@ -170,7 +182,7 @@ std::string	Response::_get_dir_files(void)
 
 void	Response::_set_dir_content(void)
 {
-	std::string	full_html = ("<!DOCTYPE html>\n<html>\n\t<head>\n\t\t<meta charset=\"UTF-8\">\n\t\t<title>Files in Directory</title>\n\t\t<link rel=\"icon\" href=\"/imgs/icon.svg\" type=\"image/png\">\n\t</head>\n\t<body>\n\t\t");
+	std::string	full_html = ("<!DOCTYPE html>\n<html>\n\t<head>\n\t\t<meta charset=\"UTF-8\">\n\t\t<title>Files in Directory</title>\n\t\t</head>\n\t<body>\n\t\t");
 	std::string	files = _get_dir_files();
 	full_html += files;
 	full_html += ("\n\t</body>\n</html>\n");
