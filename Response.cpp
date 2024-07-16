@@ -3,15 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/14 13:35:04 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/07/15 11:22:33 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <dirent.h>
-#include <fstream>
 #include "Response.hpp"
 
 /*
@@ -78,8 +76,6 @@ void	Response::_directory_validation(void)
 	_check_directory_location();
 	_check_allowed_methods();
 	_check_directory_autoindex();
-	_check_max_body_size();
-
 	if (this->_status_code != "200")
 		_check_errors_location_file();
 	else
@@ -148,9 +144,6 @@ void	Response::_check_file_location(void)
 
 void	Response::_check_max_body_size(void)
 {
-	std::cout << "Content length: " << this->get_content_length() << "\n";
-	std::cout << "Max body size: " << this->_response.server.max_body_size << "\n";
-	
 	if (this->get_content_length() > static_cast<size_t>(this->_response.server.max_body_size))
 		status_code_distributor("413");
 	return ;

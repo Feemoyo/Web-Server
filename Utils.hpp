@@ -23,6 +23,7 @@
 # include <netinet/in.h>
 # include <unistd.h>
 # include <poll.h>
+# include <dirent.h>
 
 # define MAX_CLIENTS 10
 
