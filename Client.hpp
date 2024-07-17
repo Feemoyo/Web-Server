@@ -29,6 +29,7 @@ public:
 	void			clear_buffer(void);
 	void			clear_body_size(void);
 	void			decode_payload(void);
+	void			save_output(void);
 	void			print_map(void);
 };
 

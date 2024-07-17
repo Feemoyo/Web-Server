@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/14 13:35:04 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/07/16 21:16:04 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,9 +148,6 @@ void	Response::_check_file_location(void)
 
 void	Response::_check_max_body_size(void)
 {
-	std::cout << "Content length: " << this->get_content_length() << "\n";
-	std::cout << "Max body size: " << this->_response.server.max_body_size << "\n";
-	
 	if (this->get_content_length() > static_cast<size_t>(this->_response.server.max_body_size))
 		status_code_distributor("413");
 	return ;

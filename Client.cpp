@@ -59,7 +59,7 @@ std::string	Client::_url_decode(const std::string &str)
 				hex[1] = str[i + 2];
 				result += static_cast<char>(this->_from_hex(hex[0]) * 16 + this->_from_hex(hex[1]));
 				i += 2;
-			} 
+			}
 		}
 		else if (str[i] == '+')
 			result += ' ';
@@ -119,8 +119,10 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 				this->_buffer_map[key] = value;
 			}
 		}
+		if (this->str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size()))
+			break ;
 	}
-
+	// std::cout << "Payload: " << this->_buffer_map["Payload"] << "\n";
 	if (this->_buffer_map["Payload"].empty() || this->str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size()))
 		payload = false;
 	return (payload);
@@ -128,7 +130,6 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 
 void		Client::set_body_size(void)
 {
-	std::cout << "Payload: " << this->_buffer_map["Payload"] << "\n";
 	if (!this->_buffer_map["Payload"].empty())
 		this->set_content_length(this->_buffer_map["Payload"].size());
 	return ;
@@ -173,7 +174,38 @@ void	Client::clear_body_size(void)
 
 void	Client::decode_payload(void)
 {
+	// std::cout << "decode: " << this->_buffer_map["Payload"] << "\n";
 	this->_buffer_map["Payload"] = this->_url_decode(this->_buffer_map["Payload"]);
+	return ;
+}
+
+void	Client::save_output(void)
+{
+	std::ofstream		output;
+	std::istringstream	ss(this->_buffer_map["Payload"]);
+	std::string 		line;
+	char				ch = '&';
+
+	output.open("./www/temp/test/form/output.json");
+	if (!output.is_open())
+	{
+		std::cerr << "Error: could not open output file\n";
+		return ;
+	}
+
+	if (output.is_open())
+	{
+		output << "{\n";
+
+		for (size_t i = 0; (i = this->_buffer_map["Payload"].find(ch, i)) != std::string::npos; i++)
+		{
+			line = this->_buffer_map["Payload"].substr(i, this->_buffer_map["Payload"].find(ch, i));
+			output << "XXXXX\t" << line << "\n";
+		}
+		output << "}\n";
+	}
+	
+	output.close();
 	return ;
 }
 
