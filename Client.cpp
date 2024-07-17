@@ -128,7 +128,6 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 
 void		Client::set_body_size(void)
 {
-	std::cout << "Payload: " << this->_buffer_map["Payload"] << "\n";
 	if (!this->_buffer_map["Payload"].empty())
 		this->set_content_length(this->_buffer_map["Payload"].size());
 	return ;

@@ -20,6 +20,9 @@
 
 # include <sys/socket.h>
 # include <sys/stat.h>
+# include <sys/types.h>
+# include <sys/wait.h>
+
 # include <netinet/in.h>
 # include <unistd.h>
 # include <poll.h>

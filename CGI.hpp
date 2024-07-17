@@ -12,7 +12,7 @@ private:
 	std::map<std::string, std::string>	_env;
 
 			CGI(void);
-	char	_conver_map_to_array(std::map<std::string, std::string> &env);
+	char	**_conver_map_to_array(std::map<std::string, std::string> &env);
 
 public:
 			CGI(std::string &method, std::string &script, std::string &html, std::string &data);
