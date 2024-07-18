@@ -184,6 +184,8 @@ void	Client::save_output(void)
 	std::ofstream		output;
 	std::istringstream	ss(this->_buffer_map["Payload"]);
 	std::string 		line;
+	std::string			aux;
+	// size_t				runner = 0;
 	char				ch = '&';
 
 	output.open("./www/temp/test/form/output.json");
@@ -197,11 +199,34 @@ void	Client::save_output(void)
 	{
 		output << "{\n";
 
-		for (size_t i = 0; (i = this->_buffer_map["Payload"].find(ch, i)) != std::string::npos; i++)
+		//COPY: set_buffer()
+		std::map<std::string, std::string> json_map;
+		while (std::getline(ss, line, ch))
 		{
-			line = this->_buffer_map["Payload"].substr(i, this->_buffer_map["Payload"].find(ch, i));
-			output << "XXXXX\t" << line << "\n";
+			std::size_t first_space = line.find('=');
+			if (first_space != std::string::npos)
+			{
+				//TODO: decode payload
+				this->_url_decode(line);
+				std::string key = line.substr(0, first_space);
+				std::string value = line.substr(first_space + 1);
+				json_map[key] = value;
+			}
 		}
+
+
+
+		//COPY: print_map()
+		std::map<std::string, std::string>::iterator it;
+
+		for (it = json_map.begin(); it != json_map.end(); ++it)
+		{
+			if (it == --json_map.end())
+				output << "\t\"" <<it->first << "\": \"" << it->second << "\"\n";
+			else
+				output << "\t\"" <<it->first << "\": \"" << it->second << "\",\n";
+		}
+
 		output << "}\n";
 	}
 	
@@ -214,6 +239,6 @@ void	Client::print_map(void)
 	std::map<std::string, std::string>::iterator it;
 
 	for (it = this->_buffer_map.begin(); it != this->_buffer_map.end(); ++it)
-		std::cout << it->first << ": " << it->second << "\n";;
+		std::cout << it->first << ": " << it->second << "\n";
 	return ;
 }

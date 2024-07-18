@@ -174,9 +174,9 @@ void	Servers::_process_client(size_t index, int &client_fd)
 	}
 	if (this->_client.get_method() == "POST")
 	{
-		this->_client.decode_payload();
-		this->_client.set_body_size();
 		this->_client.save_output();
+		// this->_client.decode_payload();
+		this->_client.set_body_size();
 	}
 
 	// this->_client.print_map();
