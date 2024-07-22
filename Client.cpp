@@ -63,9 +63,12 @@ std::string	Client::_url_decode(const std::string &str)
 		}
 		else if (str[i] == '+')
 			result += ' ';
+		else if (str[i] == '\n' || str[i] == '\r')
+			i++;
 		else
 			result += str[i];
 	}
+	// std::cout << "result: " << result << "\n";
 	return (result);
 }
 
@@ -185,7 +188,6 @@ void	Client::save_output(void)
 	std::istringstream	ss(this->_buffer_map["Payload"]);
 	std::string 		line;
 	std::string			aux;
-	// size_t				runner = 0;
 	char				ch = '&';
 
 	output.open("./www/temp/test/form/output.json");
@@ -194,6 +196,8 @@ void	Client::save_output(void)
 		std::cerr << "Error: could not open output file\n";
 		return ;
 	}
+
+	
 
 	if (output.is_open())
 	{
@@ -207,26 +211,23 @@ void	Client::save_output(void)
 			if (first_space != std::string::npos)
 			{
 				//TODO: decode payload
-				this->_url_decode(line);
-				std::string key = line.substr(0, first_space);
-				std::string value = line.substr(first_space + 1);
+				std::string key = this->_url_decode(line.substr(0, first_space));
+				std::string value = this->_url_decode(line.substr(first_space + 1));
 				json_map[key] = value;
 			}
 		}
-
-
 
 		//COPY: print_map()
 		std::map<std::string, std::string>::iterator it;
 
 		for (it = json_map.begin(); it != json_map.end(); ++it)
 		{
+			// std::cout << it->first << ": " << it->second << " XXX\n";
 			if (it == --json_map.end())
 				output << "\t\"" <<it->first << "\": \"" << it->second << "\"\n";
 			else
 				output << "\t\"" <<it->first << "\": \"" << it->second << "\",\n";
 		}
-
 		output << "}\n";
 	}
 	
