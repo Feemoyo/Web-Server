@@ -64,11 +64,10 @@ std::string	Client::_url_decode(const std::string &str)
 		else if (str[i] == '+')
 			result += ' ';
 		else if (str[i] == '\n' || str[i] == '\r')
-			i++;
+			i += 1;
 		else
 			result += str[i];
 	}
-	// std::cout << "result: " << result << "\n";
 	return (result);
 }
 
@@ -83,13 +82,37 @@ int	Client::_from_hex(char c)
 	return (0);
 }
 
+// std::string	Client::_setOutputFile(std::string fileName)
+// {
+// 	std::string home = "./www/temp/";
+// 	std::string outputName;
+// 	std::ofstream outputFile;
+// 	outputName += this->_map_finder("Request", "/", " ");
+	
+// 	for (std::size_t i = 0; i < outputName.size(); i++)
+// 	{
+// 		if (outputName[i] == '/')
+// 			outputName[i] = '_';
+// 	}
+
+// 	outputFile.open(home + outputName + ".json");
+
+// 	if (!output.is_open())
+// 	{
+// 		std::cerr << "Error: could not open output file\n";
+// 		return ;
+// 	}
+
+// }
+
+
 void	Client::format_content_type(void)
 {
 	std::string content_type = this->_map_finder("Request", ".", " ");
 	std::string aux = content_type.substr(1);
 	aux = this->_mime.get_mime(aux);
 	this->set_content_type(aux);
-  return ;
+	return ;
 }
 
 bool	Client::set_buffer(std::vector<char> buffer, bool &payload) 
@@ -106,7 +129,7 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 	}
 	while (std::getline(stream, line))
 	{
-		if (_buffer_map["Request"].find("POST") != std::string::npos && (line == "\r" || payload))
+		if (line == "\r" || payload)
 		{
 			this->remove_white_spaces(line);
 			this->_buffer_map["Payload"] += line.substr(0, line.find('\0'));
@@ -125,8 +148,11 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 		if (this->str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size()))
 			break ;
 	}
-	// std::cout << "Payload: " << this->_buffer_map["Payload"] << "\n";
-	if (this->_buffer_map["Payload"].empty() || this->str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size()))
+
+	if (this->_buffer_map["Request"].find("POST") != std::string::npos)
+		payload = true;
+
+	if ((this->_buffer_map["Payload"].empty() && this->_buffer_map["Request"].find("POST") == std::string::npos) || this->str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size()))
 		payload = false;
 	return (payload);
 }
@@ -190,14 +216,12 @@ void	Client::save_output(void)
 	std::string			aux;
 	char				ch = '&';
 
-	output.open("./www/temp/test/form/output.json");
+	output.open("./www/temp/test/form/output.json", std::ios::app);
 	if (!output.is_open())
 	{
 		std::cerr << "Error: could not open output file\n";
 		return ;
 	}
-
-	
 
 	if (output.is_open())
 	{
@@ -217,12 +241,10 @@ void	Client::save_output(void)
 			}
 		}
 
-		//COPY: print_map()
 		std::map<std::string, std::string>::iterator it;
 
 		for (it = json_map.begin(); it != json_map.end(); ++it)
 		{
-			// std::cout << it->first << ": " << it->second << " XXX\n";
 			if (it == --json_map.end())
 				output << "\t\"" <<it->first << "\": \"" << it->second << "\"\n";
 			else
@@ -230,7 +252,7 @@ void	Client::save_output(void)
 		}
 		output << "}\n";
 	}
-	
+
 	output.close();
 	return ;
 }

@@ -13,8 +13,9 @@ private:
 	Mime								_mime;
 
 	std::string							_map_finder(std::string key, std::string value1, std::string value2);
-	int									_from_hex(char c);
 	std::string							_url_decode(const std::string &str);
+	int									_from_hex(char c);
+	// std::string							_setOutputFile(std::string fileName);
 
 public:
 					Client(void);

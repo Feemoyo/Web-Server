@@ -158,7 +158,7 @@ void	Servers::_process_client(size_t index, int &client_fd)
 	{
 		buffer.assign(buffer.size(), 0);
 		bytes_read = recv(client_fd, buffer.data(), buffer.size() - 1, 0);
-
+		std::cout << "buffer_data: " << buffer.data() << "\n";
 		if (bytes_read < 0)
 		{
 			std::cerr << "Reading from client fail on port: " << this->_servers[index].port << std::endl;
@@ -172,8 +172,7 @@ void	Servers::_process_client(size_t index, int &client_fd)
 		if (!this->_client.set_buffer(buffer, payload))
 			break ;
 	}
-	this->_client.print_map();
-	//TODO: remover o %0D%0A que faz o payload ser limpo
+
 	if (this->_client.get_method() == "POST")
 	{
 		this->_client.save_output();
