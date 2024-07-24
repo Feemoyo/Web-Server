@@ -59,10 +59,12 @@ std::string	Client::_url_decode(const std::string &str)
 				hex[1] = str[i + 2];
 				result += static_cast<char>(this->_from_hex(hex[0]) * 16 + this->_from_hex(hex[1]));
 				i += 2;
-			} 
+			}
 		}
 		else if (str[i] == '+')
 			result += ' ';
+		else if (str[i] == '\n' || str[i] == '\r')
+			i += 1;
 		else
 			result += str[i];
 	}
@@ -80,13 +82,37 @@ int	Client::_from_hex(char c)
 	return (0);
 }
 
+// std::string	Client::_setOutputFile(std::string fileName)
+// {
+// 	std::string home = "./www/temp/";
+// 	std::string outputName;
+// 	std::ofstream outputFile;
+// 	outputName += this->_map_finder("Request", "/", " ");
+	
+// 	for (std::size_t i = 0; i < outputName.size(); i++)
+// 	{
+// 		if (outputName[i] == '/')
+// 			outputName[i] = '_';
+// 	}
+
+// 	outputFile.open(home + outputName + ".json");
+
+// 	if (!output.is_open())
+// 	{
+// 		std::cerr << "Error: could not open output file\n";
+// 		return ;
+// 	}
+
+// }
+
+
 void	Client::format_content_type(void)
 {
 	std::string content_type = this->_map_finder("Request", ".", " ");
 	std::string aux = content_type.substr(1);
 	aux = this->_mime.get_mime(aux);
 	this->set_content_type(aux);
-  return ;
+	return ;
 }
 
 bool	Client::set_buffer(std::vector<char> buffer, bool &payload) 
@@ -103,7 +129,7 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 	}
 	while (std::getline(stream, line))
 	{
-		if (_buffer_map["Request"].find("POST") != std::string::npos && (line == "\r" || payload))
+		if (line == "\r" || payload)
 		{
 			this->remove_white_spaces(line);
 			this->_buffer_map["Payload"] += line.substr(0, line.find('\0'));
@@ -119,16 +145,20 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 				this->_buffer_map[key] = value;
 			}
 		}
+		if (this->str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size()))
+			break ;
 	}
 
-	if (this->_buffer_map["Payload"].empty() || this->str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size()))
+	if (this->_buffer_map["Request"].find("POST") != std::string::npos)
+		payload = true;
+
+	if ((this->_buffer_map["Payload"].empty() && this->_buffer_map["Request"].find("POST") == std::string::npos) || this->str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size()))
 		payload = false;
 	return (payload);
 }
 
 void		Client::set_body_size(void)
 {
-	std::cout << "Payload: " << this->_buffer_map["Payload"] << "\n";
 	if (!this->_buffer_map["Payload"].empty())
 		this->set_content_length(this->_buffer_map["Payload"].size());
 	return ;
@@ -173,7 +203,57 @@ void	Client::clear_body_size(void)
 
 void	Client::decode_payload(void)
 {
+	// std::cout << "decode: " << this->_buffer_map["Payload"] << "\n";
 	this->_buffer_map["Payload"] = this->_url_decode(this->_buffer_map["Payload"]);
+	return ;
+}
+
+void	Client::save_output(void)
+{
+	std::ofstream		output;
+	std::istringstream	ss(this->_buffer_map["Payload"]);
+	std::string 		line;
+	std::string			aux;
+	char				ch = '&';
+
+	output.open("./www/temp/test/form/output.json", std::ios::app);
+	if (!output.is_open())
+	{
+		std::cerr << "Error: could not open output file\n";
+		return ;
+	}
+
+	if (output.is_open())
+	{
+		output << "{\n";
+
+		//COPY: set_buffer()
+		std::map<std::string, std::string> json_map;
+		while (std::getline(ss, line, ch))
+		{
+			std::size_t first_space = line.find('=');
+			if (first_space != std::string::npos)
+			{
+				//TODO: decode payload
+				std::string key = this->_url_decode(line.substr(0, first_space));
+				std::string value = this->_url_decode(line.substr(first_space + 1));
+				json_map[key] = value;
+			}
+		}
+
+		std::map<std::string, std::string>::iterator it;
+
+		for (it = json_map.begin(); it != json_map.end(); ++it)
+		{
+			if (it == --json_map.end())
+				output << "\t\"" <<it->first << "\": \"" << it->second << "\"\n";
+			else
+				output << "\t\"" <<it->first << "\": \"" << it->second << "\",\n";
+		}
+		output << "}\n";
+	}
+
+	output.close();
 	return ;
 }
 
@@ -182,6 +262,6 @@ void	Client::print_map(void)
 	std::map<std::string, std::string>::iterator it;
 
 	for (it = this->_buffer_map.begin(); it != this->_buffer_map.end(); ++it)
-		std::cout << it->first << ": " << it->second << "\n";;
+		std::cout << it->first << ": " << it->second << "\n";
 	return ;
 }
