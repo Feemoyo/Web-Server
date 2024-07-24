@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/16 21:16:04 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/07/23 21:27:05 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,6 +187,20 @@ void	Response::_set_dir_content(void)
 	return ;
 }
 
+std::string Response::_display_time(void)
+{
+	std::time_t		currenttime;
+	struct tm	*timeinfo;
+	char	buffer[80];
+
+	std::time(&currenttime);
+	timeinfo = std::gmtime(&currenttime);
+
+	std::strftime(buffer, 80, "%a, %d, %b, %Y %H:%M:%S GMT", timeinfo);
+
+	return std::string(buffer);
+}
+
 void	Response::_make_response(void)
 {
 	std::string			file_content;
@@ -202,6 +216,8 @@ void	Response::_make_response(void)
 	this->_response.header += this->get_content_type();
 	this->_response.header += "\nContent-Length: ";
 	this->_response.header += handler.str();
+	this->_response.header += "\nDate: ";
+	this->_response.header += this->_display_time();
 	this->_response.header += " \n\n";
 	this->_response.body = this->_response.header;
 	this->_response.body += file_content;
