@@ -82,28 +82,65 @@ int	Client::_from_hex(char c)
 	return (0);
 }
 
-// std::string	Client::_setOutputFile(std::string fileName)
-// {
-// 	std::string home = "./www/temp/";
-// 	std::string outputName;
-// 	std::ofstream outputFile;
-// 	outputName += this->_map_finder("Request", "/", " ");
+void	Client::_setOutputFile(std::vector<std::string> &fileAux)
+{
+	std::string line;
+	std::ifstream outputFile;
+
+	outputFile.open(this->_pathMaker().c_str());
+	if(!outputFile.is_open())
+	{
+		this->_createOutputFile(fileAux);
+		fileAux.push_back("[");
+		fileAux.push_back("]");
+		return ;
+	}
+
+	if (outputFile.is_open())
+	{
+		while (std::getline(outputFile, line))
+		{
+			fileAux.push_back(line);
+		}
+	}
+	outputFile.close();
+}
+
+bool		Client::_createOutputFile(std::vector<std::string> &fileAux)
+{
+	std::ofstream output;
+
+	output.open(this->_pathMaker().c_str());
+	if (!output.is_open())
+	{
+		std::cerr << "Error: could not open output file\n";
+		return (false);
+	}
+	if(fileAux.empty())
+	{
+		
+	}
+
+	output.close();
+	return (true);
+
+}
+
+std::string Client::_pathMaker(void)
+{
+	std::string home = "./www/temp/";
+	std::string outputName;
+
+	outputName += this->_map_finder("Request", "/", ".");
 	
-// 	for (std::size_t i = 0; i < outputName.size(); i++)
-// 	{
-// 		if (outputName[i] == '/')
-// 			outputName[i] = '_';
-// 	}
+	for (std::size_t i = 0; i < outputName.size(); i++)
+	{
+		if (outputName[i] == '/')
+			outputName[i] = '_';
+	}
 
-// 	outputFile.open(home + outputName + ".json");
-
-// 	if (!output.is_open())
-// 	{
-// 		std::cerr << "Error: could not open output file\n";
-// 		return ;
-// 	}
-
-// }
+	return (home + outputName + ".json");
+}
 
 
 void	Client::format_content_type(void)
@@ -203,7 +240,6 @@ void	Client::clear_body_size(void)
 
 void	Client::decode_payload(void)
 {
-	// std::cout << "decode: " << this->_buffer_map["Payload"] << "\n";
 	this->_buffer_map["Payload"] = this->_url_decode(this->_buffer_map["Payload"]);
 	return ;
 }
@@ -213,10 +249,52 @@ void	Client::save_output(void)
 	std::ofstream		output;
 	std::istringstream	ss(this->_buffer_map["Payload"]);
 	std::string 		line;
-	std::string			aux;
+	std::vector<std::string> fileAux;
+
 	char				ch = '&';
 
-	output.open("./www/temp/test/form/output.json", std::ios::app);
+	this->_setOutputFile(fileAux);
+
+	if (fileAux.size() == 2)
+	{
+		std::vector<std::string>::iterator it = fileAux.end() - 1;
+		fileAux.insert(it, "{");
+
+		while (std::getline(ss, line, ch))
+		{
+			std::size_t first_space = line.find('=');
+			if (first_space != std::string::npos)
+			{
+				//TODO: decode payload
+				std::cout << "2: if" << std::endl;
+				fileAux.insert(fileAux.end() - 1 ,"\"" + line.substr(0, first_space) + "\"" + ": " + "\"" + line.substr(first_space + 1) + "\"");
+			}
+		}
+		fileAux[fileAux.size() - 1] = fileAux[fileAux.size() - 1].erase(fileAux[fileAux.size() - 1].length() - 1);
+		it = fileAux.end() - 1;
+		fileAux.insert(it, "}");
+		std::cout << "2: end if" << std::endl;
+	}
+	else
+	{
+		std::vector<std::string>::iterator it = fileAux.end() - 1;
+		fileAux.insert(it, "{");
+
+		while (std::getline(ss, line, ch))
+		{
+			std::size_t first_space = line.find('=');
+			if (first_space != std::string::npos)
+			{
+				//TODO: decode payload
+				fileAux.insert(fileAux.end() - 1 ,"\"" + line.substr(0, first_space) + "\"" + ": " + "\"" + line.substr(first_space + 1) + "\"");
+			}
+		}
+		fileAux[fileAux.size() - 1] = fileAux[fileAux.size() - 1].erase(fileAux[fileAux.size() - 1].length() - 1);
+		it = fileAux.end() - 1;
+		fileAux.insert(it, "}");
+	}
+	std::cout << "pre output" << std::endl;
+	output.open(this->_pathMaker().c_str());
 	if (!output.is_open())
 	{
 		std::cerr << "Error: could not open output file\n";
@@ -225,32 +303,17 @@ void	Client::save_output(void)
 
 	if (output.is_open())
 	{
-		output << "{\n";
-
-		//COPY: set_buffer()
-		std::map<std::string, std::string> json_map;
-		while (std::getline(ss, line, ch))
+		for (std::size_t i = 0; i < fileAux.size(); i++)
 		{
-			std::size_t first_space = line.find('=');
-			if (first_space != std::string::npos)
-			{
-				//TODO: decode payload
-				std::string key = this->_url_decode(line.substr(0, first_space));
-				std::string value = this->_url_decode(line.substr(first_space + 1));
-				json_map[key] = value;
-			}
-		}
-
-		std::map<std::string, std::string>::iterator it;
-
-		for (it = json_map.begin(); it != json_map.end(); ++it)
-		{
-			if (it == --json_map.end())
-				output << "\t\"" <<it->first << "\": \"" << it->second << "\"\n";
+			if (fileAux[i] == "[" || fileAux[i] == "{")
+				output << fileAux[i] << "\n";
+			else if (fileAux[i] == "]")
+				output << fileAux[i];
+			else if (fileAux[i].empty())
+				continue ;
 			else
-				output << "\t\"" <<it->first << "\": \"" << it->second << "\",\n";
+				output << fileAux[i] << ",\n";
 		}
-		output << "}\n";
 	}
 
 	output.close();

@@ -158,7 +158,6 @@ void	Servers::_process_client(size_t index, int &client_fd)
 	{
 		buffer.assign(buffer.size(), 0);
 		bytes_read = recv(client_fd, buffer.data(), buffer.size() - 1, 0);
-		std::cout << "buffer_data: " << buffer.data() << "\n";
 		if (bytes_read < 0)
 		{
 			std::cerr << "Reading from client fail on port: " << this->_servers[index].port << std::endl;

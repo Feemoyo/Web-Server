@@ -15,7 +15,9 @@ private:
 	std::string							_map_finder(std::string key, std::string value1, std::string value2);
 	std::string							_url_decode(const std::string &str);
 	int									_from_hex(char c);
-	// std::string							_setOutputFile(std::string fileName);
+	void								_setOutputFile(std::vector<std::string> &fileAux);
+	bool								_createOutputFile(std::vector<std::string> &fileAux);
+	std::string							_pathMaker(void);
 
 public:
 					Client(void);

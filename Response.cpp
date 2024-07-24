@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/23 21:27:05 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/07/23 21:57:35 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,8 +190,8 @@ void	Response::_set_dir_content(void)
 std::string Response::_display_time(void)
 {
 	std::time_t		currenttime;
-	struct tm	*timeinfo;
-	char	buffer[80];
+	struct tm		*timeinfo;
+	char			buffer[80];
 
 	std::time(&currenttime);
 	timeinfo = std::gmtime(&currenttime);
