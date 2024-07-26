@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <dirent.h>
-#include <fstream>
 #include "Response.hpp"
 
 /*
@@ -78,9 +76,9 @@ void	Response::_directory_validation(void)
 	_check_directory_location();
 	_check_allowed_methods();
 	_check_directory_autoindex();
-	_check_max_body_size();
-
-	if (this->_status_code != "200")
+	if (this->_status_code == "302")
+		set_file((this->_response.server.root + this->_response.path), this->_response.server.locations.find(this->_response.path)->second.default_file);
+	else if (this->_status_code != "200" && this->_status_code != "302")
 		_check_errors_location_file();
 	else
 		_set_dir_content();
@@ -109,7 +107,7 @@ void	Response::_check_directory_autoindex(void)
 	if (this->_status_code == "404")
 		return ;
 	else if (this->_response.server.locations.find(this->_response.path)->second.directory != true)
-		status_code_distributor("403");
+		status_code_distributor("302");
 	return ;
 }
 
@@ -170,7 +168,8 @@ std::string	Response::_get_dir_files(void)
 		{
 			std::string	filename = entry->d_name;
 
-			files_list += "<a href=\"" + filename + "\">" + filename + "</a><br/>\n";
+			// files_list += "<a>" + filename + "</a><br/>\n";
+			files_list += "<a href=" + this->_response.path + filename + ">" + filename + "</a><br/>\n";
 		}
 	}
 	closedir(dir);

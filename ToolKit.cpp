@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ToolKit.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:01:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/12 17:29:22 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/07/12 22:25:53 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,10 @@ void	ToolKit::status_code_mapper(void)
 	statusCodes.insert(std::make_pair("101", "Switching Protocols"));
 	statusCodes.insert(std::make_pair("102", "Processing"));
 	statusCodes.insert(std::make_pair("200", "OK"));
-	statusCodes.insert(std::make_pair("201","Created"));
+	statusCodes.insert(std::make_pair("201", "Created"));
 	statusCodes.insert(std::make_pair("202", "Accepted"));
 	statusCodes.insert(std::make_pair("203", "Non-Authoritative Information"));
-	statusCodes.insert(std::make_pair("204",  "No Content"));
+	statusCodes.insert(std::make_pair("204", "No Content"));
 	statusCodes.insert(std::make_pair("205", "Reset Content"));
 	statusCodes.insert(std::make_pair("206", "Partial Content"));
 	statusCodes.insert(std::make_pair("207", "Multi-Status"));
@@ -130,7 +130,7 @@ void	ToolKit::status_code_mapper(void)
 	statusCodes.insert(std::make_pair("508", "Loop Detected"));
 	statusCodes.insert(std::make_pair("510", "Not Extended"));
 	statusCodes.insert(std::make_pair("511", "Network Authentication Required"));
-
+	return ;
 }
 
 void ToolKit::status_code_distributor(std::string status_code)
