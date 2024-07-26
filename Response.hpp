@@ -22,6 +22,7 @@ private:
 	void		_check_max_body_size(void);
 	void		_set_dir_content(void);
 	std::string	_get_dir_files(void);
+	std::string	_display_time(void);
 
 	void		_make_response(void);
 	void		_send_response(void);
