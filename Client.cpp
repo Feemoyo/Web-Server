@@ -286,7 +286,7 @@ std::string	Client::get_path(void)
 			return (path + "/");
 	}
 	else
-		this->set_content_type();
+		this->format_content_type();
 	return (path);
 }
 
@@ -294,7 +294,7 @@ std::string	Client::get_path(void)
 ** --------------------------------- SETTERS ---------------------------------
 */
 
-void	Client::set_content_type(void)
+void	Client::format_content_type(void)
 {
 	std::string content_type = this->_map_finder("Request", ".", " ");
 	std::string aux = content_type.substr(1);

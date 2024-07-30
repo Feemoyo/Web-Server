@@ -3,17 +3,22 @@
 #ifndef	JSON_HPP
 # define JSON_HPP
 
-# include "Utils.hpp"
+# include "ToolKit.hpp"
 
-class	JSON :
+class	JSON : public ToolKit
 {
 private:
 	std::string	_payload;
+	std::string	_path;
+	std::string	_file;
 
 			JSON(void);
+
 public:
-			JSON(std::string payload);
+			JSON(std::string payload, std::string path, std::string file);
 			~JSON(void);
+
+	void	run(void);
 
 };
 

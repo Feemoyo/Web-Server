@@ -5,7 +5,7 @@
 
 # include "ToolKit.hpp"
 
-class	Config : public ToolKit
+class	Config : public	ToolKit
 {
 private:
 	std::vector<t_server>		_servers;
