@@ -82,15 +82,16 @@ int	Client::_from_hex(char c)
 	return (0);
 }
 
-void	Client::_setOutputFile(std::vector<std::string> &fileAux)
+void	Client::_set_output_file(std::vector<std::string> &fileAux)
 {
 	std::string line;
 	std::ifstream outputFile;
 
-	outputFile.open(this->_pathMaker().c_str());
+	outputFile.open(this->_path_maker().c_str());
+
 	if(!outputFile.is_open())
 	{
-		this->_createOutputFile(fileAux);
+		this->_create_output_file();
 		fileAux.push_back("[");
 		fileAux.push_back("]");
 		return ;
@@ -100,33 +101,29 @@ void	Client::_setOutputFile(std::vector<std::string> &fileAux)
 	{
 		while (std::getline(outputFile, line))
 		{
+			std::cout << line << std::endl;
 			fileAux.push_back(line);
 		}
 	}
 	outputFile.close();
 }
 
-bool		Client::_createOutputFile(std::vector<std::string> &fileAux)
+bool		Client::_create_output_file(void)
 {
 	std::ofstream output;
 
-	output.open(this->_pathMaker().c_str());
+	output.open(this->_path_maker().c_str());
 	if (!output.is_open())
 	{
 		std::cerr << "Error: could not open output file\n";
 		return (false);
 	}
-	if(fileAux.empty())
-	{
-		
-	}
 
 	output.close();
 	return (true);
-
 }
 
-std::string Client::_pathMaker(void)
+std::string Client::_path_maker(void)
 {
 	std::string home = "./www/temp/";
 	std::string outputName;
@@ -142,6 +139,17 @@ std::string Client::_pathMaker(void)
 	return (home + outputName + ".json");
 }
 
+bool	Client::_has_payload(void)
+{
+	std::map<std::string, std::string>::iterator it = this->_buffer_map.begin();
+	
+	for (; it != this->_buffer_map.end(); it++)
+		{
+			if (it->first == "Payload" )
+				return (true);
+		}
+		return (false);
+}
 
 void	Client::format_content_type(void)
 {
@@ -163,6 +171,8 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 	{
 		std::getline(stream, line);
 		this->_buffer_map["Request"] = line;
+		if (this->_buffer_map["Request"].find("POST") != std::string::npos)
+			this->_buffer_map["Payload"] = "";
 	}
 	while (std::getline(stream, line))
 	{
@@ -182,15 +192,16 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 				this->_buffer_map[key] = value;
 			}
 		}
-		if (this->str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size()))
+		if (!this->_buffer_map["Payload"].empty() && this->_buffer_map["Request"].find("POST") != std::string::npos && (this->str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size())))
+		{
+			payload = true;
 			break ;
+		}
 	}
-
-	if (this->_buffer_map["Request"].find("POST") != std::string::npos)
-		payload = true;
 
 	if ((this->_buffer_map["Payload"].empty() && this->_buffer_map["Request"].find("POST") == std::string::npos) || this->str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size()))
 		payload = false;
+
 	return (payload);
 }
 
@@ -244,6 +255,9 @@ void	Client::decode_payload(void)
 	return ;
 }
 
+//TODO: Verificar se o arquivo existe
+//TODO: Abrir o arquivo e ver se é 2 (arquivo criado agora) ou maior (arquivo ja existente)
+//TODO: se o arquivo é novo, temos que inserir os brack
 void	Client::save_output(void)
 {
 	std::ofstream		output;
@@ -253,7 +267,7 @@ void	Client::save_output(void)
 
 	char				ch = '&';
 
-	this->_setOutputFile(fileAux);
+	this->_set_output_file(fileAux);
 
 	if (fileAux.size() == 2)
 	{
@@ -265,15 +279,11 @@ void	Client::save_output(void)
 			std::size_t first_space = line.find('=');
 			if (first_space != std::string::npos)
 			{
-				//TODO: decode payload
-				std::cout << "2: if" << std::endl;
 				fileAux.insert(fileAux.end() - 1 ,"\"" + line.substr(0, first_space) + "\"" + ": " + "\"" + line.substr(first_space + 1) + "\"");
 			}
 		}
-		fileAux[fileAux.size() - 1] = fileAux[fileAux.size() - 1].erase(fileAux[fileAux.size() - 1].length() - 1);
 		it = fileAux.end() - 1;
 		fileAux.insert(it, "}");
-		std::cout << "2: end if" << std::endl;
 	}
 	else
 	{
@@ -289,12 +299,12 @@ void	Client::save_output(void)
 				fileAux.insert(fileAux.end() - 1 ,"\"" + line.substr(0, first_space) + "\"" + ": " + "\"" + line.substr(first_space + 1) + "\"");
 			}
 		}
-		fileAux[fileAux.size() - 1] = fileAux[fileAux.size() - 1].erase(fileAux[fileAux.size() - 1].length() - 1);
 		it = fileAux.end() - 1;
 		fileAux.insert(it, "}");
 	}
-	std::cout << "pre output" << std::endl;
-	output.open(this->_pathMaker().c_str());
+
+	output.open(this->_path_maker().c_str());
+
 	if (!output.is_open())
 	{
 		std::cerr << "Error: could not open output file\n";
@@ -309,10 +319,16 @@ void	Client::save_output(void)
 				output << fileAux[i] << "\n";
 			else if (fileAux[i] == "]")
 				output << fileAux[i];
-			else if (fileAux[i].empty())
-				continue ;
-			else
+			else if (fileAux[i] == "}" && i == fileAux.size() - 1)
+				output << fileAux[i] << "\n";
+			else if (fileAux[i] == "}")
 				output << fileAux[i] << ",\n";
+			else if (fileAux[i].find("\",", 0) != std::string::npos)
+				output << fileAux[i] << "\n";
+			else if (fileAux[i + 1] == "}" && i != fileAux.size() - 1)
+				output << fileAux[i] << "\n";
+			else
+				output << fileAux[i] << ",";
 		}
 	}
 
