@@ -82,29 +82,74 @@ int	Client::_from_hex(char c)
 	return (0);
 }
 
-// std::string	Client::_setOutputFile(std::string fileName)
-// {
-// 	std::string home = "./www/temp/";
-// 	std::string outputName;
-// 	std::ofstream outputFile;
-// 	outputName += this->_map_finder("Request", "/", " ");
+void	Client::_set_output_file(std::vector<std::string> &fileAux)
+{
+	std::string line;
+	std::ifstream outputFile;
+
+	outputFile.open(this->_path_maker().c_str());
+
+	if(!outputFile.is_open())
+	{
+		this->_create_output_file();
+		fileAux.push_back("[");
+		fileAux.push_back("]");
+		return ;
+	}
+
+	if (outputFile.is_open())
+	{
+		while (std::getline(outputFile, line))
+		{
+			std::cout << line << std::endl;
+			fileAux.push_back(line);
+		}
+	}
+	outputFile.close();
+}
+
+bool		Client::_create_output_file(void)
+{
+	std::ofstream output;
+
+	output.open(this->_path_maker().c_str());
+	if (!output.is_open())
+	{
+		std::cerr << "Error: could not open output file\n";
+		return (false);
+	}
+
+	output.close();
+	return (true);
+}
+
+std::string Client::_path_maker(void)
+{
+	std::string home = "./www/temp/";
+	std::string outputName;
+
+	outputName += this->_map_finder("Request", "/", ".");
 	
-// 	for (std::size_t i = 0; i < outputName.size(); i++)
-// 	{
-// 		if (outputName[i] == '/')
-// 			outputName[i] = '_';
-// 	}
+	for (std::size_t i = 0; i < outputName.size(); i++)
+	{
+		if (outputName[i] == '/')
+			outputName[i] = '_';
+	}
 
-// 	outputFile.open(home + outputName + ".json");
+	return (home + outputName + ".json");
+}
 
-// 	if (!output.is_open())
-// 	{
-// 		std::cerr << "Error: could not open output file\n";
-// 		return ;
-// 	}
-
-// }
-
+bool	Client::_has_payload(void)
+{
+	std::map<std::string, std::string>::iterator it = this->_buffer_map.begin();
+	
+	for (; it != this->_buffer_map.end(); it++)
+		{
+			if (it->first == "Payload" )
+				return (true);
+		}
+		return (false);
+}
 
 void	Client::format_content_type(void)
 {
@@ -126,6 +171,8 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 	{
 		std::getline(stream, line);
 		this->_buffer_map["Request"] = line;
+		if (this->_buffer_map["Request"].find("POST") != std::string::npos)
+			this->_buffer_map["Payload"] = "";
 	}
 	while (std::getline(stream, line))
 	{
@@ -145,15 +192,16 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 				this->_buffer_map[key] = value;
 			}
 		}
-		if (this->str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size()))
+		if (!this->_buffer_map["Payload"].empty() && this->_buffer_map["Request"].find("POST") != std::string::npos && (this->str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size())))
+		{
+			payload = true;
 			break ;
+		}
 	}
-
-	if (this->_buffer_map["Request"].find("POST") != std::string::npos)
-		payload = true;
 
 	if ((this->_buffer_map["Payload"].empty() && this->_buffer_map["Request"].find("POST") == std::string::npos) || this->str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size()))
 		payload = false;
+
 	return (payload);
 }
 
@@ -203,20 +251,60 @@ void	Client::clear_body_size(void)
 
 void	Client::decode_payload(void)
 {
-	// std::cout << "decode: " << this->_buffer_map["Payload"] << "\n";
 	this->_buffer_map["Payload"] = this->_url_decode(this->_buffer_map["Payload"]);
 	return ;
 }
 
+//TODO: Verificar se o arquivo existe
+//TODO: Abrir o arquivo e ver se é 2 (arquivo criado agora) ou maior (arquivo ja existente)
+//TODO: se o arquivo é novo, temos que inserir os brack
 void	Client::save_output(void)
 {
 	std::ofstream		output;
 	std::istringstream	ss(this->_buffer_map["Payload"]);
 	std::string 		line;
-	std::string			aux;
+	std::vector<std::string> fileAux;
+
 	char				ch = '&';
 
-	output.open("./www/temp/test/form/output.json", std::ios::app);
+	this->_set_output_file(fileAux);
+
+	if (fileAux.size() == 2)
+	{
+		std::vector<std::string>::iterator it = fileAux.end() - 1;
+		fileAux.insert(it, "{");
+
+		while (std::getline(ss, line, ch))
+		{
+			std::size_t first_space = line.find('=');
+			if (first_space != std::string::npos)
+			{
+				fileAux.insert(fileAux.end() - 1 ,"\"" + line.substr(0, first_space) + "\"" + ": " + "\"" + line.substr(first_space + 1) + "\"");
+			}
+		}
+		it = fileAux.end() - 1;
+		fileAux.insert(it, "}");
+	}
+	else
+	{
+		std::vector<std::string>::iterator it = fileAux.end() - 1;
+		fileAux.insert(it, "{");
+
+		while (std::getline(ss, line, ch))
+		{
+			std::size_t first_space = line.find('=');
+			if (first_space != std::string::npos)
+			{
+				//TODO: decode payload
+				fileAux.insert(fileAux.end() - 1 ,"\"" + line.substr(0, first_space) + "\"" + ": " + "\"" + line.substr(first_space + 1) + "\"");
+			}
+		}
+		it = fileAux.end() - 1;
+		fileAux.insert(it, "}");
+	}
+
+	output.open(this->_path_maker().c_str());
+
 	if (!output.is_open())
 	{
 		std::cerr << "Error: could not open output file\n";
@@ -225,32 +313,23 @@ void	Client::save_output(void)
 
 	if (output.is_open())
 	{
-		output << "{\n";
-
-		//COPY: set_buffer()
-		std::map<std::string, std::string> json_map;
-		while (std::getline(ss, line, ch))
+		for (std::size_t i = 0; i < fileAux.size(); i++)
 		{
-			std::size_t first_space = line.find('=');
-			if (first_space != std::string::npos)
-			{
-				//TODO: decode payload
-				std::string key = this->_url_decode(line.substr(0, first_space));
-				std::string value = this->_url_decode(line.substr(first_space + 1));
-				json_map[key] = value;
-			}
-		}
-
-		std::map<std::string, std::string>::iterator it;
-
-		for (it = json_map.begin(); it != json_map.end(); ++it)
-		{
-			if (it == --json_map.end())
-				output << "\t\"" <<it->first << "\": \"" << it->second << "\"\n";
+			if (fileAux[i] == "[" || fileAux[i] == "{")
+				output << fileAux[i] << "\n";
+			else if (fileAux[i] == "]")
+				output << fileAux[i];
+			else if (fileAux[i] == "}" && i == fileAux.size() - 1)
+				output << fileAux[i] << "\n";
+			else if (fileAux[i] == "}")
+				output << fileAux[i] << ",\n";
+			else if (fileAux[i].find("\",", 0) != std::string::npos)
+				output << fileAux[i] << "\n";
+			else if (fileAux[i + 1] == "}" && i != fileAux.size() - 1)
+				output << fileAux[i] << "\n";
 			else
-				output << "\t\"" <<it->first << "\": \"" << it->second << "\",\n";
+				output << fileAux[i] << ",";
 		}
-		output << "}\n";
 	}
 
 	output.close();
