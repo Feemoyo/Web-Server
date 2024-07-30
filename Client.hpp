@@ -20,7 +20,7 @@ public:
 					~Client(void);
 
 	bool			set_buffer(std::vector<char> buffer, bool &payload);
-	void			run_json(void);
+	void			run_json(std::string &root);
 
 	std::string		get_method(void);
 	std::string		get_path(void);

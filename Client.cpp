@@ -123,13 +123,13 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 	return (payload);
 }
 
-void	Client::run_json(void)
+void	Client::run_json(std::string &root)
 {
 	// std::string output_name;
 
 	// output_name += this->_map_finder("Request", "/", ".");
-	this->_buffer_map["Payload"] = _url_decode(this->_buffer_map["Payload"]);
-	JSON	*json = new JSON(this->_buffer_map["Payload"], "./www/temp", "new.json");
+	(void)_url_decode("hello");
+	JSON	*json = new JSON(this->_buffer_map["Payload"], root + "/temp", this->_map_finder("Request", "/", "."));
 
 	json->run();
 

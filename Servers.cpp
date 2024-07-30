@@ -173,7 +173,7 @@ void	Servers::_process_client(size_t index, int &client_fd)
 	}
 	if (this->_client.get_method() == "POST")
 	{
-		this->_client.run_json();
+		this->_client.run_json(this->_servers[index].root);
 		this->_client.set_body_size();
 	}
 	return ;

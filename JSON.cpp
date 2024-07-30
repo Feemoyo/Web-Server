@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   JSON.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:16:45 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/30 17:09:29 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/07/30 18:13:35 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,14 @@ JSON::JSON(void)
 }
 
 JSON::JSON(std::string payload, std::string path, std::string file)
-:_payload(payload), _path(path), _file(file)
+:_payload(payload), _path(path)
 {
+	for (std::size_t i = 0; i < file.size(); i++)
+	{
+		if (file[i] == '/')
+			file[i] = '_';
+	}
+	this->_file = file + ".json";
 	return ;
 }
 
