@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/26 18:20:14 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/07/30 17:22:09 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,7 +196,6 @@ std::string Response::_display_time(void)
 	timeinfo = std::gmtime(&currenttime);
 
 	std::strftime(buffer, 80, "%a, %d, %b, %Y %H:%M:%S GMT", timeinfo);
-
 	return (std::string(buffer));
 }
 

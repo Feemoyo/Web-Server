@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:01:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/30 16:48:02 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/07/30 17:23:21 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ void ToolKit::status_code_distributor(std::string status_code)
 		this->_status_msg = "Not Found";
 		this->_content_type = "text/html";
 	}
-
+	return ;
 }
 
 int	ToolKit::string_to_int(std::string str)
@@ -250,7 +250,6 @@ size_t	ToolKit::str_to_size_t(std::string str)
 	size_t		size;
 
 	std::istringstream(str) >> size;
-
 	return (size);
 }
 

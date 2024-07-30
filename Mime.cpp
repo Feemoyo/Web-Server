@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Mime.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/30 17:20:59 by rferrero          #+#    #+#             */
+/*   Updated: 2024/07/30 17:21:19 by rferrero         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "Mime.hpp"
 
 /*
@@ -26,6 +38,7 @@ Mime::~Mime()
 void	Mime::_add_mime(std::string extension, std::string mime_type)
 {
 	this->_mime[extension] = mime_type;
+	return ;
 
 }
 
@@ -109,7 +122,6 @@ void	Mime::_set_image_types()
 	this->_add_mime("xbm", "image/x-xbitmap");
 	this->_add_mime("xpm", "image/x-xpixmap");
 	this->_add_mime("xwd", "image/x-xwindowdump");
-
 	return ;
 }
 
@@ -117,7 +129,6 @@ void	Mime::_set_html_type()
 {
 	this->_add_mime("html", "text/html");
 	this->_add_mime("csv", "text/csv");
-
 	return ;
 }
 

@@ -208,6 +208,7 @@ void	Client::clear_buffer(void)
 void	Client::clear_body_size(void)
 {
 	this->set_content_length(0);
+	return ;
 }
 
 /*

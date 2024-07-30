@@ -12,6 +12,7 @@ private:
 	std::map<std::string, std::string>	_env;
 
 			CGI(void);
+
 	char	**_conver_map_to_array(std::map<std::string, std::string> &env);
 
 public:

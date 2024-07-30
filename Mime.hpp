@@ -17,6 +17,7 @@ private:
 public:
 					Mime();
 					~Mime();
+
 	std::string		&get_mime(std::string extension);
 
 };

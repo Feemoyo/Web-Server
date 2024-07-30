@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/13 14:35:31 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/30 11:51:57 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/07/30 17:20:02 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ CGI::CGI(std::string &method, std::string &script, std::string &html, std::strin
 		this->_env["DATA"] = data;
 	else
 		this->_env["DATA"] = "";
-
 	return ;
 }
 
@@ -55,7 +54,6 @@ char	**CGI::_conver_map_to_array(std::map<std::string, std::string> &env)
 void	CGI::run_cgi(void)
 {
 	int	pipe_out[2];
-
 	if (pipe(pipe_out) == -1)
 	{
 		std::cerr << "Pipe fail to execute" << "\n";
@@ -63,7 +61,6 @@ void	CGI::run_cgi(void)
 	}
 
 	pid_t	pid = fork();
-
 	if (pid == -1)
 	{
 		std::cerr << "Fork fail to execute" << "\n";
