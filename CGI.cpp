@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/13 14:35:31 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/17 19:25:06 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/07/30 11:51:57 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,8 @@ void	CGI::run_cgi(void)
 		if (execve(this->_script_path.c_str(), argv, envp) == -1)
 		{
 			std::cerr << "Execve fail to run" << "\n";
-			exit(EXIT_FAILURE);
+			// exit(EXIT_FAILURE);
+			kill(getpid(), SIGTERM);
 		}
 	}
 	else
