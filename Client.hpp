@@ -21,7 +21,6 @@ public:
 
 	bool			set_buffer(std::vector<char> buffer, bool &payload);
 	void			run_json(void);
-	void			decode_payload(void);
 
 	std::string		get_method(void);
 	std::string		get_path(void);

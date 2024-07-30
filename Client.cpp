@@ -128,17 +128,12 @@ void	Client::run_json(void)
 	// std::string output_name;
 
 	// output_name += this->_map_finder("Request", "/", ".");
+	this->_buffer_map["Payload"] = _url_decode(this->_buffer_map["Payload"]);
 	JSON	*json = new JSON(this->_buffer_map["Payload"], "./www/temp", "new.json");
 
 	json->run();
 
 	delete json;
-	return ;
-}
-
-void	Client::decode_payload(void)
-{
-	this->_buffer_map["Payload"] = _url_decode(this->_buffer_map["Payload"]);
 	return ;
 }
 
