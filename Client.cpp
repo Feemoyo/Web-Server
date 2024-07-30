@@ -123,140 +123,22 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 	return (payload);
 }
 
-std::string Client::_path_maker(void)
+void	Client::run_json(void)
 {
-	std::string home = "./www/temp/";
-	std::string outputName;
+	// std::string output_name;
 
-	outputName += this->_map_finder("Request", "/", ".");
-	
-	for (std::size_t i = 0; i < outputName.size(); i++)
-	{
-		if (outputName[i] == '/')
-			outputName[i] = '_';
-	}
+	// output_name += this->_map_finder("Request", "/", ".");
+	JSON	*json = new JSON(this->_buffer_map["Payload"], "./www/temp", "new.json");
 
-	return (home + outputName + ".json");
-}
+	json->run();
 
-bool		Client::_create_output_file(void)
-{
-	std::ofstream output;
-
-	output.open(this->_path_maker().c_str());
-	if (!output.is_open())
-	{
-		std::cerr << "Error: could not open output file\n";
-		return (false);
-	}
-
-	output.close();
-	return (true);
-}
-
-void	Client::_set_output_file(std::vector<std::string> &fileAux)
-{
-	std::string		line;
-	std::ifstream	outputFile;
-
-	outputFile.open(this->_path_maker().c_str());
-
-	if(!outputFile.is_open())
-	{
-		this->_create_output_file();
-		fileAux.push_back("[");
-		fileAux.push_back("]");
-		return ;
-	}
-
-	if (outputFile.is_open())
-	{
-		while (std::getline(outputFile, line))
-		{
-			std::cout << line << std::endl;
-			fileAux.push_back(line);
-		}
-	}
-	outputFile.close();
+	delete json;
+	return ;
 }
 
 void	Client::decode_payload(void)
 {
 	this->_buffer_map["Payload"] = _url_decode(this->_buffer_map["Payload"]);
-	return ;
-}
-
-void	Client::save_output(void)
-{
-	std::ofstream				output;
-	std::istringstream			ss(this->_buffer_map["Payload"]);
-	std::string 				line;
-	std::vector<std::string>	fileAux;
-	char						ch = '&';
-
-	this->_set_output_file(fileAux);
-
-	if (fileAux.size() == 2)
-	{
-		std::vector<std::string>::iterator it = fileAux.end() - 1;
-		fileAux.insert(it, "{");
-
-		while (std::getline(ss, line, ch))
-		{
-			std::size_t first_space = line.find('=');
-			if (first_space != std::string::npos)
-			{
-				fileAux.insert(fileAux.end() - 1 ,"\"" + line.substr(0, first_space) + "\"" + ": " + "\"" + line.substr(first_space + 1) + "\"");
-			}
-		}
-		it = fileAux.end() - 1;
-		fileAux.insert(it, "}");
-	}
-	else
-	{
-		std::vector<std::string>::iterator it = fileAux.end() - 1;
-		fileAux.insert(it, "{");
-
-		while (std::getline(ss, line, ch))
-		{
-			std::size_t first_space = line.find('=');
-			if (first_space != std::string::npos)
-			{
-				//TODO: decode payload
-				fileAux.insert(fileAux.end() - 1 ,"\"" + line.substr(0, first_space) + "\"" + ": " + "\"" + line.substr(first_space + 1) + "\"");
-			}
-		}
-		it = fileAux.end() - 1;
-		fileAux.insert(it, "}");
-	}
-
-	output.open(this->_path_maker().c_str());
-	if (!output.is_open())
-	{
-		std::cerr << "Error: could not open output file\n";
-		return ;
-	}
-	if (output.is_open())
-	{
-		for (std::size_t i = 0; i < fileAux.size(); i++)
-		{
-			if (fileAux[i] == "[" || fileAux[i] == "{")
-				output << fileAux[i] << "\n";
-			else if (fileAux[i] == "]")
-				output << fileAux[i];
-			else if (fileAux[i] == "}" && i == fileAux.size() - 1)
-				output << fileAux[i] << "\n";
-			else if (fileAux[i] == "}")
-				output << fileAux[i] << ",\n";
-			else if (fileAux[i].find("\",", 0) != std::string::npos)
-				output << fileAux[i] << "\n";
-			else if (fileAux[i + 1] == "}" && i != fileAux.size() - 1)
-				output << fileAux[i] << "\n";
-			else
-				output << fileAux[i] << ",";
-		}
-	}
-	output.close();
 	return ;
 }
 

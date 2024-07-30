@@ -14,6 +14,8 @@ private:
 
 			JSON(void);
 
+	void	_json_writer(void);
+
 public:
 			JSON(std::string payload, std::string path, std::string file);
 			~JSON(void);

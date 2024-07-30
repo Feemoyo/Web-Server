@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:16:45 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/30 14:36:41 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/07/30 17:09:29 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,33 @@ JSON::~JSON(void)
 
 void	JSON::_json_writer(void)
 {
+	std::string			file_path = this->_path + "/" + this->_file;
+	std::ofstream		outfile(file_path.c_str(), std::ios::in | std::ios::out | std::ios::ate);
+
+	set_file(file_path);
+	if (this->_content.empty())
+	{
+		outfile.seekp(0, std::ios::beg);
+		outfile << "[\n\t{\n\t\t\"" << this->_payload << "\"\n\t}\n]";
+	}
+	else
+	{
+		size_t	found = this->_content.rfind("]");
+		if (found != std::string::npos)
+		{
+			if (found > 0 && this->_content[found - 1] == '[')
+			{
+				outfile.seekp(found);
+				outfile << "\n\t{\n\t\t\"" << this->_payload << "\"\n\t}\n]";
+			}
+			else
+			{
+				outfile.seekp(found - 1);
+				outfile << ",\n\t{\n\t\t\"" << this->_payload << "\"\n\t}\n]";
+			}
+		}
+	}
+	outfile.close();
 	return ;
 }
 
@@ -105,21 +132,10 @@ void	JSON::run(void)
 	{
 		if (!_create_file(this->_path, this->_file))
 		{
-			std::cerr << "Fail to create file: " << this->_path + "/" + this->_file << "\n";
+			std::cerr << "Fail to create file: " << this->_path + this->_file << "\n";
 			return ;
 		}
 	}
-	set_file(this->_path + "/" + this->_file);
-	if (this->_content.empty())
-		this->_content.insert(0, "[\n]");
-	else
-		this->_json_writer();
+	this->_json_writer();
+	return ;
 }
-
-/*
-** --------------------------------- ACCESSOR ---------------------------------
-*/
-
-/*
-** --------------------------------- SETTERS ---------------------------------
-*/

@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:01:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/30 14:11:15 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/07/30 16:48:02 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,11 @@ bool	ToolKit::_is_space(char c)
 
 void	ToolKit::_extract_content(void)
 {
-	std::ifstream	file((this->_file_path + this->_file_name).c_str());
-	std::string		line;
+	std::ifstream		file((this->_file_path + this->_file_name).c_str());
+	std::stringstream	buffer;
 
-	std::getline(file, line);
-	this->_content = line + '\n';
-	while (std::getline(file, line))
-		this->_content += line + '\n';
+	buffer << file.rdbuf();
+	this->_content = buffer.str();
 	file.close();
 	return ;
 }
@@ -210,7 +208,7 @@ void	ToolKit::set_file(std::string path, std::string name)
 {
 	this->_file_path = path;
 	this->_file_name = name;
-	this->set_content("");
+	this->_content.clear();
 	this->_extract_content();
 	return ;
 }
@@ -219,13 +217,14 @@ void	ToolKit::set_file(std::string path_and_name)
 {	 
 	this->_file_path = path_and_name.substr(0, path_and_name.find_last_of('/') + 1);
 	this->_file_name = path_and_name.substr(path_and_name.find_last_of('/') + 1);
-	this->set_content("");
+	this->_content.clear();
 	this->_extract_content();
 	return ;
 }
 
 void	ToolKit::set_content(std::string new_content)
 {
+	this->_content.clear();
 	this->_content = new_content;
 	return ;
 }
