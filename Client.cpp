@@ -41,7 +41,16 @@ static std::string	_url_decode(const std::string &str)
 			{
 				hex[0] = str[i + 1];
 				hex[1] = str[i + 2];
-				result += static_cast<char>(_from_hex(hex[0]) * 16 + _from_hex(hex[1]));
+				if (hex[0] == '2' && hex[1] == '2')
+					result += "\\\"";
+				else if (hex[0] == '5' && hex[1] == 'C')
+					result += "\\\\";
+				else if (hex[0] == '0' && hex[1] == 'A')
+					result += "\\n";
+				else if (hex[0] == '0' && hex[1] == 'D')
+					result += "\\r";
+				else
+					result += static_cast<char>(_from_hex(hex[0]) * 16 + _from_hex(hex[1]));
 				i += 2;
 			}
 		}
@@ -125,10 +134,8 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 
 void	Client::run_json(std::string &root)
 {
-	// std::string output_name;
-
-	// output_name += this->_map_finder("Request", "/", ".");
-	(void)_url_decode("hello");
+	// (void)_url_decode("hello");
+	this->_buffer_map["Payload"] = _url_decode(this->_buffer_map["Payload"]);
 	JSON	*json = new JSON(this->_buffer_map["Payload"], root + "/temp", this->_map_finder("Request", "/", "."));
 
 	json->run();

@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:16:45 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/30 18:13:35 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/07/30 20:36:04 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,10 +98,11 @@ void	JSON::_json_writer(void)
 	std::ofstream		outfile(file_path.c_str(), std::ios::in | std::ios::out | std::ios::ate);
 
 	set_file(file_path);
+	this->_payload_parser();
 	if (this->_content.empty())
 	{
 		outfile.seekp(0, std::ios::beg);
-		outfile << "[\n\t{\n\t\t\"" << this->_payload << "\"\n\t}\n]";
+		outfile << "[\n{\n\"" << this->_payload << "\"\n}\n]";
 	}
 	else
 	{
@@ -111,16 +112,41 @@ void	JSON::_json_writer(void)
 			if (found > 0 && this->_content[found - 1] == '[')
 			{
 				outfile.seekp(found);
-				outfile << "\n\t{\n\t\t\"" << this->_payload << "\"\n\t}\n]";
+				outfile << "\n{\n" << this->_payload << "\"\n}\n]";
 			}
 			else
 			{
 				outfile.seekp(found - 1);
-				outfile << ",\n\t{\n\t\t\"" << this->_payload << "\"\n\t}\n]";
+				outfile << ",\n{\n\"" << this->_payload << "\"\n}\n]";
 			}
 		}
 	}
 	outfile.close();
+	return ;
+}
+
+void	JSON::_payload_parser(void)
+{
+	this->_replace_ampersand();
+	this->_replace_equal();
+	return ;
+}
+
+void	JSON::_replace_ampersand(void)
+{
+	for(size_t i = this->_payload.find("&"); i != std::string::npos; i = this->_payload.find("&", i))
+	{
+		this->_payload.replace(i, 1, "\",\n\"");
+	}
+	return ;
+}
+
+void	JSON::_replace_equal(void)
+{
+	for(size_t i = this->_payload.find("="); i != std::string::npos; i = this->_payload.find("=", i))
+	{
+		this->_payload.replace(i, 1, "\": \"");
+	}
 	return ;
 }
 
