@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/30 17:22:09 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/07/30 22:03:19 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ void	Response::run_response(void)
 		_directory_validation();
 	else
 		_file_validation();
+	//TODO: chamar o cgi
 	_make_response();
 	_send_response();
 	return ;
@@ -217,6 +218,7 @@ void	Response::_make_response(void)
 	this->_response.header += "\nDate: ";
 	this->_response.header += this->_display_time();
 	this->_response.header += " \n\n";
+	
 	this->_response.body = this->_response.header;
 	this->_response.body += file_content;
 	return ;

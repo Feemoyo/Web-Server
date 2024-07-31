@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/12 17:22:50 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/07/30 23:16:01 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,47 @@ static bool	_is_directory_visible(std::string str)
 	if (str == "on")
 		return (true);
 	return (false);
+}
+
+// TODO: Descobrir como mudar o server name sem passar pelo SUDO
+static void	_change_server_name(const std::string &name)
+{
+	std::ifstream	host_file("/etc/hosts");
+	std::string		line;
+	std::string		new_hosts;
+	bool			name_exists = false;
+
+	if (!host_file.is_open())
+	{
+		std::cerr << "Unable to change server: " << name << "\n";
+		return ;
+	}
+	while (std::getline(host_file, line))
+	{
+		new_hosts += line + "\n";
+		if (line.find("127.0.0.1") != std::string::npos)
+		{
+			if (line.find(name) != std::string::npos)
+				name_exists = true;
+		}
+	}
+	host_file.close();
+	if (!name_exists)
+	{
+		new_hosts += "127.0.0.1";
+		new_hosts += '\t';
+		new_hosts += name;
+		new_hosts += '\n';
+	}
+	std::ofstream	host_file_out("/etc/hosts");
+	if (!host_file_out.is_open())
+	{
+		std::cerr << "Unable to write new server name" << "\n";
+		return ;
+	}
+	host_file_out << new_hosts;
+	host_file_out.close();
+	return ;
 }
 
 /*
@@ -128,8 +169,7 @@ bool	Config::_config_servers(void)
 
 		if (_is_there_a_valid_port(this->_server_string[i], server.port) == false)
 			return (false);
-		if (_is_there_a_server_name(this->_server_string[i], server.server_name) == false)
-			return (false);
+		_set_server_name(this->_server_string[i], server.server_name);
 		_set_server_root(this->_server_string[i], server.root);
 		_set_dir_visibility(this->_server_string[i], server.directory);
 		_set_max_body_size(this->_server_string[i], server.max_body_size);
@@ -160,17 +200,18 @@ bool	Config::_is_there_a_valid_port(std::string &serv, int &port)
 	return (true);
 }
 
-bool	Config::_is_there_a_server_name(std::string &serv, std::string &name)
+void	Config::_set_server_name(std::string &serv, std::string &name)
 {
 	size_t	ref = serv.find("server_name");
 
 	if (ref == std::string::npos)
+		serv = "localhost";
+	else
 	{
-		std::cerr << "Fail to find server name" << "\n";;
-		return (false);
+		name = find_and_split(serv, ref, "server_name", ";");
+		_change_server_name(name);
 	}
-	name = find_and_split(serv, ref, "server_name", ";");
-	return (true);
+	return ;
 }
 
 void	Config::_set_server_root(std::string &serv, std::string &root)
