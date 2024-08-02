@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/30 22:03:19 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/01 20:07:48 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ void	Response::_check_allowed_methods(void)
 		status_code_distributor("405");
 	return ;
 }
+
 void	Response::_check_directory_autoindex(void)
 {
 	if (this->_status_code == "404")
@@ -208,6 +209,7 @@ void	Response::_make_response(void)
 	file_content = this->get_content();
 	handler << file_content.size();
 
+	std::cout << "Status Code: " << this->_status_code << "\n";
 	this->_response.header = "HTTP/1.1 ";
 	this->_response.header += this->_status_code + " ";
 	this->_response.header += this->_status_msg;

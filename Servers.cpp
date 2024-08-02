@@ -12,6 +12,16 @@
 
 #include "Servers.hpp"
 
+std::string	_to_string(int num)
+{
+	std::stringstream ss;
+
+    ss << num;
+    
+	std::string str = ss.str();
+	return (str);
+}
+
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */

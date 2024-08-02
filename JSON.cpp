@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:16:45 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/30 20:36:04 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/01 23:08:15 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,40 @@ JSON::~JSON(void)
 ** --------------------------------- METHODS ----------------------------------
 */
 
-void	JSON::_json_writer(void)
+void	JSON::_json_delete(int comment)
+{
+	// std::string			file_path = this->_path + "/" + this->_file;
+	// std::ofstream		outfile(file_path.c_str(), std::ios::in | std::ios::out | std::ios::ate);
+	// set_file(file_path);
+	
+	// if (this->_content.empty())
+	// 	return ;
+	// else
+	// {
+	// 	size_t	start = this->_content.find("{", comment);
+	// 	size_t	end = this->_content.find("}", start);
+
+	// 	this->_content.erase(start, end - start);
+
+	// 	size_t	found = this->_content.rfind("]");
+	// 	if (found != std::string::npos)
+	// 	{
+	// 		if (found > 0 && this->_content[found - 1] == '[')
+	// 		{
+	// 			outfile.seekp(found);
+	// 			outfile << "\n{" << this->_payload << "\"}\n]";
+	// 		}
+	// 		else
+	// 		{
+	// 			outfile.seekp(found - 1);
+	// 			outfile << ",\n{\"" << this->_payload << "\"}\n]";
+	// 		}
+	// 	}
+	// }
+	return ;
+}
+
+void	JSON::_json_post(void)
 {
 	std::string			file_path = this->_path + "/" + this->_file;
 	std::ofstream		outfile(file_path.c_str(), std::ios::in | std::ios::out | std::ios::ate);
@@ -102,7 +135,7 @@ void	JSON::_json_writer(void)
 	if (this->_content.empty())
 	{
 		outfile.seekp(0, std::ios::beg);
-		outfile << "[\n{\n\"" << this->_payload << "\"\n}\n]";
+		outfile << "[\n{\"" << this->_payload << "\"}\n]";
 	}
 	else
 	{
@@ -112,12 +145,12 @@ void	JSON::_json_writer(void)
 			if (found > 0 && this->_content[found - 1] == '[')
 			{
 				outfile.seekp(found);
-				outfile << "\n{\n" << this->_payload << "\"\n}\n]";
+				outfile << "\n{" << this->_payload << "\"}\n]";
 			}
 			else
 			{
 				outfile.seekp(found - 1);
-				outfile << ",\n{\n\"" << this->_payload << "\"\n}\n]";
+				outfile << ",\n{\"" << this->_payload << "\"}\n]";
 			}
 		}
 	}
@@ -136,7 +169,7 @@ void	JSON::_replace_ampersand(void)
 {
 	for(size_t i = this->_payload.find("&"); i != std::string::npos; i = this->_payload.find("&", i))
 	{
-		this->_payload.replace(i, 1, "\",\n\"");
+		this->_payload.replace(i, 1, "\",\"");
 	}
 	return ;
 }
@@ -168,6 +201,7 @@ void	JSON::run(void)
 			return ;
 		}
 	}
-	this->_json_writer();
+	this->_json_post();
+	this->_json_delete(3);
 	return ;
 }

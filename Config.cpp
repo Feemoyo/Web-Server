@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/30 23:16:01 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/01 21:55:40 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ static bool	_is_directory_visible(std::string str)
 	return (false);
 }
 
-// TODO: Descobrir como mudar o server name sem passar pelo SUDO
 static void	_change_server_name(const std::string &name)
 {
 	std::ifstream	host_file("/etc/hosts");

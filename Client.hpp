@@ -19,7 +19,6 @@ public:
 					Client(void);
 					~Client(void);
 
-	//TODO: proteger request https
 	bool			set_buffer(std::vector<char> buffer, bool &payload);
 	void			run_json(std::string &root);
 
