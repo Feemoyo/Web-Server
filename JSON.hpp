@@ -14,7 +14,9 @@ private:
 
 			JSON(void);
 
-	void	_json_writer(void);
+	void	_json_delete(int comment);
+	void	_json_post(void);
+
 	void	_payload_parser(void);
 	void	_replace_ampersand(void);
 	void	_replace_equal(void);

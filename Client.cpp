@@ -134,7 +134,6 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 
 void	Client::run_json(std::string &root)
 {
-	// (void)_url_decode("hello");
 	this->_buffer_map["Payload"] = _url_decode(this->_buffer_map["Payload"]);
 	JSON	*json = new JSON(this->_buffer_map["Payload"], root + "/temp", this->_map_finder("Request", "/", "."));
 
@@ -150,7 +149,12 @@ void	Client::run_json(std::string &root)
 
 std::string	Client::get_method(void)
 {
-	return (this->_map_finder("Request", "", " "));
+	std::string map_method = this->_map_finder("Request", "", " ");
+
+	for (size_t i = 0; i < map_method.size(); i++)
+		map_method[i] = std::toupper(map_method[i]);
+	
+	return (map_method);
 }
 
 std::string	Client::get_path(void)
@@ -202,6 +206,9 @@ std::string	Client::_map_finder(std::string key, std::string value1, std::string
 {
 	std::size_t auxFindGET1 = this->_buffer_map[key].find(value1, 0);
 	std::size_t auxFindGET2 = this->_buffer_map[key].find(value2, auxFindGET1);
+
+	if(auxFindGET1 == std::string::npos || auxFindGET2 == std::string::npos)
+		return ("");
 
 	return(this->_buffer_map[key].substr(auxFindGET1, auxFindGET2 - auxFindGET1));
 }

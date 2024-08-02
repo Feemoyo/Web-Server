@@ -5,6 +5,7 @@
 
 # include "Utils.hpp"
 
+//TODO: integração do CGI com a classe Response
 class	CGI
 {
 private:
