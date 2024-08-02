@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   JSON.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:16:45 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/30 20:36:04 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/02 14:41:50 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,49 @@ JSON::~JSON(void)
 ** --------------------------------- METHODS ----------------------------------
 */
 
-void	JSON::_json_writer(void)
+void	JSON::_json_delete(int comment)
+{
+	std::string			file_path = this->_path + "/" + this->_file;
+	std::ifstream		infile(file_path.c_str());
+	
+	if (!infile.is_open())
+	{
+		std::cerr << "Fail to open: " << file_path <<  " to DELETE" << std::endl;
+		return ;
+	}
+	infile.seekg(0, std::ios::end);
+	if (infile.tellg() == 0)
+	{
+		infile.close();
+		return ;
+	}
+	infile.seekg(0, std::ios::beg);
+
+	std::stringstream	buffer;
+	std::string			line;
+	int					current_line = 0;
+
+	while (std::getline(infile, line))
+	{
+		if (current_line != comment)
+			buffer << line << "\n";
+		current_line++;
+	}
+	infile.close();
+
+	std::ofstream	outfile(file_path.c_str());
+
+	if (!outfile.is_open())
+	{
+		std::cerr << "Fail to open: " << file_path <<  " to finish DELETE" << std::endl;
+		return ;
+	}
+	outfile << buffer.str();
+	outfile.close();
+	return ;
+}
+
+void	JSON::_json_post(void)
 {
 	std::string			file_path = this->_path + "/" + this->_file;
 	std::ofstream		outfile(file_path.c_str(), std::ios::in | std::ios::out | std::ios::ate);
@@ -102,7 +144,7 @@ void	JSON::_json_writer(void)
 	if (this->_content.empty())
 	{
 		outfile.seekp(0, std::ios::beg);
-		outfile << "[\n{\n\"" << this->_payload << "\"\n}\n]";
+		outfile << "[\n{\"" << this->_payload << "\"}\n]";
 	}
 	else
 	{
@@ -112,12 +154,12 @@ void	JSON::_json_writer(void)
 			if (found > 0 && this->_content[found - 1] == '[')
 			{
 				outfile.seekp(found);
-				outfile << "\n{\n" << this->_payload << "\"\n}\n]";
+				outfile << "\n{" << this->_payload << "\"}\n]";
 			}
 			else
 			{
 				outfile.seekp(found - 1);
-				outfile << ",\n{\n\"" << this->_payload << "\"\n}\n]";
+				outfile << ",\n{\"" << this->_payload << "\"}\n]";
 			}
 		}
 	}
@@ -136,7 +178,7 @@ void	JSON::_replace_ampersand(void)
 {
 	for(size_t i = this->_payload.find("&"); i != std::string::npos; i = this->_payload.find("&", i))
 	{
-		this->_payload.replace(i, 1, "\",\n\"");
+		this->_payload.replace(i, 1, "\",\"");
 	}
 	return ;
 }
@@ -168,6 +210,7 @@ void	JSON::run(void)
 			return ;
 		}
 	}
-	this->_json_writer();
+	this->_json_post();
+	this->_json_delete(3);
 	return ;
 }
