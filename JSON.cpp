@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   JSON.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:16:45 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/01 23:08:15 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/02 14:41:50 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,34 +94,43 @@ JSON::~JSON(void)
 
 void	JSON::_json_delete(int comment)
 {
-	// std::string			file_path = this->_path + "/" + this->_file;
-	// std::ofstream		outfile(file_path.c_str(), std::ios::in | std::ios::out | std::ios::ate);
-	// set_file(file_path);
+	std::string			file_path = this->_path + "/" + this->_file;
+	std::ifstream		infile(file_path.c_str());
 	
-	// if (this->_content.empty())
-	// 	return ;
-	// else
-	// {
-	// 	size_t	start = this->_content.find("{", comment);
-	// 	size_t	end = this->_content.find("}", start);
+	if (!infile.is_open())
+	{
+		std::cerr << "Fail to open: " << file_path <<  " to DELETE" << std::endl;
+		return ;
+	}
+	infile.seekg(0, std::ios::end);
+	if (infile.tellg() == 0)
+	{
+		infile.close();
+		return ;
+	}
+	infile.seekg(0, std::ios::beg);
 
-	// 	this->_content.erase(start, end - start);
+	std::stringstream	buffer;
+	std::string			line;
+	int					current_line = 0;
 
-	// 	size_t	found = this->_content.rfind("]");
-	// 	if (found != std::string::npos)
-	// 	{
-	// 		if (found > 0 && this->_content[found - 1] == '[')
-	// 		{
-	// 			outfile.seekp(found);
-	// 			outfile << "\n{" << this->_payload << "\"}\n]";
-	// 		}
-	// 		else
-	// 		{
-	// 			outfile.seekp(found - 1);
-	// 			outfile << ",\n{\"" << this->_payload << "\"}\n]";
-	// 		}
-	// 	}
-	// }
+	while (std::getline(infile, line))
+	{
+		if (current_line != comment)
+			buffer << line << "\n";
+		current_line++;
+	}
+	infile.close();
+
+	std::ofstream	outfile(file_path.c_str());
+
+	if (!outfile.is_open())
+	{
+		std::cerr << "Fail to open: " << file_path <<  " to finish DELETE" << std::endl;
+		return ;
+	}
+	outfile << buffer.str();
+	outfile.close();
 	return ;
 }
 
