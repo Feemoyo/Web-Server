@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/04 17:16:12 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/04 19:52:13 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,10 +259,10 @@ void	Response::_make_response(void)
 	this->_response.header += handler.str();
 	this->_response.header += "\nDate: ";
 	this->_response.header += this->_display_time();
-	this->_response.header += "\r\n";
+	this->_response.header += "\n\n";
 	
 	this->_response.body = this->_response.header;
-	this->_response.body += file_content + "0\r\n\r\n";
+	this->_response.body += file_content;
 	return ;
 }
 

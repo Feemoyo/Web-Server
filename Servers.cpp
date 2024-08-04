@@ -122,7 +122,8 @@ void	Servers::run_servers(void)
 	while (true)
 	{
 		std::cout << "Webserv running..." << "\n";;
-		if (poll(this->_fds.data(), this->_fds.size(), -1) < 0)
+		int	poll_count = poll(this->_fds.data(), this->_fds.size(), -1);
+		if (poll_count < 0)
 		{
 			std::cerr << "Poll fail" << "\n";;
 			close_servers();
@@ -147,7 +148,6 @@ void	Servers::_accept_connection (size_t index)
 	{
 		std::cerr << "Accept fail on port: " << this->_servers[index].port << "\n";;
 		close_servers();
-		close(client_fd);
 		return ;
 	}
 	int flag = fcntl(client_fd, F_GETFL, 0);
@@ -157,7 +157,6 @@ void	Servers::_accept_connection (size_t index)
 		close(client_fd);
 		return ;
 	}
-	std::cout << "antes do client" << client_fd << std::endl;
 	_process_client(index, client_fd);
 	_process_response(index, client_fd, this->_client.get_method());
 	close(client_fd);
@@ -167,19 +166,28 @@ void	Servers::_accept_connection (size_t index)
 void	Servers::_process_client(size_t index, int &client_fd)
 {
 	std::vector<char>	buffer(8192, 0);
-	ssize_t	bytes_read;
-	bool	payload = false;
-	
+	ssize_t				bytes_read;
+	bool				payload = false;
+	int					retry_count = 0;
+	const int			max_retries = 5;
+
+
 	this->_client.clear_buffer();
 	this->_client.clear_body_size();
 	while(true)
 	{
 		buffer.assign(buffer.size(), 0);
-		bytes_read = recv(client_fd, buffer.data(), buffer.size() - 1, 0);
+		bytes_read = recv(client_fd, &buffer[0], buffer.size() - 1, 0);
 		if (bytes_read < 0)
 		{
-			std::cerr << "Reading from client fail on port: " << this->_servers[index].port << std::endl;
-			break ;
+			retry_count++;
+			if (retry_count >= max_retries)
+			{
+				std::cerr << "Reading from client fail on port: " << this->_servers[index].port << std::endl;
+				break ;
+			}
+			usleep(100 * 1000);
+			continue ;
 		}
 		else if (bytes_read == 0)
 		{
@@ -189,11 +197,8 @@ void	Servers::_process_client(size_t index, int &client_fd)
 		if (!this->_client.set_buffer(buffer, payload))
 			break ;
 	}
-	// this->_client.print_map();
 	if (this->_client.get_method() == "POST")
-	{
 		this->_client.set_body_size();
-	}
 	return ;
 }
 
