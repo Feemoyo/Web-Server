@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/03 23:50:54 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/04 17:08:40 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,11 @@ void	Response::run_response(void)
 	{
 		t_cgi	res_cgi;
 		
-		res_cgi.method = "GET";
+		res_cgi.method = "CREATE";
 		res_cgi.cgi = "/usr/bin/python3";
 		res_cgi.script_file = (this->_response.server.root + this->_response.path + this->_response.name);
 		res_cgi.data_base = "./www/temp/_test_form_index.json";
-		res_cgi.data = "payload";
+		res_cgi.data = "name=Rodrigo email=teste@gmail.com mensagem=Teste";
 
 		CGI			*cgi = new CGI(res_cgi);
 
@@ -126,11 +126,12 @@ void	Response::_check_directory_location(void)
 	return ;
 }
 
+//TODO: linha 134 da core dumped quando tentamos acessar a pagina de teste do Downloads
 void	Response::_check_allowed_methods(void)
 {
 	if (this->_status_code == "404")
 		return ;
-	else if (find(this->_response.server.locations.find(this->_response.path)->second.methods.begin(), \
+	else if (std::find(this->_response.server.locations.find(this->_response.path)->second.methods.begin(), \
 				this->_response.server.locations.find(this->_response.path)->second.methods.end(), \
 				this->_response.method) == this->_response.server.locations.find(this->_response.path)->second.methods.end())
 		status_code_distributor("405");
@@ -241,8 +242,6 @@ void	Response::_make_response(void)
 
 	file_content = this->get_content();
 
-	std::cout << file_content << "\n";
-
 	handler << file_content.size();
 
 	std::cout << "Status Code: " << this->_status_code << "\n";
@@ -255,10 +254,10 @@ void	Response::_make_response(void)
 	this->_response.header += handler.str();
 	this->_response.header += "\nDate: ";
 	this->_response.header += this->_display_time();
-	this->_response.header += " \n\n";
+	this->_response.header += "\r\n";
 	
 	this->_response.body = this->_response.header;
-	this->_response.body += file_content;
+	this->_response.body += file_content + "0\r\n\r\n";
 	return ;
 }
 

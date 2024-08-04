@@ -150,6 +150,14 @@ void	Servers::_accept_connection (size_t index)
 		close(client_fd);
 		return ;
 	}
+	int flag = fcntl(client_fd, F_GETFL, 0);
+	if (flag < 0 || fcntl(client_fd, F_SETFL, flag | O_NONBLOCK) < 0)
+	{
+		std::cerr << "Fcntl fail on port: " << this->_servers[index].port << "\n";;
+		close(client_fd);
+		return ;
+	}
+	std::cout << "antes do client" << client_fd << std::endl;
 	_process_client(index, client_fd);
 	_process_response(index, client_fd, this->_client.get_method());
 	close(client_fd);
@@ -181,9 +189,9 @@ void	Servers::_process_client(size_t index, int &client_fd)
 		if (!this->_client.set_buffer(buffer, payload))
 			break ;
 	}
+	// this->_client.print_map();
 	if (this->_client.get_method() == "POST")
 	{
-		this->_client.run_json(this->_servers[index].root);
 		this->_client.set_body_size();
 	}
 	return ;

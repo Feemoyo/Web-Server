@@ -195,7 +195,7 @@ void	Client::format_content_type(void)
 
 void		Client::set_body_size(void)
 {
-	if (!this->_buffer_map["Payload"].empty())
+	if (!this->_buffer_map["Payload"].empty() )
 		this->set_content_length(this->_buffer_map["Payload"].size());
 	return ;
 }
