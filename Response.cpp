@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/04 17:08:40 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/04 17:16:12 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,10 +131,15 @@ void	Response::_check_allowed_methods(void)
 {
 	if (this->_status_code == "404")
 		return ;
-	else if (std::find(this->_response.server.locations.find(this->_response.path)->second.methods.begin(), \
-				this->_response.server.locations.find(this->_response.path)->second.methods.end(), \
-				this->_response.method) == this->_response.server.locations.find(this->_response.path)->second.methods.end())
+
+	std::map<std::string, t_location>::iterator	it = this->_response.server.locations.find(this->_response.path);
+	if (it == this->_response.server.locations.end())
+		return ;
+
+	std::vector<std::string>	&allowed_methods = it->second.methods;
+	if (std::find(allowed_methods.begin(), allowed_methods.end(), this->_response.method) == allowed_methods.end())
 		status_code_distributor("405");
+
 	return ;
 }
 
