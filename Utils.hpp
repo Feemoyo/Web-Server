@@ -53,7 +53,7 @@ typedef struct	s_server
 	sockaddr_in							server_addr;
 }	t_server;
 
-typedef struct s_response
+typedef struct	s_response
 {
 	int				client;
 	t_server		server;
@@ -63,7 +63,16 @@ typedef struct s_response
 	std::string		header;
 	std::string		body;
 
-} t_response;
+}	t_response;
+
+typedef struct	s_cgi
+{
+	std::string	method;
+	std::string	cgi;
+	std::string	script_file;
+	std::string	data_base;
+	std::string	data;
+}	t_cgi;
 
 
 std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs);

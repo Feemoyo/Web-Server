@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:16:45 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/02 14:41:50 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/03 16:49:44 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,11 +92,12 @@ JSON::~JSON(void)
 ** --------------------------------- METHODS ----------------------------------
 */
 
-void	JSON::_json_delete(int comment)
+void	JSON::json_delete(int comment)
 {
 	std::string			file_path = this->_path + "/" + this->_file;
 	std::ifstream		infile(file_path.c_str());
 	
+	_check_dir_and_file();
 	if (!infile.is_open())
 	{
 		std::cerr << "Fail to open: " << file_path <<  " to DELETE" << std::endl;
@@ -134,34 +135,53 @@ void	JSON::_json_delete(int comment)
 	return ;
 }
 
-void	JSON::_json_post(void)
+void	JSON::json_post(void)
 {
 	std::string			file_path = this->_path + "/" + this->_file;
-	std::ofstream		outfile(file_path.c_str(), std::ios::in | std::ios::out | std::ios::ate);
+	std::ifstream		infile(file_path.c_str());
+	bool				is_empty = true;
 
-	set_file(file_path);
-	this->_payload_parser();
-	if (this->_content.empty())
+	_check_dir_and_file();
+	if (!infile.is_open())
 	{
-		outfile.seekp(0, std::ios::beg);
-		outfile << "[\n{\"" << this->_payload << "\"}\n]";
+		std::cerr << "Fail to open: " << file_path <<  " to POST" << std::endl;
+		return ;
 	}
+	std::stringstream	buffer;
+	std::string			line;
+
+	infile.seekg(0, std::ios::end);
+	if (infile.tellg() != 0)
+	{
+		is_empty = false;
+		infile.seekg(0, std::ios::beg);
+		buffer << infile.rdbuf();
+	}
+	infile.close();
+
+	this->_payload_parser();
+	std::ofstream	outfile(file_path.c_str());
+
+	if (!outfile.is_open())
+	{
+		std::cerr << "Fail to open: " << file_path <<  " to finish POST" << std::endl;
+		return ;
+	}
+	if (is_empty)
+		outfile << "[\n{\"" << this->_payload << "\"}\n]";
 	else
 	{
-		size_t	found = this->_content.rfind("]");
-		if (found != std::string::npos)
+		std::string	content = buffer.str();
+		size_t		end = content.find("]");
+
+		if (end != std::string::npos)
 		{
-			if (found > 0 && this->_content[found - 1] == '[')
-			{
-				outfile.seekp(found);
-				outfile << "\n{" << this->_payload << "\"}\n]";
-			}
+			if (end > 0 && content[end - 1] == '[')
+				content.insert(end, "\n{\"" + this->_payload + "\"}");
 			else
-			{
-				outfile.seekp(found - 1);
-				outfile << ",\n{\"" << this->_payload << "\"}\n]";
-			}
+				content.insert(end - 1, ",\n{\"" + this->_payload + "\"}");
 		}
+		outfile << content;
 	}
 	outfile.close();
 	return ;
@@ -192,14 +212,14 @@ void	JSON::_replace_equal(void)
 	return ;
 }
 
-void	JSON::run(void)
+bool	JSON::_check_dir_and_file(void)
 {
 	if (!_directory_exists(this->_path))
 	{
 		if (!_create_dir(this->_path))
 		{
 			std::cerr << "Fail to create directory on path: " << this->_path << "\n";
-			return ;
+			return (false);
 		}
 	}
 	if (!_file_exists(this->_path, this->_file))
@@ -207,10 +227,8 @@ void	JSON::run(void)
 		if (!_create_file(this->_path, this->_file))
 		{
 			std::cerr << "Fail to create file: " << this->_path + this->_file << "\n";
-			return ;
+			return (false);
 		}
 	}
-	this->_json_post();
-	this->_json_delete(3);
-	return ;
+	return (true);
 }

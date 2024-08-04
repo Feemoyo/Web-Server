@@ -14,18 +14,17 @@ private:
 
 			JSON(void);
 
-	void	_json_delete(int comment);
-	void	_json_post(void);
-
 	void	_payload_parser(void);
 	void	_replace_ampersand(void);
 	void	_replace_equal(void);
+	bool	_check_dir_and_file(void);
 
 public:
 			JSON(std::string payload, std::string path, std::string file);
 			~JSON(void);
 
-	void	run(void);
+	void	json_delete(int comment);
+	void	json_post(void);
 
 };
 

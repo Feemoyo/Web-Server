@@ -137,7 +137,9 @@ void	Client::run_json(std::string &root)
 	this->_buffer_map["Payload"] = _url_decode(this->_buffer_map["Payload"]);
 	JSON	*json = new JSON(this->_buffer_map["Payload"], root + "/temp", this->_map_finder("Request", "/", "."));
 
-	json->run();
+	json->json_post();
+
+	json->json_delete(5);
 
 	delete json;
 	return ;

@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/01 20:07:48 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/03 23:50:54 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Response.hpp"
+#include "CGI.hpp"
 
 /*
  ------------------------------- CONSTRUCTOR --------------------------------
@@ -50,14 +51,46 @@ Response::~Response(void)
 void	Response::run_response(void)
 {
 	status_code_distributor("200");
-	if (this->_response.name.size() == 0)
-		_directory_validation();
+	if (_check_for_cgi() == true)
+	{
+		t_cgi	res_cgi;
+		
+		res_cgi.method = "GET";
+		res_cgi.cgi = "/usr/bin/python3";
+		res_cgi.script_file = (this->_response.server.root + this->_response.path + this->_response.name);
+		res_cgi.data_base = "./www/temp/_test_form_index.json";
+		res_cgi.data = "payload";
+
+		CGI			*cgi = new CGI(res_cgi);
+
+		cgi->run_cgi();
+
+		this->set_content(cgi->get_cgi_ret());
+		delete cgi;
+		if (this->get_content() == "404\n")
+		{
+			this->_response.path = "/errors/";
+			this->_response.name = "404.html";
+			_file_validation();
+		}
+	}
 	else
-		_file_validation();
-	//TODO: chamar o cgi
+	{
+		if (this->_response.name.size() == 0)
+			_directory_validation();
+		else
+			_file_validation();
+	}
 	_make_response();
 	_send_response();
 	return ;
+}
+
+bool	Response::_check_for_cgi(void)
+{
+	if (this->_response.name.length() > 3 && this->_response.name.rfind(".py") == this->_response.name.length() - 3)
+		return (true);
+	return (false);
 }
 
 void	Response::_file_validation(void)
@@ -207,6 +240,9 @@ void	Response::_make_response(void)
 	std::ostringstream	handler;
 
 	file_content = this->get_content();
+
+	std::cout << file_content << "\n";
+
 	handler << file_content.size();
 
 	std::cout << "Status Code: " << this->_status_code << "\n";

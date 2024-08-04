@@ -5,22 +5,23 @@
 
 # include "Utils.hpp"
 
-//TODO: integração do CGI com a classe Response
 class	CGI
 {
 private:
-	std::string							_script_path;
 	std::map<std::string, std::string>	_env;
+	std::string							_cgi_ret;
 
 			CGI(void);
 
 	char	**_conver_map_to_array(std::map<std::string, std::string> &env);
 
 public:
-			CGI(std::string &method, std::string &script, std::string &html, std::string &data);
-			~CGI(void);
+				CGI(t_cgi &cgi);
+				~CGI(void);
 
-	void	run_cgi(void);
+	void		run_cgi(void);
+
+	std::string	get_cgi_ret(void);
 
 };
 
