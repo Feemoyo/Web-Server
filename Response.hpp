@@ -12,8 +12,11 @@ private:
 
 				Response(void);
 
+	bool		_check_for_cgi(void);
+
 	void		_file_validation(void);
 	void		_directory_validation(void);
+
 	void		_check_directory_location(void);
 	void		_check_allowed_methods(void);
 	void		_check_directory_autoindex(void);
