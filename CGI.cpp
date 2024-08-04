@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGI.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/13 14:35:31 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/30 17:20:02 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/03 23:52:17 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,14 @@ CGI::CGI(void)
 	return ;
 }
 
-CGI::CGI(std::string &method, std::string &script, std::string &html, std::string &data)
+CGI::CGI(t_cgi &cgi)
 {
-	this->_env["METHOD"] = method;
-	this->_env["SCRIPT"] = script;
-	this->_env["HTML"] = html;
+	this->_env["METHOD"] = cgi.method;
+	this->_env["CGI"] = cgi.cgi;
+	this->_env["SCRIPT_FILE"] = cgi.script_file;
+	this->_env["DATA_BASE"] = cgi.data_base;
+	this->_env["DATA"] = cgi.data;
 
-	if (method == "POST" || method == "DELETE")
-		this->_env["DATA"] = data;
-	else
-		this->_env["DATA"] = "";
 	return ;
 }
 
@@ -72,14 +70,12 @@ void	CGI::run_cgi(void)
 
 		dup2(pipe_out[1], STDOUT_FILENO);
 
-		//	input do cgi
 		char	**envp = this->_conver_map_to_array(this->_env);
-		char	*argv[] = {const_cast<char *>(this->_script_path.c_str()), NULL};
+		char	*argv[] = {const_cast<char *>(this->_env["CGI"].c_str()), const_cast<char *>(this->_env["SCRIPT_FILE"].c_str()), NULL};
 
-		if (execve(this->_script_path.c_str(), argv, envp) == -1)
+		if (execve(this->_env["CGI"].c_str(), argv, envp) == -1)
 		{
 			std::cerr << "Execve fail to run" << "\n";
-			// exit(EXIT_FAILURE);
 			kill(getpid(), SIGTERM);
 		}
 	}
@@ -89,20 +85,22 @@ void	CGI::run_cgi(void)
 
 		//	output do cgi
 		char		buffer[1024];
-		std::string	cig_output;
 		size_t		bytes_read;
 
 		while((bytes_read = read(pipe_out[0], buffer, sizeof(buffer))) > 0)
 		{
-			cig_output.append(buffer, bytes_read);
+			this->_cgi_ret.append(buffer, bytes_read);
 		}
 
 		close(pipe_out[0]);
 
 		int	status;
 		waitpid(pid, &status, 0);
-
-		std::cout << "Output: " << cig_output << "\n";
 	}
 	return ;
+}
+
+std::string	CGI::get_cgi_ret(void)
+{
+	return (this->_cgi_ret);
 }
