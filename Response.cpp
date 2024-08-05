@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/05 16:15:04 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/05 16:47:10 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,8 +162,13 @@ void	Response::_check_directory_autoindex(void)
 {
 	if (this->_status_code == "404")
 		return ;
-	else if (this->_response.server.locations.find(this->_response.path)->second.directory != true)
-		status_code_distributor("302");
+
+	std::map<std::string, t_location>::iterator	it = this->_response.server.locations.begin();
+	for (; it != this->_response.server.locations.end(); it++)
+	{
+		if (it->first == this->_response.path && (it->second.directory == false))
+			status_code_distributor("302");
+	}
 	return ;
 }
 
