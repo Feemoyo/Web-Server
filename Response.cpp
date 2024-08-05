@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/04 19:52:13 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/05 15:45:07 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,7 +249,7 @@ void	Response::_make_response(void)
 
 	handler << file_content.size();
 
-	std::cout << "Status Code: " << this->_status_code << "\n";
+	// std::cout << "Status Code: " << this->_status_code << "\n";
 	this->_response.header = "HTTP/1.1 ";
 	this->_response.header += this->_status_code + " ";
 	this->_response.header += this->_status_msg;

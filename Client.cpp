@@ -103,7 +103,14 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 	}
 	while (std::getline(stream, line))
 	{
-		std::cout << line << std::endl;
+		// std::cout << line << std::endl;
+		// WebKitFormBoundary
+		// multipart/form-data
+		if (line.find("WebKitFormBoundary") != std::string::npos)
+		{
+			std::cout << line << std::endl;
+			// std::cout << "final do chunck" << std::endl;
+		}
 		if (line == "\r" || payload)
 		{
 			this->remove_white_spaces(line);

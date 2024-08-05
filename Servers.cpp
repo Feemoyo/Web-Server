@@ -131,6 +131,7 @@ void	Servers::run_servers(void)
 		}
 		for (size_t i = 0; i < this->_fds.size(); i++)
 		{
+
 			if (this->_fds[i].revents & POLLIN)
 				_accept_connection(i);
 		}
@@ -178,6 +179,7 @@ void	Servers::_process_client(size_t index, int &client_fd)
 	{
 		buffer.assign(buffer.size(), 0);
 		bytes_read = recv(client_fd, &buffer[0], buffer.size() - 1, 0);
+		std::cout << "bytes_read: " << bytes_read << std::endl;
 		if (bytes_read < 0)
 		{
 			retry_count++;
@@ -197,6 +199,7 @@ void	Servers::_process_client(size_t index, int &client_fd)
 		if (!this->_client.set_buffer(buffer, payload))
 			break ;
 	}
+	// this->_client.print_map();
 	if (this->_client.get_method() == "POST")
 		this->_client.set_body_size();
 	return ;
