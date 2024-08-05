@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/05 17:47:16 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/05 18:21:08 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ Response::Response(int client_fd, t_server &server, std::string path_and_name, s
 	this->_response.server = server;
 	this->_response.method = method;
 	this->_response.path = path_and_name.substr(0, start);
+	this->_response.name = path_and_name.substr(start);
 
 	_change_paths_for_redirections();
 
-	this->_response.name = path_and_name.substr(start);
 	return ;
 }
 
@@ -98,11 +98,19 @@ void	Response::_change_paths_for_redirections(void)
 		if (this->_response.path == i->path)
 		{
 			this->_response.path = i->redir;
-			std::map<std::string, t_location>::iterator	it = this->_response.server.locations.find(this->_response.path);
-			if (it != this->_response.server.locations.end())
-				this->_response.file = it->second.default;
+			std::map<std::string, t_location>::iterator	it;
+
+			for (it = this->_response.server.locations.begin(); it != this->_response.server.locations.end(); it++)
+			{
+				if (it->first == this->_response.path)
+					this->_response.name = it->second.default_file;
+			}
 		}
 	}
+
+	std::cout << this->_response.path << std::endl;
+	std::cout << this->_response.name << std::endl;
+
 	return ;
 }
 
@@ -275,7 +283,7 @@ void	Response::_make_response(void)
 
 	handler << file_content.size();
 
-	std::cout << "Status Code: " << this->_status_code << "\n";
+	// std::cout << "Status Code: " << this->_status_code << "\n";
 	this->_response.header = "HTTP/1.1 ";
 	this->_response.header += this->_status_code + " ";
 	this->_response.header += this->_status_msg;
