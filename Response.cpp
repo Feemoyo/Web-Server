@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/04 19:52:13 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/05 16:15:04 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,9 @@ Response::Response(int client_fd, t_server &server, std::string path_and_name, s
 	this->_response.server = server;
 	this->_response.method = method;
 	this->_response.path = path_and_name.substr(0, start);
+
+	_change_paths_for_redirections();
+
 	this->_response.name = path_and_name.substr(start);
 	return ;
 }
@@ -83,6 +86,18 @@ void	Response::run_response(void)
 	}
 	_make_response();
 	_send_response();
+	return ;
+}
+
+void	Response::_change_paths_for_redirections(void)
+{
+	std::vector<t_redirect>::iterator	i;
+
+	for (i = this->_response.server.redirects.begin(); i != this->_response.server.redirects.end(); i++)
+	{
+		if (this->_response.path == i->path)
+			this->_response.path = i->redir;
+	}
 	return ;
 }
 

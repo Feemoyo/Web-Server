@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/01 21:55:40 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/05 16:00:21 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -307,6 +307,18 @@ bool	Config::_config_locations(std::string &serv, t_server &server)
 			}
 			locat.path = find_and_split(locations, start, "location", "{");
 
+			if (_check_for_redirection(locations, start) == true)
+			{
+				t_redirect	redirect;
+
+				redirect.path = locat.path;
+				redirect.redir = find_and_split(locations, start, "return", ";");
+				server.redirects.push_back(redirect);
+				start = locations.find("}", end);
+				end = locations.find("{", start);
+				continue ;
+			}
+
 			end = locations.find(";", start);
 			start = locations.find("default", start);
 			if (start + strlen("default") >= end || start == std::string::npos)
@@ -340,6 +352,16 @@ bool	Config::_config_locations(std::string &serv, t_server &server)
 		}
 
 	}
+	return (true);
+}
+
+bool	Config::_check_for_redirection(std::string &locations, size_t ref)
+{
+	size_t	start = locations.find("return", ref);
+	size_t	end = locations.find(";", ref);
+
+	if (start == std::string::npos || end == std::string::npos || start > end)
+		return (false);
 	return (true);
 }
 

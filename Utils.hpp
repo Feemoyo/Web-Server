@@ -33,6 +33,12 @@
 
 # define MAX_CLIENTS 10
 
+typedef struct	s_redirect
+{
+	std::string		path;
+	std::string		redir;
+}	t_redirect;
+
 typedef struct	s_location
 {
 	std::string					path;
@@ -49,6 +55,7 @@ typedef struct	s_server
 	bool								directory;
 	int									max_body_size;
 	std::map<std::string, t_location>	locations;
+	std::vector<t_redirect>				redirects;
 
 	int									server_socket;
 	sockaddr_in							server_addr;
