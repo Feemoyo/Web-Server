@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/05 16:47:10 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/05 17:47:16 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,12 @@ void	Response::_change_paths_for_redirections(void)
 	for (i = this->_response.server.redirects.begin(); i != this->_response.server.redirects.end(); i++)
 	{
 		if (this->_response.path == i->path)
+		{
 			this->_response.path = i->redir;
+			std::map<std::string, t_location>::iterator	it = this->_response.server.locations.find(this->_response.path);
+			if (it != this->_response.server.locations.end())
+				this->_response.file = it->second.default;
+		}
 	}
 	return ;
 }
@@ -126,7 +131,8 @@ void	Response::_directory_validation(void)
 	_check_allowed_methods();
 	_check_directory_autoindex();
 	if (this->_status_code == "302")
-		set_file((this->_response.server.root + this->_response.path), this->_response.server.locations.find(this->_response.path)->second.default_file);
+		_check_errors_location_file();
+		// set_file((this->_response.server.root + this->_response.path), this->_response.server.locations.find(this->_response.path)->second.default_file);
 	else if (this->_status_code != "200" && this->_status_code != "302")
 		_check_errors_location_file();
 	else
