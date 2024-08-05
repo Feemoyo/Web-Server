@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/05 18:21:08 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/05 20:25:13 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ Response::Response(int client_fd, t_server &server, std::string path_and_name, s
 	this->_response.path = path_and_name.substr(0, start);
 	this->_response.name = path_and_name.substr(start);
 
-	_change_paths_for_redirections();
-
 	return ;
 }
 
@@ -54,6 +52,7 @@ Response::~Response(void)
 void	Response::run_response(void)
 {
 	status_code_distributor("200");
+	_change_paths_for_redirections();
 	if (_check_for_cgi() == true)
 	{
 		t_cgi	res_cgi;
@@ -98,19 +97,9 @@ void	Response::_change_paths_for_redirections(void)
 		if (this->_response.path == i->path)
 		{
 			this->_response.path = i->redir;
-			std::map<std::string, t_location>::iterator	it;
-
-			for (it = this->_response.server.locations.begin(); it != this->_response.server.locations.end(); it++)
-			{
-				if (it->first == this->_response.path)
-					this->_response.name = it->second.default_file;
-			}
+			
 		}
 	}
-
-	std::cout << this->_response.path << std::endl;
-	std::cout << this->_response.name << std::endl;
-
 	return ;
 }
 
@@ -283,7 +272,6 @@ void	Response::_make_response(void)
 
 	handler << file_content.size();
 
-	// std::cout << "Status Code: " << this->_status_code << "\n";
 	this->_response.header = "HTTP/1.1 ";
 	this->_response.header += this->_status_code + " ";
 	this->_response.header += this->_status_msg;

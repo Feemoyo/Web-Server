@@ -103,7 +103,6 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 	}
 	while (std::getline(stream, line))
 	{
-		// std::cout << line << std::endl;
 		if (line == "\r" || payload)
 		{
 			this->remove_white_spaces(line);
