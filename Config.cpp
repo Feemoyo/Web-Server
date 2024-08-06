@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/05 16:00:21 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/06 10:47:22 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,19 +319,15 @@ bool	Config::_config_locations(std::string &serv, t_server &server)
 				continue ;
 			}
 
-			end = locations.find(";", start);
-			start = locations.find("default", start);
-			if (start + strlen("default") >= end || start == std::string::npos)
-			{
-				std::cerr << "Location " << locat.path << " need a default file" << "\n";
-				return (false);
-			}
-			locat.default_file = find_and_split(locations, start, "default", ";");
+			if (_check_for_default_file(locations, start) == true)
+				locat.default_file = find_and_split(locations, start, "default", ";");
+			else
+				locat.default_file.clear();
 
 			size_t	end2;
 
 			end2 = locations.find(";", end);
-			start = locations.find("directory", start);
+			start = locations.find("directory", end);
 			if (start == std::string::npos || end2 == std::string::npos || start - end2 > 2)
 				locat.directory = false;
 			else
@@ -352,6 +348,16 @@ bool	Config::_config_locations(std::string &serv, t_server &server)
 		}
 
 	}
+	return (true);
+}
+
+bool	Config::_check_for_default_file(std::string &locations, size_t ref)
+{
+	size_t	start = locations.find("default", ref);
+	size_t	end = locations.find(";", ref);
+
+	if (start == std::string::npos || end == std::string::npos || start > end)
+		return (false);
 	return (true);
 }
 

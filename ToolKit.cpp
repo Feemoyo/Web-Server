@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ToolKit.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:01:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/30 17:23:21 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/06 11:10:00 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,32 +170,32 @@ void	ToolKit::remove_white_spaces(std::string &str)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-std::string	&ToolKit::get_content(void)
+std::string	ToolKit::get_content(void) const
 {
 	return (this->_content);
 }
 
-std::string	&ToolKit::get_file_name(void)
+std::string	ToolKit::get_file_name(void) const
 {
 	return (this->_file_name);
 }
 
-std::string	&ToolKit::get_file_path(void)
+std::string	ToolKit::get_file_path(void) const
 {
 	return (this->_file_path);
 }
 
-std::string	&ToolKit::get_status_code(void)
+std::string	ToolKit::get_status_code(void) const
 {
 	return (this->_status_code);
 }
 
-std::string	&ToolKit::get_content_type(void)
+std::string	ToolKit::get_content_type(void) const
 {
 	return (this->_content_type);
 }
 
-size_t		&ToolKit::get_content_length(void)
+size_t		ToolKit::get_content_length(void) const
 {
 	return (this->_content_length);
 }
@@ -226,6 +226,7 @@ void	ToolKit::set_content(std::string new_content)
 {
 	this->_content.clear();
 	this->_content = new_content;
+	this->set_content_length(this->_content.size());
 	return ;
 }
 

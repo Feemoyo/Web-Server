@@ -31,12 +31,12 @@ public:
 
 	std::string			find_and_split(std::string &content, size_t str, std::string start, std::string end);
 
-	std::string			&get_content(void);
-	std::string			&get_file_name(void);
-	std::string			&get_file_path(void);
-	std::string			&get_status_code(void);
-	std::string			&get_content_type(void);
-	size_t				&get_content_length(void);
+	std::string			get_content(void) const;
+	std::string			get_file_name(void) const;
+	std::string			get_file_path(void) const;
+	std::string			get_status_code(void) const;
+	std::string			get_content_type(void) const;
+	size_t				get_content_length(void) const;
 
 	void				status_code_mapper(void);
 	void				status_code_distributor(std::string status_code);

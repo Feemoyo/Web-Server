@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/05 20:25:13 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/06 11:45:45 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ void	Response::run_response(void)
 		else
 			_file_validation();
 	}
+
 	_make_response();
 	_send_response();
 	return ;
@@ -95,10 +96,7 @@ void	Response::_change_paths_for_redirections(void)
 	for (i = this->_response.server.redirects.begin(); i != this->_response.server.redirects.end(); i++)
 	{
 		if (this->_response.path == i->path)
-		{
 			this->_response.path = i->redir;
-			
-		}
 	}
 	return ;
 }
@@ -127,11 +125,13 @@ void	Response::_directory_validation(void)
 	_check_directory_location();
 	_check_allowed_methods();
 	_check_directory_autoindex();
-	if (this->_status_code == "302")
+	if (this->_status_code != "200" && this->_status_code != "505")
 		_check_errors_location_file();
-		// set_file((this->_response.server.root + this->_response.path), this->_response.server.locations.find(this->_response.path)->second.default_file);
-	else if (this->_status_code != "200" && this->_status_code != "302")
-		_check_errors_location_file();
+	else if (this->_status_code == "505")
+	{
+		status_code_distributor("200");
+		set_file(this->_response.name);
+	}
 	else
 		_set_dir_content();
 	return ;
@@ -170,7 +170,15 @@ void	Response::_check_directory_autoindex(void)
 	for (; it != this->_response.server.locations.end(); it++)
 	{
 		if (it->first == this->_response.path && (it->second.directory == false))
-			status_code_distributor("302");
+		{
+			if (it->second.default_file.empty())
+				status_code_distributor("404");
+			else
+			{
+				status_code_distributor("505");
+				this->_response.name = it->second.default_file;
+			}
+		}
 	}
 	return ;
 }
@@ -202,8 +210,9 @@ void	Response::_check_file_location(void)
 
 	if (stat(full_path.c_str(), &info) != 0 || !S_ISREG(info.st_mode))
 		status_code_distributor("404");
-	else if (!file.is_open() || (file.peek() == std::ifstream::traits_type::eof()))
+	else if (!file.is_open())
 		status_code_distributor("302");
+
 	file.close();
 	return ;
 }
@@ -211,7 +220,7 @@ void	Response::_check_file_location(void)
 void	Response::_check_max_body_size(void)
 {
 	if (this->get_content_length() > static_cast<size_t>(this->_response.server.max_body_size))
-		status_code_distributor("413");
+		status_code_distributor("405"); //413
 	return ;
 }
 
