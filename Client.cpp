@@ -113,8 +113,8 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 		}
 		if (line == "\r" || payload)
 		{
-			this->remove_white_spaces(line);
-			this->_buffer_map["Payload"] += line.substr(0, line.find('\0'));
+			// this->remove_white_spaces(line);
+			this->_buffer_map["Payload"] += line.substr(0, line.find('\0')) + "\n";
 			payload = true;
 		}
 		else

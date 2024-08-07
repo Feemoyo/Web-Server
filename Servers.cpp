@@ -199,7 +199,7 @@ void	Servers::_process_client(size_t index, int &client_fd)
 		if (!this->_client.set_buffer(buffer, payload))
 			break ;
 	}
-	// this->_client.print_map();
+	this->_client.print_map();
 	if (this->_client.get_method() == "POST")
 		this->_client.set_body_size();
 	return ;
