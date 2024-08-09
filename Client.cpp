@@ -91,45 +91,60 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 {
 	std::string 		str(buffer.begin(), buffer.end());
 	std::istringstream	stream(str);
-	std::string 		line;
-	std::string 		aux;
+	std::string			line;
 
 	if (!payload)
 	{
-		std::getline(stream, line);
-		this->_buffer_map["Request"] = line;
-		if (this->_buffer_map["Request"].find("POST") != std::string::npos)
-			this->_buffer_map["Payload"] = "";
+		this->_request_header(stream);
+		this->print_map();
+		payload = true;
 	}
-	while (std::getline(stream, line))
+	//TODO: if para verificar se a header é um url-encoded ou multipart/form-data
+	if (this->_buffer_map["Request"].find("POST") != std::string::npos)
 	{
-		if (line == "\r" || payload)
+		while (std::getline(stream, line))
 		{
-			this->remove_white_spaces(line);
 			this->_buffer_map["Payload"] += line.substr(0, line.find('\0'));
-			payload = true;
-		}
-		else
-		{
-			std::size_t first_space = line.find(':');
-			if (first_space != std::string::npos)
-			{
-				std::string key = line.substr(0, first_space);
-				std::string value = line.substr(first_space + 2);
-				this->_buffer_map[key] = value;
-			}
-		}
-		if (!this->_buffer_map["Payload"].empty() && this->_buffer_map["Request"].find("POST") != std::string::npos && (this->str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size())))
-		{
-			payload = true;
-			break ;
 		}
 	}
-
-	if ((this->_buffer_map["Payload"].empty() && this->_buffer_map["Request"].find("POST") == std::string::npos) || this->str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size()))
+	else
 		payload = false;
 
 	return (payload);
+}
+
+void	Client::_request_header(std::istringstream &stream)
+{
+	std::string line;
+
+	std::getline(stream, line);
+	this->_buffer_map["Request"] = line;
+
+	while (std::getline(stream, line))
+	{
+		if (line == "\r")
+			return ;
+		std::size_t first_space = line.find(':');
+		if (first_space != std::string::npos)
+		{
+			std::string key = line.substr(0, first_space);
+			std::string value = line.substr(first_space + 2);
+			this->_buffer_map[key] = value;
+		}
+	}
+}
+
+void	Client::run_json(std::string &root)
+{
+	this->_buffer_map["Payload"] = _url_decode(this->_buffer_map["Payload"]);
+	JSON	*json = new JSON(this->_buffer_map["Payload"], root + "/temp", this->_map_finder("Request", "/", "."));
+
+	json->json_post();
+
+	json->json_delete(5);
+
+	delete json;
+	return ;
 }
 
 /*
@@ -185,6 +200,28 @@ void	Client::format_content_type(void)
 	return ;
 }
 
+void	Client::format_payload(void)
+{
+	std::cout << "Payload: " << this->_buffer_map["Payload"] << std::endl;
+
+	size_t pos = 0;
+	std::string boundary;
+	if (this->_map_finder("Content-Type", "", ";") == "multipart/form-data")
+	{
+		boundary = this->_map_finder("Content-Type", "boundary=", "");
+		pos = boundary.find_last_of("-") + 1;
+		boundary = boundary.substr(pos);
+	}
+	return ;
+}
+
+void		Client::set_body_size(void)
+{
+	if (!this->_buffer_map["Payload"].empty() )
+		this->set_content_length(this->_buffer_map["Payload"].size());
+	return ;
+}
+
 /*
 ** --------------------------------- UTILITIES ---------------------------------
 */
@@ -196,6 +233,9 @@ std::string	Client::_map_finder(std::string key, std::string value1, std::string
 
 	if(auxFindGET1 == std::string::npos || auxFindGET2 == std::string::npos)
 		return ("");
+
+	if (auxFindGET2 == auxFindGET1)
+		return (this->_buffer_map[key].substr(auxFindGET1));
 
 	return(this->_buffer_map[key].substr(auxFindGET1, auxFindGET2 - auxFindGET1));
 }
@@ -221,6 +261,9 @@ void	Client::print_map(void)
 	std::map<std::string, std::string>::iterator it;
 
 	for (it = this->_buffer_map.begin(); it != this->_buffer_map.end(); ++it)
-		std::cout << it->first << ": " << it->second << "\n";
+	{
+		std::cout << it->first << ": * :";
+		std::cout << it->second << "\n";
+	}
 	return ;
 }
