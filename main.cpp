@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 19:27:55 by rferrero          #+#    #+#             */
-/*   Updated: 2024/06/23 17:42:00 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/08 19:06:22 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ int main(int argc, char **argv)
 		webserv = new Servers(conf);
 		webserv->run_servers();
 	}
-
 
 	delete conf;
 	delete webserv;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ToolKit.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:01:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/06 11:10:00 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/08 20:42:03 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,15 +54,6 @@ void	ToolKit::_extract_content(void)
 	this->_content = buffer.str();
 	file.close();
 	return ;
-}
-
-std::string	ToolKit::find_and_split(std::string &content, size_t str, std::string start, std::string end)
-{
-	size_t		ref_end;
-
-	str = content.find(start, str) + strlen(start.c_str());
-	ref_end = content.find(end, str);
-	return (content.substr(str, ref_end - str));
 }
 
 void	ToolKit::status_code_mapper(void)
@@ -260,8 +251,10 @@ size_t	ToolKit::str_to_size_t(std::string str)
 
 std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs)
 {
-	lhs << "Location " << rhs.path << "\n";;
-	lhs << "Default file: " << rhs.default_file << "\n";;
+	lhs << rhs.path << "\n";;
+	lhs << "Default file: " << rhs.default_file << "\n";
+	lhs << "Autoindex: " << rhs.directory << "\n";
+	lhs << "Methods: ";
 	for (size_t i = 0; i < rhs.methods.size(); i++)
 		lhs << rhs.methods[i] << " ";
 	return (lhs);
@@ -269,11 +262,13 @@ std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs)
 
 std::ostream	&operator<<(std::ostream &lhs, const t_server &rhs)
 {
-	lhs << "Server " << rhs.server_name << "\n";;
-	lhs << "Port: " << rhs.port << "\n";;
-	lhs << "Root: " << rhs.root << "\n";;
-	lhs << "Max client body size: " << rhs.max_body_size << "\n";;
+	lhs << "Server " << rhs.server_name << "\n";
+	lhs << "Port: " << rhs.port << "\n";
+	lhs << "Root: " << rhs.root << "\n";
+	lhs << "Autoindex: " << rhs.directory << "\n";
+	lhs << "Max client body size: " << rhs.max_body_size << "\n";
+	lhs << "Locations: ";
 	for (std::map<std::string, t_location>::const_iterator it = rhs.locations.begin(); it != rhs.locations.end(); it++)
-		lhs << (*it).first << " " << (*it).second << "\n";;
+		lhs << "dir: " << (*it).first << " " << (*it).second << "\n";
 	return (lhs);
 }
