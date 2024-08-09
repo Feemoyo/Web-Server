@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/08 22:58:40 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/09 15:48:55 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,6 +213,7 @@ void	Response::_check_file_location(void)
 		status_code_distributor("302");
 
 	file.close();
+	this->_check_directory_location();
 	return ;
 }
 

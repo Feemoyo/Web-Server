@@ -5,7 +5,6 @@
 
 # include "ToolKit.hpp"
 # include "Mime.hpp"
-# include "JSON.hpp"
 
 class	Client : public ToolKit
 {
@@ -21,7 +20,6 @@ public:
 					~Client(void);
 
 	bool			set_buffer(std::vector<char> buffer, bool &payload);
-	void			run_json(std::string &root);
 
 	std::string		get_method(void);
 	std::string		get_path(void);

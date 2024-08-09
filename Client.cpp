@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:32:11 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/08/06 11:36:55 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/09 16:47:57 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,50 @@
 // 	return (result);
 // }
 
+static std::string _to_hex(unsigned char c)
+{
+	const char hex_chars[] = "0123456789ABCDEF";
+	std::string hex_str;
+
+	int first_digit = c / 16;
+    int second_digit = c % 16;
+
+    hex_str += hex_chars[first_digit];
+    hex_str += hex_chars[second_digit];
+
+	return (hex_str);
+}
+
+static std::string _url_encode(const std::string &str)
+{
+	std::string result;
+	result.reserve(str.length());
+
+	for (std::size_t i = 0; i < str.length(); ++i)
+	{
+		char c = str[i];
+		if (isalnum(c))
+			result += c;
+		else if (c == ' ')
+			result += '+';
+		else if (c == '\\')
+			result += "%5C";
+		else if (c == '\"')
+			result += "%22";
+		else if (c == '\n')
+			result += "%0A";
+		else if (c == '\r')
+			result += "%0D";
+		else
+		{
+			result += "%";
+			result += _to_hex(static_cast<unsigned char>(c));
+		}
+	}
+
+	return result;
+}
+
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
@@ -99,12 +143,21 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 		this->print_map();
 		payload = true;
 	}
-	//TODO: if para verificar se a header é um url-encoded ou multipart/form-data
 	if (this->_buffer_map["Request"].find("POST") != std::string::npos)
 	{
-		while (std::getline(stream, line))
+		if (this->_map_finder("Content-Type", "", ";") == ("multipart/form-data"))
 		{
-			this->_buffer_map["Payload"] += line.substr(0, line.find('\0'));
+			while (std::getline(stream, line))
+			{
+				this->_buffer_map["Payload"] += _url_encode(line.substr(0, line.find('\0')) + "\n");
+			}
+		}
+		else
+		{	
+			while (std::getline(stream, line))
+			{
+				this->_buffer_map["Payload"] += line.substr(0, line.find('\0'));
+			}
 		}
 	}
 	else
@@ -132,19 +185,6 @@ void	Client::_request_header(std::istringstream &stream)
 			this->_buffer_map[key] = value;
 		}
 	}
-}
-
-void	Client::run_json(std::string &root)
-{
-	this->_buffer_map["Payload"] = _url_decode(this->_buffer_map["Payload"]);
-	JSON	*json = new JSON(this->_buffer_map["Payload"], root + "/temp", this->_map_finder("Request", "/", "."));
-
-	json->json_post();
-
-	json->json_delete(5);
-
-	delete json;
-	return ;
 }
 
 /*
