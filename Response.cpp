@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/09 18:44:52 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/09 19:30:06 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,8 +144,9 @@ void	Response::_directory_validation(void)
 		_check_errors_location_file();
 	else if (this->_status_code == "505")
 	{
+		std::cout << this->_response.server.root + this->_response.path + this->_response.name << std::endl;
 		status_code_distributor("200");
-		set_file(this->_response.name);
+		set_file(this->_response.server.root + this->_response.path + this->_response.name);
 	}
 	else
 		_set_dir_content();

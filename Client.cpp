@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:32:11 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/08/09 18:36:18 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/09 19:34:40 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,6 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 	if (!payload)
 	{
 		this->_request_header(stream);
-		this->print_map();
 		payload = true;
 	}
 	if (this->_buffer_map["Request"].find("POST") != std::string::npos)
@@ -247,21 +246,6 @@ void	Client::format_content_type(void)
 	return ;
 }
 
-void	Client::format_payload(void)
-{
-	// std::cout << "Payload: " << this->_buffer_map["Payload"] << std::endl;
-
-	size_t pos = 0;
-	std::string boundary;
-	if (this->_map_finder("Content-Type", "", ";") == "multipart/form-data")
-	{
-		boundary = this->_map_finder("Content-Type", "boundary=", "");
-		pos = boundary.find_last_of("-") + 1;
-		boundary = boundary.substr(pos);
-	}
-	return ;
-}
-
 void		Client::set_body_size(void)
 {
 	if (!this->_buffer_map["Payload"].empty() )
@@ -309,8 +293,7 @@ void	Client::print_map(void)
 
 	for (it = this->_buffer_map.begin(); it != this->_buffer_map.end(); ++it)
 	{
-		std::cout << it->first << ": * :";
-		std::cout << it->second << "\n";
+		std::cout << it->first << ": " << it->second << std::endl;
 	}
 	return ;
 }
