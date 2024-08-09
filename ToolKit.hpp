@@ -22,7 +22,6 @@ protected:
 private:
 
 	std::map<std::string, std::string>	statusCodes;
-	static bool							_is_space(char c);
 	
 public:
 
@@ -38,7 +37,6 @@ public:
 
 	void				status_code_mapper(void);
 	void				status_code_distributor(std::string status_code);
-	int					string_to_int(std::string str);
 	void				remove_white_spaces(std::string &str);
 
 	void				set_file(std::string path, std::string name);
@@ -47,7 +45,6 @@ public:
 	void				set_content_type(std::string type);
 	void				set_content_length(size_t length);
 
-	size_t				str_to_size_t(std::string str);
 };
 
 std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs);

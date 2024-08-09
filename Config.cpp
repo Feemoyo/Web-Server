@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/08 22:50:22 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/09 17:40:07 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,14 @@
 ** ----------------------------- STATIC FUNCTIONS -----------------------------
 */
 
+static int	_string_to_int(std::string str)
+{
+	std::stringstream	ss(str);
+	int					ref;
+
+	ss >> ref;
+	return (ref);
+}
 static void	_remove_comments(std::string &str)
 {
 	size_t	ref;
@@ -53,7 +61,7 @@ static bool	_verify_brackets(std::string &str)
 	return (true);
 }
 
-static bool	_is_directory_visible(std::string str)
+static bool	_is_directory_not_visible(std::string str)
 {
 	return (str.compare("on"));
 }
@@ -98,7 +106,7 @@ static void	_change_server_name(const std::string &name)
 	return ;
 }
 
-std::string	_find_and_split(const std::string &content, size_t start, std::string first_lim, std::string second_lim)
+static std::string	_find_and_split(const std::string &content, size_t start, std::string first_lim, std::string second_lim)
 {
 	size_t		ref_end;
 
@@ -107,14 +115,40 @@ std::string	_find_and_split(const std::string &content, size_t start, std::strin
 	return (content.substr(start, ref_end - start));
 }
 
-bool	_check_string_in_string(const std::string &locations, std::string begin, std::string final, size_t start)
+static bool	_check_string_in_string(const std::string &locations, std::string begin, std::string final, size_t start)
 {
-	start = locations.find(begin, start);
+	size_t	ref_start = locations.find(begin, start);
 	size_t	end = locations.find(final, start);
 
-	if (start == std::string::npos || end == std::string::npos || start > end)
+	if (ref_start == std::string::npos || end == std::string::npos || ref_start > end)
 		return (false);
 	return (true);
+}
+
+static std::string	_define_server_name(std::string &serv)
+{
+	std::string	ret;
+
+	if (_check_string_in_string(serv, ";server_name", ";", 0) == true)
+	{
+		ret = _find_and_split(serv, 0, ";server_name", ";");
+		_change_server_name(ret);
+	}
+	else
+		ret = "localhost";
+	return (ret);
+}
+
+static std::string	_define_server_root(std::string &serv)
+{
+	std::string	ret;
+
+	if (_check_string_in_string(serv, "root", ";", 0) == true)
+		ret = ("./" + _find_and_split(serv, 0, "root", ";"));
+	else
+		ret = "./";
+
+	return (ret);
 }
 
 /*
@@ -132,7 +166,7 @@ Config::Config(char *argv)
 	set_file("./", argv);
 	_remove_comments(this->_content);
 	this->remove_white_spaces(this->_content);
-	if (_verify_brackets(this->_content) && _config_total_servers() && _config_servers())
+	if (_verify_brackets(this->_content) && this->_config_total_servers() && this->_config_servers())
 		this->_good_to_run = true;
 	return ;
 }
@@ -185,14 +219,16 @@ bool	Config::_config_servers(void)
 
 		if (_is_there_a_valid_port(this->_server_string[i], server.port) == false)
 			return (false);
-		_set_server_name(this->_server_string[i], server.server_name);
-		_set_server_root(this->_server_string[i], server.root);
-		_set_dir_visibility(this->_server_string[i], server.directory);
-		_set_max_body_size(this->_server_string[i], server.max_body_size);
-
-		if (!_config_locations(this->_server_string[i], server))
+		server.server_name = _define_server_name(this->_server_string[i]);
+		server.root = _define_server_root(this->_server_string[i]);
+		_define_visibility(this->_server_string[i], server.directory);
+		_define_max_body_size(this->_server_string[i], server.max_body_size);
+		if (!_define_locations(this->_server_string[i], server))
 			return (false);
 		this->_servers.push_back(server);
+
+		for (std::vector<t_server>::const_iterator it = this->_servers.begin(); it != this->_servers.end(); it++)
+			std::cout << *it << std::endl;
 	}
 	return (true);
 }
@@ -204,7 +240,7 @@ bool	Config::_is_there_a_valid_port(std::string &serv, int &port)
 		std::cerr << "Fail to find server port" << "\n";;
 		return (false);
 	}
-	port = this->string_to_int(_find_and_split(serv, 0, "listen", ";"));
+	port = _string_to_int(_find_and_split(serv, 0, "listen", ";"));
 	if ((port != 80 && port < 1024) || port > 49151)
 	{
 		std::cerr << "Invalid server port" << "\n";;
@@ -213,85 +249,60 @@ bool	Config::_is_there_a_valid_port(std::string &serv, int &port)
 	return (true);
 }
 
-void	Config::_set_server_name(std::string &serv, std::string &name)
+void	Config::_define_visibility(std::string &serv, bool &dir)
 {
+	size_t	ref = serv.find("directory");
+	size_t	end = serv.find(";client_max_body_size", ref) + 1;
 
-	if (_check_string_in_string(serv, "server_name", ";", 0) == true)
-	{
-		name = _find_and_split(serv, 0, "server_name", ";");
-		_change_server_name(name);
-	}
-	else
-		serv = "localhost";
-
-	return ;
-}
-
-void	Config::_set_server_root(std::string &serv, std::string &root)
-{
-	if (_check_string_in_string(serv, "root", ";", 0) == true)
-		root = ("./" + _find_and_split(serv, 0, "root", ";"));
-	else
-		root = "./";
-
-	return ;
-}
-
-void	Config::_set_dir_visibility(std::string &serv, bool &dir)
-{
-
-	if (_check_string_in_string(serv, "directory", ";", 0) == false)
-		dir = false;
+	if (end != std::string::npos)
+		dir = !_is_directory_not_visible(_find_and_split(serv, ref, "directory", ";"));
 	else
 	{
-		size_t	ref = serv.find("directory");
-		size_t	end_1 = serv.find(";client_max_body_size", ref);
-		if (end_1 != std::string::npos)
-			dir = _is_directory_visible(_find_and_split(serv, ref, "directory", ";"));
+		end = serv.find(";location", ref) + 1;
+		if (end != std::string::npos)
+			dir = !_is_directory_not_visible(_find_and_split(serv, ref, "directory", ";"));
 		else
 		{
-			size_t	end_2 = serv.find(";location", ref);
-			if (end_2 != std::string::npos)
-				dir = _is_directory_visible(_find_and_split(serv, ref, "directory", ";"));
+			end = serv.find("};") + 1;
+			if (end != std::string::npos)
+				dir = !_is_directory_not_visible(_find_and_split(serv, ref, "directory", ";"));
 			else
-			{
-				size_t	end_3 = serv.find("};");
-				if (end_3 != std::string::npos)
-					dir = _is_directory_visible(_find_and_split(serv, ref, "directory", ";"));
-			}
+				dir = false;
 		}
 	}
 	return ;
 }
 
-void	Config::_set_max_body_size(std::string &serv, int &max_body_size)
+void	Config::_define_max_body_size(std::string &serv, int &max_body_size)
 {
+	size_t	ref = serv.find("client_max_body_size");
 
-	if (_check_string_in_string(serv, "client_max_body_size", ";", 0) == false)
-		max_body_size = 200;
+	if (ref == std::string::npos)
+	{
+		max_body_size = 2000;
+		return ;
+	}
+
+	size_t	end = serv.find(";location", ref) + 1;
+
+	if (end != std::string::npos)
+		max_body_size = _string_to_int(_find_and_split(serv, ref, "client_max_body_size", ";"));
 	else
 	{
-		size_t	ref = serv.find("client_max_body_size");
-		size_t	end_2 = serv.find(";location", ref);
-		if (end_2 != std::string::npos)
-			max_body_size = this->string_to_int(_find_and_split(serv, ref, "client_max_body_size", ";"));
-		else
-		{
-			size_t	end_3 = serv.find("};");
-			if (end_3 != std::string::npos)
-				max_body_size = this->string_to_int(_find_and_split(serv, ref, "client_max_body_size", ";"));
-		}
+		end = serv.find(";};") + 1;
+		if (end != std::string::npos)
+			max_body_size = _string_to_int(_find_and_split(serv, ref, "client_max_body_size", ";"));
 	}
-	if (max_body_size > 200000)
+	if (max_body_size > 20000)
 	{
 		std::cerr << "Max body size of the server is too big" << "\n";
-		std::cerr << "Changed max body size to 200000" << "\n";
-		max_body_size = 200000;
+		std::cerr << "Changed max body size to 20000" << "\n";
+		max_body_size = 20000;
 	}
 	return ;
 }
 
-bool	Config::_config_locations(std::string &serv, t_server &server)
+bool	Config::_define_locations(std::string &serv, t_server &server)
 {
 	size_t		start = serv.find("location");
 
@@ -299,9 +310,9 @@ bool	Config::_config_locations(std::string &serv, t_server &server)
 		return (true);
 	else
 	{
-		size_t		end_server = serv.find("}};", start);
+		size_t		end_server = serv.find("}};", start) + 1;
 		std::string	locations = serv.substr(start, end_server - start);
-		size_t		end = locations.find(";}", start);
+		size_t		end = locations.find("}", start + 1);
 
 		start = 0;
 		while (end != std::string::npos)
@@ -317,7 +328,7 @@ bool	Config::_config_locations(std::string &serv, t_server &server)
 			}
 			locat.path = _find_and_split(locations, start, "location", "{");
 
-			if (_check_for_redirection(locations, start) == true)
+			if (_check_string_in_string(locations, "{return", ";", start) == true)
 			{
 				t_redirect	redirect;
 
@@ -329,19 +340,12 @@ bool	Config::_config_locations(std::string &serv, t_server &server)
 				continue ;
 			}
 
-			if (_check_for_default_file(locations, start) == true)
-				locat.default_file = _find_and_split(locations, start, "default", ";");
+			if (_check_string_in_string(locations, "{default", ";", start) == true)
+				locat.default_file = _find_and_split(locations, start, "{default", ";");
 			else
 				locat.default_file.clear();
 
-			size_t	end2;
-
-			end2 = locations.find(";", end);
-			start = locations.find("directory", end);
-			if (start == std::string::npos || end2 == std::string::npos || start - end2 > 2)
-				locat.directory = false;
-			else
-				locat.directory = _is_directory_visible(_find_and_split(locations, start, "directory", ";"));
+			locat.directory = !_is_directory_not_visible(_find_and_split(locations, start, "directory", ";"));
 
 			start = locations.find("allowed_methods", end);
 			if (start == std::string::npos)
@@ -351,7 +355,7 @@ bool	Config::_config_locations(std::string &serv, t_server &server)
 				start = start + strlen("allowed_methods");
 				end = locations.find(";", start);
 				std::string	ref = locations.substr(start, end - start);
-				_config_methods(ref, locat);
+				_define_methods(ref, locat);
 			}
 			start = locations.find("}", end);
 			end = locations.find("{", start);
@@ -362,27 +366,7 @@ bool	Config::_config_locations(std::string &serv, t_server &server)
 	return (true);
 }
 
-bool	Config::_check_for_default_file(std::string &locations, size_t ref)
-{
-	size_t	start = locations.find("default", ref);
-	size_t	end = locations.find(";", ref);
-
-	if (start == std::string::npos || end == std::string::npos || start > end)
-		return (false);
-	return (true);
-}
-
-bool	Config::_check_for_redirection(std::string &locations, size_t ref)
-{
-	size_t	start = locations.find("return", ref);
-	size_t	end = locations.find(";", ref);
-
-	if (start == std::string::npos || end == std::string::npos || start > end)
-		return (false);
-	return (true);
-}
-
-void	Config::_config_methods(std::string ref, t_location &location)
+void	Config::_define_methods(std::string ref, t_location &location)
 {
 	size_t		start;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:32:11 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/08/09 16:47:57 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/09 15:07:11 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,14 @@
 /*
 ** ----------------------------- STATIC FUNCTIONS -----------------------------
 */
+
+size_t	str_to_size_t(std::string str)
+{
+	size_t		size;
+
+	std::istringstream(str) >> size;
+	return (size);
+}
 
 // static int	_from_hex(char c)
 // {
@@ -162,7 +170,6 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 	}
 	else
 		payload = false;
-
 	return (payload);
 }
 
