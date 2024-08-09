@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/09 17:42:45 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/09 18:44:52 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ void	Response::_file_validation(void)
 	if (this->_status_code != "200")
 		_check_errors_location_file();
 	else
-		set_file((this->_response.server.root + this->_response.path), this->_response.name);
+		set_file((this->_response.server.root + this->_response.path + this->_response.name));
 	return ;
 }
 
@@ -225,7 +225,6 @@ void	Response::_check_file_location(void)
 		status_code_distributor("404");
 	else if (!file.is_open())
 		status_code_distributor("302");
-
 	file.close();
 	this->_check_directory_location();
 	return ;

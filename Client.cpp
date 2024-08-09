@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:32:11 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/08/09 15:07:11 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/09 18:36:18 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,7 +249,7 @@ void	Client::format_content_type(void)
 
 void	Client::format_payload(void)
 {
-	std::cout << "Payload: " << this->_buffer_map["Payload"] << std::endl;
+	// std::cout << "Payload: " << this->_buffer_map["Payload"] << std::endl;
 
 	size_t pos = 0;
 	std::string boundary;

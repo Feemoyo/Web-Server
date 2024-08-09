@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/09 17:40:07 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/09 18:43:15 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,10 +128,11 @@ static bool	_check_string_in_string(const std::string &locations, std::string be
 static std::string	_define_server_name(std::string &serv)
 {
 	std::string	ret;
+	size_t		start = serv.find(";server_name");
 
-	if (_check_string_in_string(serv, ";server_name", ";", 0) == true)
+	if (_check_string_in_string(serv, ";server_name", ";", start) == true)
 	{
-		ret = _find_and_split(serv, 0, ";server_name", ";");
+		ret = _find_and_split(serv, start, ";server_name", ";");
 		_change_server_name(ret);
 	}
 	else
@@ -142,12 +143,12 @@ static std::string	_define_server_name(std::string &serv)
 static std::string	_define_server_root(std::string &serv)
 {
 	std::string	ret;
+	size_t		start = serv.find(";root");
 
-	if (_check_string_in_string(serv, "root", ";", 0) == true)
-		ret = ("./" + _find_and_split(serv, 0, "root", ";"));
+	if (_check_string_in_string(serv, ";root", ";", start) == true)
+		ret = ("./" + _find_and_split(serv, start, ";root", ";"));
 	else
 		ret = "./";
-
 	return (ret);
 }
 
@@ -227,8 +228,8 @@ bool	Config::_config_servers(void)
 			return (false);
 		this->_servers.push_back(server);
 
-		for (std::vector<t_server>::const_iterator it = this->_servers.begin(); it != this->_servers.end(); it++)
-			std::cout << *it << std::endl;
+		// for (std::vector<t_server>::const_iterator it = this->_servers.begin(); it != this->_servers.end(); it++)
+		// 	std::cout << *it << std::endl;
 	}
 	return (true);
 }
