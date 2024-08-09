@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:32:11 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/08/06 11:36:55 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/09 15:07:11 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,14 @@
 /*
 ** ----------------------------- STATIC FUNCTIONS -----------------------------
 */
+
+size_t	str_to_size_t(std::string str)
+{
+	size_t		size;
+
+	std::istringstream(str) >> size;
+	return (size);
+}
 
 // static int	_from_hex(char c)
 // {
@@ -119,14 +127,14 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 				this->_buffer_map[key] = value;
 			}
 		}
-		if (!this->_buffer_map["Payload"].empty() && this->_buffer_map["Request"].find("POST") != std::string::npos && (this->str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size())))
+		if (!this->_buffer_map["Payload"].empty() && this->_buffer_map["Request"].find("POST") != std::string::npos && (str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size())))
 		{
 			payload = true;
 			break ;
 		}
 	}
 
-	if ((this->_buffer_map["Payload"].empty() && this->_buffer_map["Request"].find("POST") == std::string::npos) || this->str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size()))
+	if ((this->_buffer_map["Payload"].empty() && this->_buffer_map["Request"].find("POST") == std::string::npos) || str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size()))
 		payload = false;
 
 	return (payload);

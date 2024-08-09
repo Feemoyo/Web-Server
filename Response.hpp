@@ -25,9 +25,9 @@ private:
 	void		_check_errors_location_file(void);
 	void		_check_file_location(void);
 	void		_check_max_body_size(void);
-	void		_set_dir_content(void);
+
 	std::string	_get_dir_files(void);
-	std::string	_display_time(void);
+	void		_set_dir_content(void);
 
 	void		_make_response(void);
 	void		_send_response(void);

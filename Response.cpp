@@ -3,15 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/06 11:45:45 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/09 17:42:45 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Response.hpp"
 #include "CGI.hpp"
+
+/*
+** ----------------------------- STATIC FUNCTIONS -----------------------------
+*/
+
+static std::string _display_time(void)
+{
+	std::time_t		currenttime;
+	struct tm		*timeinfo;
+	char			buffer[80];
+
+	std::time(&currenttime);
+	timeinfo = std::gmtime(&currenttime);
+
+	std::strftime(buffer, 80, "%a, %d, %b, %Y %H:%M:%S GMT", timeinfo);
+	return (std::string(buffer));
+}
 
 /*
  ------------------------------- CONSTRUCTOR --------------------------------
@@ -32,7 +49,6 @@ Response::Response(int client_fd, t_server &server, std::string path_and_name, s
 	this->_response.method = method;
 	this->_response.path = path_and_name.substr(0, start);
 	this->_response.name = path_and_name.substr(start);
-
 	return ;
 }
 
@@ -83,7 +99,6 @@ void	Response::run_response(void)
 		else
 			_file_validation();
 	}
-
 	_make_response();
 	_send_response();
 	return ;
@@ -144,7 +159,6 @@ void	Response::_check_directory_location(void)
 	return ;
 }
 
-//TODO: linha 134 da core dumped quando tentamos acessar a pagina de teste do Downloads
 void	Response::_check_allowed_methods(void)
 {
 	if (this->_status_code == "404")
@@ -157,7 +171,6 @@ void	Response::_check_allowed_methods(void)
 	std::vector<std::string>	&allowed_methods = it->second.methods;
 	if (std::find(allowed_methods.begin(), allowed_methods.end(), this->_response.method) == allowed_methods.end())
 		status_code_distributor("405");
-
 	return ;
 }
 
@@ -220,7 +233,7 @@ void	Response::_check_file_location(void)
 void	Response::_check_max_body_size(void)
 {
 	if (this->get_content_length() > static_cast<size_t>(this->_response.server.max_body_size))
-		status_code_distributor("405"); //413
+		status_code_distributor("413");
 	return ;
 }
 
@@ -241,7 +254,6 @@ std::string	Response::_get_dir_files(void)
 		{
 			std::string	filename = entry->d_name;
 
-			// files_list += "<a>" + filename + "</a><br/>\n";
 			files_list += "<a href=" + this->_response.path + filename + ">" + filename + "</a><br/>\n";
 		}
 	}
@@ -257,19 +269,6 @@ void	Response::_set_dir_content(void)
 	full_html += ("\n\t</body>\n</html>\n");
 	this->set_content(full_html);
 	return ;
-}
-
-std::string Response::_display_time(void)
-{
-	std::time_t		currenttime;
-	struct tm		*timeinfo;
-	char			buffer[80];
-
-	std::time(&currenttime);
-	timeinfo = std::gmtime(&currenttime);
-
-	std::strftime(buffer, 80, "%a, %d, %b, %Y %H:%M:%S GMT", timeinfo);
-	return (std::string(buffer));
 }
 
 void	Response::_make_response(void)
@@ -289,7 +288,7 @@ void	Response::_make_response(void)
 	this->_response.header += "\nContent-Length: ";
 	this->_response.header += handler.str();
 	this->_response.header += "\nDate: ";
-	this->_response.header += this->_display_time();
+	this->_response.header += _display_time();
 	this->_response.header += "\n\n";
 	
 	this->_response.body = this->_response.header;

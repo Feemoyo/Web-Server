@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:01:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/08 20:42:03 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/09 17:32:21 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,15 @@ std::string	ToolKit::_status_code = "";
 std::string	ToolKit::_content_type = "";
 std::string	ToolKit::_status_msg = "";
 size_t		ToolKit::_content_length = 0;
+
+/*
+** ----------------------------- STATIC FUNCTIONS -----------------------------
+*/
+
+static bool	_is_space(char c)
+{
+	return (std::isspace(static_cast<unsigned char>(c)));
+}
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -39,11 +48,6 @@ ToolKit::~ToolKit(void)
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
-
-bool	ToolKit::_is_space(char c)
-{
-	return (std::isspace(static_cast<unsigned char>(c)));
-}
 
 void	ToolKit::_extract_content(void)
 {
@@ -142,18 +146,9 @@ void ToolKit::status_code_distributor(std::string status_code)
 	return ;
 }
 
-int	ToolKit::string_to_int(std::string str)
-{
-	std::stringstream	ss(str);
-	int					ref;
-
-	ss >> ref;
-	return (ref);
-}
-
 void	ToolKit::remove_white_spaces(std::string &str)
 {
-	str.erase(std::remove_if(str.begin(), str.end(), this->_is_space), str.end());
+	str.erase(std::remove_if(str.begin(), str.end(), _is_space), str.end());
 	return ;
 }
 
@@ -234,27 +229,19 @@ void	ToolKit::set_content_length(size_t size)
 }
 
 /*
-** --------------------------------- UTILITIES ---------------------------------
-*/
-
-size_t	ToolKit::str_to_size_t(std::string str)
-{
-	size_t		size;
-
-	std::istringstream(str) >> size;
-	return (size);
-}
-
-/*
 ** -------------------------------- OVERLOADS ---------------------------------
 */
 
 std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs)
 {
-	lhs << rhs.path << "\n";;
-	lhs << "Default file: " << rhs.default_file << "\n";
-	lhs << "Autoindex: " << rhs.directory << "\n";
-	lhs << "Methods: ";
+	lhs << "\t" << "Path: " << rhs.path << "\n";;
+	lhs << "\t" << "Default file: " << rhs.default_file << "\n";
+	lhs << "\t" << "Autoindex: ";
+	if (rhs.directory == false)
+		lhs << "off" << "\n";
+	else
+		lhs << "on" << "\n";
+	lhs << "\t" << "Methods: ";
 	for (size_t i = 0; i < rhs.methods.size(); i++)
 		lhs << rhs.methods[i] << " ";
 	return (lhs);
@@ -262,13 +249,22 @@ std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs)
 
 std::ostream	&operator<<(std::ostream &lhs, const t_server &rhs)
 {
+	lhs << "*************************" << "\n";
 	lhs << "Server " << rhs.server_name << "\n";
 	lhs << "Port: " << rhs.port << "\n";
 	lhs << "Root: " << rhs.root << "\n";
-	lhs << "Autoindex: " << rhs.directory << "\n";
-	lhs << "Max client body size: " << rhs.max_body_size << "\n";
-	lhs << "Locations: ";
+	lhs << "Autoindex: ";
+	if (rhs.directory == false)
+		lhs << "off" << "\n";
+	else
+		lhs << "on" << "\n";
+	lhs << "Max client body size: " << rhs.max_body_size << "\n\n";
+	lhs << "Locations: " << "\n";
 	for (std::map<std::string, t_location>::const_iterator it = rhs.locations.begin(); it != rhs.locations.end(); it++)
-		lhs << "dir: " << (*it).first << " " << (*it).second << "\n";
+		lhs << (*it).second << "\n\n";
+	lhs << "Redirects: " << "\n";
+	for (std::vector<t_redirect>::const_iterator it = rhs.redirects.begin(); it != rhs.redirects.end(); it++)
+		lhs << "\t" << (*it).path << " " << (*it).redir << "\n";
+	lhs << "*************************" << "\n";
 	return (lhs);
 }
