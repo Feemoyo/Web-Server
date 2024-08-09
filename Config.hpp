@@ -20,6 +20,8 @@ private:
 	void			_set_dir_visibility(std::string &serv, bool &dir);
 	void			_set_max_body_size(std::string &serv, int &max_body_size);
 	bool			_config_locations(std::string &serv, t_server &server);
+	bool			_check_for_redirection(std::string &locations, size_t ref);
+	bool			_check_for_default_file(std::string &locations, size_t ref);
 	void			_config_methods(std::string ref, t_location &location);
 
 public:

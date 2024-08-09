@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   Client.cpp										:+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: rferrero <rferrero@student.42.fr>		  +#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/05/13 14:32:11 by fmoreira		  #+#	#+#			 */
-/*   Updated: 2024/05/14 19:32:39 by rferrero		 ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Client.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/13 14:32:11 by fmoreira          #+#    #+#             */
+/*   Updated: 2024/08/06 11:36:55 by fmoreira         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
@@ -16,53 +16,53 @@
 ** ----------------------------- STATIC FUNCTIONS -----------------------------
 */
 
-static int	_from_hex(char c)
-{
-	if (c >= '0' && c <= '9')
-		return (c - '0');
-	if (c >= 'a' && c <= 'f')
-		return (c - 'a' + 10);
-	if (c >= 'A' && c <= 'F')
-		return (c - 'A' + 10);
-	return (0);
-}
+// static int	_from_hex(char c)
+// {
+// 	if (c >= '0' && c <= '9')
+// 		return (c - '0');
+// 	if (c >= 'a' && c <= 'f')
+// 		return (c - 'a' + 10);
+// 	if (c >= 'A' && c <= 'F')
+// 		return (c - 'A' + 10);
+// 	return (0);
+// }
 
-static std::string	_url_decode(const std::string &str)
-{
-	std::string	result;
-	char		hex[3] = {0, 0, 0};
+// static std::string	_url_decode(const std::string &str)
+// {
+// 	std::string	result;
+// 	char		hex[3] = {0, 0, 0};
 
-	result.reserve(str.length());
-	for (std::size_t i = 0; i < str.length(); ++i)
-	{
-		if (str[i] == '%')
-		{
-			if (i + 2 < str.length())
-			{
-				hex[0] = str[i + 1];
-				hex[1] = str[i + 2];
-				if (hex[0] == '2' && hex[1] == '2')
-					result += "\\\"";
-				else if (hex[0] == '5' && hex[1] == 'C')
-					result += "\\\\";
-				else if (hex[0] == '0' && hex[1] == 'A')
-					result += "\\n";
-				else if (hex[0] == '0' && hex[1] == 'D')
-					result += "\\r";
-				else
-					result += static_cast<char>(_from_hex(hex[0]) * 16 + _from_hex(hex[1]));
-				i += 2;
-			}
-		}
-		else if (str[i] == '+')
-			result += ' ';
-		else if (str[i] == '\n' || str[i] == '\r')
-			i += 1;
-		else
-			result += str[i];
-	}
-	return (result);
-}
+// 	result.reserve(str.length());
+// 	for (std::size_t i = 0; i < str.length(); ++i)
+// 	{
+// 		if (str[i] == '%')
+// 		{
+// 			if (i + 2 < str.length())
+// 			{
+// 				hex[0] = str[i + 1];
+// 				hex[1] = str[i + 2];
+// 				if (hex[0] == '2' && hex[1] == '2')
+// 					result += "\\\"";
+// 				else if (hex[0] == '5' && hex[1] == 'C')
+// 					result += "\\\\";
+// 				else if (hex[0] == '0' && hex[1] == 'A')
+// 					result += "\\n";
+// 				else if (hex[0] == '0' && hex[1] == 'D')
+// 					result += "\\r";
+// 				else
+// 					result += static_cast<char>(_from_hex(hex[0]) * 16 + _from_hex(hex[1]));
+// 				i += 2;
+// 			}
+// 		}
+// 		else if (str[i] == '+')
+// 			result += ' ';
+// 		else if (str[i] == '\n' || str[i] == '\r')
+// 			i += 1;
+// 		else
+// 			result += str[i];
+// 	}
+// 	return (result);
+// }
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -180,6 +180,11 @@ std::string	Client::get_path(void)
 	else
 		this->format_content_type();
 	return (path);
+}
+
+std::string	Client::get_map_content(std::string ref)
+{
+	return (this->_buffer_map[ref]);
 }
 
 /*

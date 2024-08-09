@@ -25,6 +25,7 @@ public:
 
 	std::string		get_method(void);
 	std::string		get_path(void);
+	std::string		get_map_content(std::string ref);
 
 	void			format_content_type(void);
 	void			format_payload(void);

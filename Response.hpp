@@ -12,6 +12,8 @@ private:
 
 				Response(void);
 
+	void		_change_paths_for_redirections(void);
+
 	bool		_check_for_cgi(void);
 
 	void		_file_validation(void);

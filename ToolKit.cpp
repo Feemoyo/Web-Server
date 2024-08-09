@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 18:01:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/07/30 17:23:21 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/08 20:42:03 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,15 +54,6 @@ void	ToolKit::_extract_content(void)
 	this->_content = buffer.str();
 	file.close();
 	return ;
-}
-
-std::string	ToolKit::find_and_split(std::string &content, size_t str, std::string start, std::string end)
-{
-	size_t		ref_end;
-
-	str = content.find(start, str) + strlen(start.c_str());
-	ref_end = content.find(end, str);
-	return (content.substr(str, ref_end - str));
 }
 
 void	ToolKit::status_code_mapper(void)
@@ -170,32 +161,32 @@ void	ToolKit::remove_white_spaces(std::string &str)
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-std::string	&ToolKit::get_content(void)
+std::string	ToolKit::get_content(void) const
 {
 	return (this->_content);
 }
 
-std::string	&ToolKit::get_file_name(void)
+std::string	ToolKit::get_file_name(void) const
 {
 	return (this->_file_name);
 }
 
-std::string	&ToolKit::get_file_path(void)
+std::string	ToolKit::get_file_path(void) const
 {
 	return (this->_file_path);
 }
 
-std::string	&ToolKit::get_status_code(void)
+std::string	ToolKit::get_status_code(void) const
 {
 	return (this->_status_code);
 }
 
-std::string	&ToolKit::get_content_type(void)
+std::string	ToolKit::get_content_type(void) const
 {
 	return (this->_content_type);
 }
 
-size_t		&ToolKit::get_content_length(void)
+size_t		ToolKit::get_content_length(void) const
 {
 	return (this->_content_length);
 }
@@ -226,6 +217,7 @@ void	ToolKit::set_content(std::string new_content)
 {
 	this->_content.clear();
 	this->_content = new_content;
+	this->set_content_length(this->_content.size());
 	return ;
 }
 
@@ -259,8 +251,10 @@ size_t	ToolKit::str_to_size_t(std::string str)
 
 std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs)
 {
-	lhs << "Location " << rhs.path << "\n";;
-	lhs << "Default file: " << rhs.default_file << "\n";;
+	lhs << rhs.path << "\n";;
+	lhs << "Default file: " << rhs.default_file << "\n";
+	lhs << "Autoindex: " << rhs.directory << "\n";
+	lhs << "Methods: ";
 	for (size_t i = 0; i < rhs.methods.size(); i++)
 		lhs << rhs.methods[i] << " ";
 	return (lhs);
@@ -268,11 +262,13 @@ std::ostream	&operator<<(std::ostream &lhs, const t_location &rhs)
 
 std::ostream	&operator<<(std::ostream &lhs, const t_server &rhs)
 {
-	lhs << "Server " << rhs.server_name << "\n";;
-	lhs << "Port: " << rhs.port << "\n";;
-	lhs << "Root: " << rhs.root << "\n";;
-	lhs << "Max client body size: " << rhs.max_body_size << "\n";;
+	lhs << "Server " << rhs.server_name << "\n";
+	lhs << "Port: " << rhs.port << "\n";
+	lhs << "Root: " << rhs.root << "\n";
+	lhs << "Autoindex: " << rhs.directory << "\n";
+	lhs << "Max client body size: " << rhs.max_body_size << "\n";
+	lhs << "Locations: ";
 	for (std::map<std::string, t_location>::const_iterator it = rhs.locations.begin(); it != rhs.locations.end(); it++)
-		lhs << (*it).first << " " << (*it).second << "\n";;
+		lhs << "dir: " << (*it).first << " " << (*it).second << "\n";
 	return (lhs);
 }
