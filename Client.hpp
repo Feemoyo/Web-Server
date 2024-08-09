@@ -12,7 +12,8 @@ private:
 	std::map<std::string, std::string>	_buffer_map;
 	Mime								_mime;
 
-	std::string		_map_finder(std::string key, std::string value1, std::string value2);
+	std::string							_map_finder(std::string key, std::string value1, std::string value2);
+	void								_request_header(std::istringstream &stream);
 
 public:
 					Client(void);
@@ -25,6 +26,7 @@ public:
 	std::string		get_map_content(std::string ref);
 
 	void			format_content_type(void);
+	void			format_payload(void);
 	void			set_body_size(void);
 
 	void			clear_buffer(void);

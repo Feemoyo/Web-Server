@@ -227,6 +227,7 @@ void	Response::_check_file_location(void)
 		status_code_distributor("302");
 
 	file.close();
+	this->_check_directory_location();
 	return ;
 }
 

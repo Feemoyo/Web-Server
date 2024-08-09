@@ -72,6 +72,50 @@ size_t	str_to_size_t(std::string str)
 // 	return (result);
 // }
 
+static std::string _to_hex(unsigned char c)
+{
+	const char hex_chars[] = "0123456789ABCDEF";
+	std::string hex_str;
+
+	int first_digit = c / 16;
+    int second_digit = c % 16;
+
+    hex_str += hex_chars[first_digit];
+    hex_str += hex_chars[second_digit];
+
+	return (hex_str);
+}
+
+static std::string _url_encode(const std::string &str)
+{
+	std::string result;
+	result.reserve(str.length());
+
+	for (std::size_t i = 0; i < str.length(); ++i)
+	{
+		char c = str[i];
+		if (isalnum(c))
+			result += c;
+		else if (c == ' ')
+			result += '+';
+		else if (c == '\\')
+			result += "%5C";
+		else if (c == '\"')
+			result += "%22";
+		else if (c == '\n')
+			result += "%0A";
+		else if (c == '\r')
+			result += "%0D";
+		else
+		{
+			result += "%";
+			result += _to_hex(static_cast<unsigned char>(c));
+		}
+	}
+
+	return result;
+}
+
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
@@ -99,45 +143,55 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 {
 	std::string 		str(buffer.begin(), buffer.end());
 	std::istringstream	stream(str);
-	std::string 		line;
-	std::string 		aux;
+	std::string			line;
 
 	if (!payload)
 	{
-		std::getline(stream, line);
-		this->_buffer_map["Request"] = line;
-		if (this->_buffer_map["Request"].find("POST") != std::string::npos)
-			this->_buffer_map["Payload"] = "";
+		this->_request_header(stream);
+		this->print_map();
+		payload = true;
 	}
-	while (std::getline(stream, line))
+	if (this->_buffer_map["Request"].find("POST") != std::string::npos)
 	{
-		if (line == "\r" || payload)
+		if (this->_map_finder("Content-Type", "", ";") == ("multipart/form-data"))
 		{
-			this->remove_white_spaces(line);
-			this->_buffer_map["Payload"] += line.substr(0, line.find('\0'));
-			payload = true;
-		}
-		else
-		{
-			std::size_t first_space = line.find(':');
-			if (first_space != std::string::npos)
+			while (std::getline(stream, line))
 			{
-				std::string key = line.substr(0, first_space);
-				std::string value = line.substr(first_space + 2);
-				this->_buffer_map[key] = value;
+				this->_buffer_map["Payload"] += _url_encode(line.substr(0, line.find('\0')) + "\n");
 			}
 		}
-		if (!this->_buffer_map["Payload"].empty() && this->_buffer_map["Request"].find("POST") != std::string::npos && (str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size())))
-		{
-			payload = true;
-			break ;
+		else
+		{	
+			while (std::getline(stream, line))
+			{
+				this->_buffer_map["Payload"] += line.substr(0, line.find('\0'));
+			}
 		}
 	}
-
-	if ((this->_buffer_map["Payload"].empty() && this->_buffer_map["Request"].find("POST") == std::string::npos) || str_to_size_t(this->_buffer_map["Content-Length"]) == (this->_buffer_map["Payload"].size()))
+	else
 		payload = false;
-
 	return (payload);
+}
+
+void	Client::_request_header(std::istringstream &stream)
+{
+	std::string line;
+
+	std::getline(stream, line);
+	this->_buffer_map["Request"] = line;
+
+	while (std::getline(stream, line))
+	{
+		if (line == "\r")
+			return ;
+		std::size_t first_space = line.find(':');
+		if (first_space != std::string::npos)
+		{
+			std::string key = line.substr(0, first_space);
+			std::string value = line.substr(first_space + 2);
+			this->_buffer_map[key] = value;
+		}
+	}
 }
 
 /*
@@ -193,6 +247,28 @@ void	Client::format_content_type(void)
 	return ;
 }
 
+void	Client::format_payload(void)
+{
+	std::cout << "Payload: " << this->_buffer_map["Payload"] << std::endl;
+
+	size_t pos = 0;
+	std::string boundary;
+	if (this->_map_finder("Content-Type", "", ";") == "multipart/form-data")
+	{
+		boundary = this->_map_finder("Content-Type", "boundary=", "");
+		pos = boundary.find_last_of("-") + 1;
+		boundary = boundary.substr(pos);
+	}
+	return ;
+}
+
+void		Client::set_body_size(void)
+{
+	if (!this->_buffer_map["Payload"].empty() )
+		this->set_content_length(this->_buffer_map["Payload"].size());
+	return ;
+}
+
 /*
 ** --------------------------------- UTILITIES ---------------------------------
 */
@@ -204,6 +280,9 @@ std::string	Client::_map_finder(std::string key, std::string value1, std::string
 
 	if(auxFindGET1 == std::string::npos || auxFindGET2 == std::string::npos)
 		return ("");
+
+	if (auxFindGET2 == auxFindGET1)
+		return (this->_buffer_map[key].substr(auxFindGET1));
 
 	return(this->_buffer_map[key].substr(auxFindGET1, auxFindGET2 - auxFindGET1));
 }
@@ -229,6 +308,9 @@ void	Client::print_map(void)
 	std::map<std::string, std::string>::iterator it;
 
 	for (it = this->_buffer_map.begin(); it != this->_buffer_map.end(); ++it)
-		std::cout << it->first << ": " << it->second << "\n";
+	{
+		std::cout << it->first << ": * :";
+		std::cout << it->second << "\n";
+	}
 	return ;
 }
