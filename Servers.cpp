@@ -121,11 +121,11 @@ void	Servers::run_servers(void)
 	_init_fds();
 	while (true)
 	{
-		std::cout << "Webserv running..." << "\n";;
+		std::cout << "Webserv running..." << "\n";
 		int	poll_count = poll(this->_fds.data(), this->_fds.size(), -1);
 		if (poll_count < 0)
 		{
-			std::cerr << "Poll fail" << "\n";;
+			std::cerr << "Poll fail" << "\n";
 			close_servers();
 			break ;
 		}
@@ -179,15 +179,11 @@ void	Servers::_process_client(size_t index, int &client_fd)
 	{
 		buffer.assign(buffer.size(), 0);
 		bytes_read = recv(client_fd, &buffer[0], buffer.size() - 1, 0);
-		std::cout << "bytes_read: " << bytes_read << std::endl;
 		if (bytes_read < 0)
 		{
 			retry_count++;
 			if (retry_count >= max_retries)
-			{
-				std::cerr << "Reading from client fail on port: " << this->_servers[index].port << std::endl;
 				break ;
-			}
 			usleep(100 * 1000);
 			continue ;
 		}
@@ -199,9 +195,13 @@ void	Servers::_process_client(size_t index, int &client_fd)
 		if (!this->_client.set_buffer(buffer, payload))
 			break ;
 	}
-	this->_client.print_map();
+	payload = false;
+	// this->_client.print_map();
 	if (this->_client.get_method() == "POST")
+	{
+		this->_client.format_payload();
 		this->_client.set_body_size();
+	}
 	return ;
 }
 

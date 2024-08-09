@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/01 21:55:40 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/08 22:50:22 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,7 +256,7 @@ void	Config::_set_max_body_size(std::string &serv, int &max_body_size)
 	size_t	ref = serv.find("client_max_body_size");
 
 	if (ref == std::string::npos)
-		max_body_size = 200;
+		max_body_size = 2000;
 	else
 	{
 		size_t	end_2 = serv.find(";location", ref);

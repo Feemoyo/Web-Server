@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/05 15:45:07 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/08 22:58:40 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,6 @@ void	Response::_check_directory_location(void)
 	return ;
 }
 
-//TODO: linha 134 da core dumped quando tentamos acessar a pagina de teste do Downloads
 void	Response::_check_allowed_methods(void)
 {
 	if (this->_status_code == "404")
@@ -209,7 +208,6 @@ std::string	Response::_get_dir_files(void)
 		{
 			std::string	filename = entry->d_name;
 
-			// files_list += "<a>" + filename + "</a><br/>\n";
 			files_list += "<a href=" + this->_response.path + filename + ">" + filename + "</a><br/>\n";
 		}
 	}
@@ -249,7 +247,6 @@ void	Response::_make_response(void)
 
 	handler << file_content.size();
 
-	// std::cout << "Status Code: " << this->_status_code << "\n";
 	this->_response.header = "HTTP/1.1 ";
 	this->_response.header += this->_status_code + " ";
 	this->_response.header += this->_status_msg;
