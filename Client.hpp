@@ -26,7 +26,6 @@ public:
 	std::string		get_map_content(std::string ref);
 
 	void			format_content_type(void);
-	void			format_payload(void);
 	void			set_body_size(void);
 
 	void			clear_buffer(void);

@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 17:20:59 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/08 19:51:21 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/09 19:35:15 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,6 @@ void	Mime::_set_image_types()
 	this->_add_mime("raf", "image/x-fuji-raf");
 	this->_add_mime("icns", "image/x-icns");
 	this->_add_mime("ico", "image/x-icon");
-	//TIPS: dcr tambem pode ser usado para application/x-director
 	this->_add_mime("dcr", "image/x-kodak-dcr");
 	this->_add_mime("k25", "image/x-kodak-k25");
 	this->_add_mime("kdc", "image/x-kodak-kdc");

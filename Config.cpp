@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/09 18:43:15 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/09 19:00:31 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,8 +228,8 @@ bool	Config::_config_servers(void)
 			return (false);
 		this->_servers.push_back(server);
 
-		// for (std::vector<t_server>::const_iterator it = this->_servers.begin(); it != this->_servers.end(); it++)
-		// 	std::cout << *it << std::endl;
+		for (std::vector<t_server>::const_iterator it = this->_servers.begin(); it != this->_servers.end(); it++)
+			std::cout << *it << std::endl;
 	}
 	return (true);
 }
