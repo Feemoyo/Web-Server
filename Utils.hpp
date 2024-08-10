@@ -18,6 +18,7 @@
 # include <csignal>
 # include <cctype>
 # include <ctime>
+# include <cstdio>
 
 # include <sys/socket.h>
 # include <sys/stat.h>
