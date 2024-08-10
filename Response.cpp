@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/09 19:30:06 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/09 21:45:06 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,18 @@ void	Response::run_response(void)
 		else
 			_file_validation();
 	}
-	_make_response();
+	//GOHORSE
+	if (this->_response.method == "DELETE")
+	{
+		std::string full_path = (this->_response.server.root + this->_response.path + this->_response.name);
+		std::cout << full_path << std::endl;
+		if (!remove(full_path.c_str()))
+			status_code_distributor("202");
+		else
+			status_code_distributor("404");
+		
+	}
+	_response_maker();
 	_send_response();
 	return ;
 }
@@ -272,11 +283,25 @@ void	Response::_set_dir_content(void)
 	return ;
 }
 
-void	Response::_make_response(void)
+void	Response::_response_maker(void)
 {
-	std::string			file_content;
+	if (this->_response.method == "DELETE" || this->_response.method == "POST")
+	{
+		this->_response_without_body();
+	}
+	else
+	{
+		this->_response_with_body();
+	}
+
+	return ;
+}
+
+void	Response::_response_with_body(void)
+{
 	std::ostringstream	handler;
 
+	std::string			file_content;
 	file_content = this->get_content();
 
 	handler << file_content.size();
@@ -294,6 +319,20 @@ void	Response::_make_response(void)
 	
 	this->_response.body = this->_response.header;
 	this->_response.body += file_content;
+	return ;
+}
+
+void	Response::_response_without_body(void)
+{
+	this->_response.header = "HTTP/1.1 ";
+	this->_response.header += this->_status_code + " ";
+	this->_response.header += this->_status_msg;
+	this->_response.header += "No Content";
+	this->_response.header += "\nDate: ";
+	this->_response.header += _display_time();
+	this->_response.header += "\n\n";
+	
+	this->_response.body = this->_response.header;
 	return ;
 }
 
