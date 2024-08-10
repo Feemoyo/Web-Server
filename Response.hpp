@@ -15,7 +15,7 @@ private:
 	void		_change_paths_for_redirections(void);
 
 	bool		_check_for_cgi(void);
-
+	void		_run_CGI(void);
 	void		_file_validation(void);
 	void		_directory_validation(void);
 

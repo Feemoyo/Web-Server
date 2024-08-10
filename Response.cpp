@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/09 23:23:01 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/10 15:27:44 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,28 +65,36 @@ Response::~Response(void)
 ** --------------------------------- METHODS ----------------------------------
 */
 
+void	Response::_run_CGI(void)
+{
+
+	t_cgi	res_cgi;
+	
+	res_cgi.method = "CREATE";
+	res_cgi.cgi = "/usr/bin/python3";
+	res_cgi.script_file = (this->_response.server.root + this->_response.path + this->_response.name);
+	res_cgi.data_base = "./www/temp/_test_form_index.json";
+	res_cgi.data = "name=Rodrigo email=teste@gmail.com mensagem=Teste";
+
+	CGI			*cgi = new CGI(res_cgi);
+
+	cgi->run_cgi();
+
+	this->set_content(cgi->get_cgi_ret());
+	delete cgi;
+	return ;
+}
+
 void	Response::run_response(void)
 {
 	status_code_distributor("200");
 	_change_paths_for_redirections();
 	if (_check_for_cgi() == true)
 	{
-		t_cgi	res_cgi;
-		
-		res_cgi.method = "CREATE";
-		res_cgi.cgi = "/usr/bin/python3";
-		res_cgi.script_file = (this->_response.server.root + this->_response.path + this->_response.name);
-		res_cgi.data_base = "./www/temp/_test_form_index.json";
-		res_cgi.data = "name=Rodrigo email=teste@gmail.com mensagem=Teste";
-
-		CGI			*cgi = new CGI(res_cgi);
-
-		cgi->run_cgi();
-
-		this->set_content(cgi->get_cgi_ret());
-		delete cgi;
+		_run_CGI();
 		if (this->get_content() == "404\n")
 		{
+			status_code_distributor("404");
 			this->_response.path = "/errors/";
 			this->_response.name = "404.html";
 			_file_validation();
@@ -95,23 +103,46 @@ void	Response::run_response(void)
 	else
 	{
 		_check_allowed_methods();
-		if (this->_response.name.size() == 0)
-			_directory_validation();
-		else if (this->_response.method == "DELETE" && this->_status_code != "405")
+		if (this->_status_code == "405")
 		{
-			std::string full_path = (this->_response.server.root + this->_response.path + this->_response.name);
-			if (!remove(full_path.c_str()))
-				status_code_distributor("202");	
-			else
-				status_code_distributor("404");
-			_check_errors_location_file();				
-		}
-		else
+			this->_response.path = "/errors/";
+			this->_response.name = (std::string)this->_status_code + ".html";
 			_file_validation();
-
+		}
+		else if (this->_response.method == "GET")
+		{
+			if (this->_response.name.empty())
+				_directory_validation();
+			else
+				_file_validation();
+		}
+		else if (this->_response.method == "DELETE")
+		{
+			if (this->_response.name.empty())
+				status_code_distributor("400");
+			else
+			{
+				std::string full_path = (this->_response.server.root + this->_response.path + this->_response.name);
+				if (!remove(full_path.c_str()))
+					status_code_distributor("202");	
+				else
+					status_code_distributor("404");
+			}
+			this->_response.path = "/errors/";
+			this->_response.name = (std::string)this->_status_code + ".html";
+			_file_validation();
+		}
+		else if (this->_response.method == "POST")
+		{
+			if (this->_response.name.empty())
+				status_code_distributor("403");
+			else
+				status_code_distributor("204");
+			this->_response.path = "/errors/";
+			this->_response.name = (std::string)this->_status_code + ".html";
+			_file_validation();
+		}
 	}
-	//GOHORSE
-	
 	_response_maker();
 	_send_response();
 	return ;
@@ -160,9 +191,6 @@ void	Response::_directory_validation(void)
 
 void	Response::_check_allowed_methods(void)
 {
-	if (this->_status_code == "404")
-		return ;
-
 	std::map<std::string, t_location>::iterator	it = this->_response.server.locations.find(this->_response.path);
 	if (it == this->_response.server.locations.end())
 		return ;
@@ -219,6 +247,7 @@ void	Response::_check_errors_location_file(void)
 	else
 	{
 		this->_response.path = "/errors/";
+		this->_response.name.clear();
 		this->_response.name = ((std::string)this->_status_code + ".html");
 		this->set_file((this->_response.server.root + this->_response.path), this->_response.name);
 	}
@@ -231,9 +260,10 @@ void	Response::_check_file_location(void)
 	std::ifstream	file(full_path.c_str());
 	struct stat		info;
 
+	std::cout << full_path << std::endl;
+
 	if (this->_status_code == "404" || this->_status_code == "405")
 		return ;
-
 	if (stat(full_path.c_str(), &info) != 0 || !S_ISREG(info.st_mode))
 		status_code_distributor("404");
 	else if (!file.is_open())
@@ -288,20 +318,6 @@ void	Response::_set_dir_content(void)
 
 void	Response::_response_maker(void)
 {
-	if (this->_response.method == "DELETE" || this->_response.method == "POST")
-	{
-		this->_response_without_body();
-	}
-	else
-	{
-		this->_response_with_body();
-	}
-
-	return ;
-}
-
-void	Response::_response_with_body(void)
-{
 	std::ostringstream	handler;
 
 	std::string			file_content;
@@ -322,20 +338,6 @@ void	Response::_response_with_body(void)
 	
 	this->_response.body = this->_response.header;
 	this->_response.body += file_content;
-	return ;
-}
-
-void	Response::_response_without_body(void)
-{
-	this->_response.header = "HTTP/1.1 ";
-	this->_response.header += this->_status_code + " ";
-	this->_response.header += this->_status_msg + " ";
-	this->_response.header += "No Content";
-	this->_response.header += "\nDate: ";
-	this->_response.header += _display_time();
-	this->_response.header += "\n\n";
-	
-	this->_response.body = this->_response.header;
 	return ;
 }
 
