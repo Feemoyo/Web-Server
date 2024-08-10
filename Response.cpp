@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/10 19:06:35 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/10 19:47:48 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,14 @@ void	Response::_run_CGI(void)
 void	Response::run_response(void)
 {
 	status_code_distributor("200");
+	std::cout << "Antes" << this->_response.server.root << std::endl;
+	std::cout << "Antes" << this->_response.path << std::endl;
+	std::cout << "Antes" << this->_response.name << std::endl;
 	_change_paths_for_redirections();
+	std::cout << "Depois" << this->_response.server.root << std::endl;
+	std::cout << "Depois" << this->_response.path << std::endl;
+	std::cout << "Depois" << this->_response.name << std::endl;
+
 	if (_check_for_cgi() == true)
 	{
 		_run_CGI();
@@ -143,7 +150,25 @@ void	Response::run_response(void)
 			_file_validation();
 		}
 	}
-	_response_maker();
+	if (this->_status_code[0] == '4')
+    {
+    this->_response.header = "HTTP/1.1 ";
+    this->_response.header += "301 Moved Permanently ";
+    this->_response.header += "\nLocation: ";
+    this->_response.header += "http://localhost:9000/errors/" +  + ".html"; //url nao esta dinamico
+    this->_response.header += "\nContent-Type: ";
+    this->_response.header += this->get_content_type();
+    this->_response.header += "\nContent-Length: ";
+    this->_response.header += "150"; // content-length nao esta dinamico
+    this->_response.header += "\nDate: ";
+    this->_response.header += _display_time();
+    this->_response.header += "\n\n";
+    
+    this->_response.body = this->_response.header;
+    this->_response.body += "<h1>The Newsfeed has moved</h1> <body> The newsfeed has moved permanently to <a href=/feeds/news.html>here</a>. Please update your bookmarks. </body>";
+    }
+	else
+		_response_maker();
 	_send_response();
 	return ;
 }
