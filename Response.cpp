@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/10 15:27:44 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/10 19:06:35 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,7 @@ void	Response::run_response(void)
 			if (this->_response.name.empty())
 				status_code_distributor("403");
 			else
-				status_code_distributor("204");
+				status_code_distributor("200");
 			this->_response.path = "/errors/";
 			this->_response.name = (std::string)this->_status_code + ".html";
 			_file_validation();
@@ -182,7 +182,9 @@ void	Response::_directory_validation(void)
 {
 	_check_directory_location();
 	_check_directory_autoindex();
-	if (this->_status_code != "200")
+	if (this->_status_code == "302")
+		set_file((this->_response.server.root + this->_response.path + this->_response.server.locations[this->_response.path].default_file));
+	else if (this->_status_code != "200")
 		_check_errors_location_file();
 	else
 		_set_dir_content();
@@ -220,15 +222,21 @@ void	Response::_check_directory_autoindex(void)
 	std::map<std::string, t_location>::iterator	it = this->_response.server.locations.begin();
 	for (; it != this->_response.server.locations.end(); it++)
 	{
-		if (it->first == this->_response.path && (it->second.directory == false))
+		if (it->first == this->_response.path)
 		{
-			if (it->second.default_file.empty())
-				status_code_distributor("404");
-			else
+			if (it->second.directory == false)
 			{
-				this->_response.name = it->second.default_file;
-				_file_validation();
+				if (it->second.default_file.empty())
+					status_code_distributor("404");
+				else
+				{
+					status_code_distributor("302");
+					this->_response.name = it->second.default_file;
+				}
+				return ;
 			}
+			else
+				return ;
 		}
 	}
 	return ;
@@ -251,6 +259,7 @@ void	Response::_check_errors_location_file(void)
 		this->_response.name = ((std::string)this->_status_code + ".html");
 		this->set_file((this->_response.server.root + this->_response.path), this->_response.name);
 	}
+	
 	return ;
 }
 
