@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:32:11 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/08/09 19:34:40 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/09 22:17:19 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,12 +210,7 @@ std::string	Client::get_method(void)
 std::string	Client::get_path(void)
 {
 	std::string path = this->_map_finder("Request", "/", " ");
-	if (path == "/")
-	{
-		this->set_content_type("text/html");
-		return ("/index.html");
-	}
-	else if (std::strchr(path.c_str(), '.') == NULL)
+	if (std::strchr(path.c_str(), '.') == NULL)
 	{
 		this->set_content_type("text/html");
 		if (path.find_last_of("/") == path.size() - 1)
