@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/10 19:47:48 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/11 13:59:55 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,14 @@
 /*
 ** ----------------------------- STATIC FUNCTIONS -----------------------------
 */
+
+static std::string _to_string(int value)
+{
+	std::stringstream	ss;
+
+	ss << value;
+	return (ss.str());
+}
 
 static std::string _display_time(void)
 {
@@ -88,14 +96,7 @@ void	Response::_run_CGI(void)
 void	Response::run_response(void)
 {
 	status_code_distributor("200");
-	std::cout << "Antes" << this->_response.server.root << std::endl;
-	std::cout << "Antes" << this->_response.path << std::endl;
-	std::cout << "Antes" << this->_response.name << std::endl;
 	_change_paths_for_redirections();
-	std::cout << "Depois" << this->_response.server.root << std::endl;
-	std::cout << "Depois" << this->_response.path << std::endl;
-	std::cout << "Depois" << this->_response.name << std::endl;
-
 	if (_check_for_cgi() == true)
 	{
 		_run_CGI();
@@ -152,20 +153,20 @@ void	Response::run_response(void)
 	}
 	if (this->_status_code[0] == '4')
     {
-    this->_response.header = "HTTP/1.1 ";
-    this->_response.header += "301 Moved Permanently ";
-    this->_response.header += "\nLocation: ";
-    this->_response.header += "http://localhost:9000/errors/" +  + ".html"; //url nao esta dinamico
-    this->_response.header += "\nContent-Type: ";
-    this->_response.header += this->get_content_type();
-    this->_response.header += "\nContent-Length: ";
-    this->_response.header += "150"; // content-length nao esta dinamico
-    this->_response.header += "\nDate: ";
-    this->_response.header += _display_time();
-    this->_response.header += "\n\n";
-    
-    this->_response.body = this->_response.header;
-    this->_response.body += "<h1>The Newsfeed has moved</h1> <body> The newsfeed has moved permanently to <a href=/feeds/news.html>here</a>. Please update your bookmarks. </body>";
+		this->_response.header = "HTTP/1.1 ";
+		this->_response.header += "301 Moved Permanently ";
+		this->_response.header += "\nLocation: ";
+		this->_response.header += "http://" + this->_response.server.server_name + ":" + _to_string(this->_response.server.port) + "/errors/" + get_status_code() + ".html"; //url nao esta dinamico
+		this->_response.header += "\nContent-Type: ";
+		this->_response.header += this->get_content_type();
+		this->_response.header += "\nContent-Length: ";
+		this->_response.header += "150"; // content-length nao esta dinamico
+		this->_response.header += "\nDate: ";
+		this->_response.header += _display_time();
+		this->_response.header += "\n\n";
+		
+		this->_response.body = this->_response.header;
+		this->_response.body += "<h1>The Newsfeed has moved</h1> <body> The newsfeed has moved permanently to <a href=/feeds/news.html>here</a>. Please update your bookmarks. </body>";
     }
 	else
 		_response_maker();
