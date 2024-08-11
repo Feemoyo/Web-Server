@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/10 19:47:48 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/11 17:21:23 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,29 +147,16 @@ void	Response::run_response(void)
 				status_code_distributor("200");
 			this->_response.path = "/errors/";
 			this->_response.name = (std::string)this->_status_code + ".html";
-			_file_validation();
+			this->_file_validation();
 		}
 	}
 	if (this->_status_code[0] == '4')
     {
-    this->_response.header = "HTTP/1.1 ";
-    this->_response.header += "301 Moved Permanently ";
-    this->_response.header += "\nLocation: ";
-    this->_response.header += "http://localhost:9000/errors/" +  + ".html"; //url nao esta dinamico
-    this->_response.header += "\nContent-Type: ";
-    this->_response.header += this->get_content_type();
-    this->_response.header += "\nContent-Length: ";
-    this->_response.header += "150"; // content-length nao esta dinamico
-    this->_response.header += "\nDate: ";
-    this->_response.header += _display_time();
-    this->_response.header += "\n\n";
-    
-    this->_response.body = this->_response.header;
-    this->_response.body += "<h1>The Newsfeed has moved</h1> <body> The newsfeed has moved permanently to <a href=/feeds/news.html>here</a>. Please update your bookmarks. </body>";
+		_check_redirect_4xx_errors();
     }
 	else
-		_response_maker();
-	_send_response();
+		this->_response_maker();
+	this->_send_response();
 	return ;
 }
 
@@ -314,6 +301,27 @@ void	Response::_check_max_body_size(void)
 	if (this->get_content_length() > static_cast<size_t>(this->_response.server.max_body_size))
 		status_code_distributor("413");
 	return ;
+}
+
+void	Response::_check_redirect_4xx_errors(void)
+{
+	std::stringstream	port;
+	port << this->_response.server.port;
+	
+	this->_response.header = "HTTP/1.1 ";
+	this->_response.header += "301 Moved Permanently ";
+	this->_response.header += "\nLocation: ";
+	this->_response.header += "http://" + this->_response.server.server_name + ":" + port.str() + "/errors/" + this->_status_code + ".html";
+	this->_response.header += "\nContent-Type: ";
+	this->_response.header += this->get_content_type();
+	this->_response.header += "\nContent-Length: ";
+	this->_response.header += "31";
+	this->_response.header += "\nDate: ";
+	this->_response.header += _display_time();
+	this->_response.header += "\n\n";
+	
+	this->_response.body = this->_response.header;
+	this->_response.body += "<body>Moved Permanently</body>";
 }
 
 std::string	Response::_get_dir_files(void)
