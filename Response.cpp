@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/12 14:00:35 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/12 15:01:21 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,11 +70,11 @@ void	Response::_run_CGI(void)
 
 	t_cgi	res_cgi;
 	
-	res_cgi.method = "CREATE";
+	res_cgi.method = "create";
 	res_cgi.cgi = "/usr/bin/python3";
+	res_cgi.data_base = "./www/test/csv/tree.csv";
 	res_cgi.script_file = (this->_response.server.root + this->_response.path + this->_response.name);
-	res_cgi.data_base = "./www/temp/_test_form_index.json";
-	res_cgi.data = "name=Rodrigo email=teste@gmail.com mensagem=Teste";
+	res_cgi.data = "{\"name\":\"Fernando\",\"age\":\"25\"}";
 
 	CGI			*cgi = new CGI(res_cgi);
 
@@ -151,7 +151,7 @@ void	Response::run_response(void)
 		}
 	}
 
-	if (this->_status_code[0] == '4') //
+	if (this->_status_code[0] == '4')
     {
 		_check_redirect_4xx_errors();
     }
