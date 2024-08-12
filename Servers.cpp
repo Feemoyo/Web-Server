@@ -159,7 +159,7 @@ void	Servers::_accept_connection (size_t index)
 		return ;
 	}
 	_process_client(index, client_fd);
-	_process_response(index, client_fd, this->_client.get_method());
+	_process_response(index, client_fd, this->_client.get_method(), this->_client.get_content());
 	close(client_fd);
 	return ;
 }
@@ -210,9 +210,9 @@ void	Servers::_process_client(size_t index, int &client_fd)
 	return ;
 }
 
-void	Servers::_process_response(size_t index, int &client_fd, std::string method)
+void	Servers::_process_response(size_t index, int &client_fd, std::string method, std::string payload)
 {
-	Response	resp(client_fd, this->_servers[index], this->_client.get_path(), method);
+	Response	resp(client_fd, this->_servers[index], this->_client.get_path(), method, payload);
 	
 	resp.run_response();
 	return ;

@@ -66,9 +66,11 @@ typedef struct	s_response
 {
 	int				client;
 	t_server		server;
+	std::string		method;
 	std::string		path;
 	std::string		name;
-	std::string		method;
+	std::string		payload;
+
 	std::string		header;
 	std::string		body;
 
@@ -79,7 +81,6 @@ typedef struct	s_cgi
 	std::string	method;
 	std::string	cgi;
 	std::string	script_file;
-	std::string	data_base;
 	std::string	data;
 }	t_cgi;
 
