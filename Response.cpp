@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/11 17:21:23 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/12 14:00:35 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,8 @@ void	Response::run_response(void)
 			this->_file_validation();
 		}
 	}
-	if (this->_status_code[0] == '4')
+
+	if (this->_status_code[0] == '4') //
     {
 		_check_redirect_4xx_errors();
     }
@@ -305,6 +306,15 @@ void	Response::_check_max_body_size(void)
 
 void	Response::_check_redirect_4xx_errors(void)
 {
+	std::map<std::string, t_location>::iterator	it;
+
+	it = this->_response.server.locations.find("/errors/");
+	if (it == this->_response.server.locations.end())
+	{
+		this->_response_maker();
+		return ;
+	}
+	
 	std::stringstream	port;
 	port << this->_response.server.port;
 	
