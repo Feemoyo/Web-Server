@@ -5,10 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/05 15:05:03 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/12 19:56:20 by rferrero         ###   ########.fr       */
+/*   Created: Invalid date        by                   #+#    #+#             */
+/*   Updated: 2024/08/12 20:04:17 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "Response.hpp"
 #include "CGI.hpp"
@@ -264,10 +265,8 @@ void	Response::_check_directory_autoindex(void)
 					status_code_distributor("302");
 					this->_response.name = it->second.default_file;
 				}
-				return ;
 			}
-			else
-				return ;
+			return ;
 		}
 	}
 	return ;
