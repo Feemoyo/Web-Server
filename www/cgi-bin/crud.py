@@ -21,11 +21,12 @@ def write_data(data):
 	with open(DATA_FILE, 'w') as file:
 		json.dump(data, file, indent=4)
 
-def create_entry(key, value):
+def create_entry(dados):
+
 	data = read_data()
-	data[key] = value
+	data["Rodrigo"] = "37"
 	write_data(data)
-	return f"Created entry: {key} = {value}"
+	return f"Created entry: Name: {dados.key}, Age {dados.value}."
 
 def read_entry(key):
 	data = read_data()
@@ -67,13 +68,14 @@ def generate_html_response(message):
 	"""
 
 def main():
-	form = cgi.FieldStorage()
-	operation = form.getvalue('operation')
-	key = form.getvalue('key')
-	value = form.getvalue('value')
+	form =  os.environ.get('DATA')
+	operation = os.environ.get('METHOD')
+	dados = json.loads(form)
+	key = dados['name']
+	value = dados['age']
 
 	if operation == 'create':
-		message = create_entry(key, value)
+		message = create_entry(dados)
 	elif operation == 'read':
 		message = read_entry(key)
 	elif operation == 'update':
@@ -81,9 +83,11 @@ def main():
 	elif operation == 'delete':
 		message = delete_entry(key)
 	else:
-		message = "Invalid operation."
+		message = "Invalid Method." 
+
 
 	print(generate_html_response(message))
+	print(os.environ.get('METHOD'))
 
 if __name__ == "__main__":
 	main()

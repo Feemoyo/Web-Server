@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 17:20:59 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/09 19:35:15 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/12 15:26:38 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,7 @@ void	Mime::_set_html_type()
 {
 	this->_add_mime("html", "text/html");
 	this->_add_mime("csv", "text/csv");
+	this->_add_mime("py", "text/html");
 	return ;
 }
 

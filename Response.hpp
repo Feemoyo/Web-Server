@@ -31,8 +31,6 @@ private:
 	void		_set_dir_content(void);
 
 	void		_response_maker(void);
-	void		_response_without_body(void);
-	void		_response_with_body(void);
 	void		_send_response(void);
 
 public:
