@@ -17,6 +17,23 @@ def	get_data(void):
 			return ("204")
 		return json.dump(data, indent=4)
 
+def	delete_data(key_1, key_2):
+	with open(DATA_FILE, 'r+') as file:
+		file_data = json.load(file)
+		item_to_delete = None
+	for item in data:
+		if item.get('nome') == key_1 and item.get('email') == key_2:
+			item_to_delete = item
+			break
+	if item_to_delete:
+		data.remove(item_to_delete)
+		file.seek(0)
+		file.truncate()
+		json.dump(data, file, indent=4)
+		return (f"Deleted entry: {key_1}, {key_2}")
+	else
+		return (f"Entry: {key_1}, {key_2} not found.")
+
 def	post_data(data):
 	with open(DATA_FILE, 'r+') as file:
 		file_data = json.load(file)
