@@ -6,7 +6,7 @@
 /*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/08/12 20:04:17 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/13 13:34:29 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,9 @@ void	Response::run_response(void)
 		_run_CGI();
 		if (this->get_content() == "404\n")
 			_set_error_response("404");
+		else if  (this->get_content() == "204\n")
+			_set_error_response("204");
+
 	}
 	else
 	{

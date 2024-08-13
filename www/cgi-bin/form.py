@@ -32,14 +32,41 @@ def	delete_data(key_1, key_2):
 			json.dump(data, file, indent=4)
 			return (f"Deleted entry: {key_1}, {key_2}")
 		else:
-			return (f"Entry: {key_1}, {key_2} not found.")
+			return ("404")
 
 def	post_data(data):
 	with open(DATA_FILE, 'r+') as file:
 		file_data = json.load(file)
+		if not isinstance(file_data, list):
+			file_data = []
 		file_data.append(data)
 		file.seek(0)
 		json.dump(file_data, file, indent=4)
+	return (f"Created entry: {data['nome']}, {data['email']}, {data['mensagem']}")
+
+def	create_response(message):
+	return (f"""
+	<!DOCTYPE html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Operation Result</title>
+	</head>
+	<style>
+    	body {{
+	        font-family: 'Raleway', sans-serif;
+			background-image: url('../imgs/200_OK.png');
+			background-size: cover;
+	        background-position: center;
+			background-repeat: no-repeat;
+			height: 100vh;
+		}}
+    </style>
+	<body>
+		<h1>{message}</h1>
+	</body>
+	</html>
+	""")
 
 def	main():
 	encoded_data = os.environ.get('DATA')
@@ -53,17 +80,19 @@ def	main():
 	key_1 = data['nome']
 	key_2 = data['email']
 
-	if method == 'get':
+	if method == 'GET':
 		message = get_data()
-	elif method == 'delete':
-		message = delete_data(key_1, key_2)
-	elif method == 'post':
+	elif method == 'DELETE':
+		if key_1 and key_2:
+			message = delete_data(key_1, key_2)
+		else:
+			message = "400"
+	elif method == 'POST':
 		message = post_data(data)
 	else:
 		message = "405"
 
-	print(form)
-	print(message)
+	print(create_response(message))
 
 
 if __name__ == "__main__":
