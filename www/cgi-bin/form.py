@@ -79,7 +79,7 @@ def main():
     encoded_data = os.environ.get('DATA')
 
     if not encoded_data:
-        print("400 Bad Request: No data received")
+        print("400")
         return
 
     decoded_data = urllib.parse.parse_qs(encoded_data)
@@ -97,16 +97,15 @@ def main():
         if key_1 and key_2:
             message = delete_data(key_1, key_2)
         else:
-            message = "400 Bad Request: Missing key or value for delete"
+            message = "404"
     elif method == 'POST':
         if key_1 and key_2:
             message = post_data(data)
         else:
-            message = "400 Bad Request: Missing data for post"
+            message = "404"
     else:
-        message = "405 Method Not Allowed"
+        message = "405"
 
-    print("Content-Type: text/html\n")
     print(create_response(message))
 
 if __name__ == "__main__":
