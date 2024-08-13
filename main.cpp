@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 19:27:55 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/08 19:06:22 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/13 17:42:19 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,6 @@
 
 Servers		*webserv;
 Config		*conf;
-
-void	_server_config_model(void)
-{
-	std::cout << "server\n{\n\tlisten\t\t\t\t\t80;" << "\n";;
-	std::cout << "\tserver_name\t\t\t\tlocalhost;" << "\n";;
-	std::cout << "\troot\t\t\t\t\twww;" << "\n";;
-	std::cout << "\tdirectory\t\t\t\ton\n\tclient_max_body_size\t\t\t200;\n" << "\n";;
-	std::cout << "\tlocation /\n\t{\n\t\tdefault\t\t\t\tindex.html;" << "\n";;
-	std::cout << "\t\tdirectory\t\t\ton;" << "\n";;
-	std::cout << "\t\tallowed_methods\t\t\tGET;\n\t}\n" << "\n";;
-	std::cout << "\tlocation /errors/\n\t{\n\t\tdefault\t\t\t\t404.html;" << "\n";;
-	std::cout << "\t\tdirectory\t\t\toff;" << "\n";;
-	std::cout << "\t\tallowed_methods\t\t\tGET\n\t}\n};" << "\n";;
-	
-}
 
 void	_server_interrupt(int sig)
 {
@@ -46,7 +31,6 @@ int main(int argc, char **argv)
 	{
 		std::cout << "Need a .conf file to run the server" << "\n";;
 		std::cout << ".conf file exemple:" << "\n";;
-		_server_config_model();
 		return (EXIT_FAILURE);
 	}
 	struct sigaction	interrupt_handler;

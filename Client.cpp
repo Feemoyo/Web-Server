@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:32:11 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/08/09 22:17:19 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/13 17:40:56 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,98 +22,6 @@ size_t	str_to_size_t(std::string str)
 
 	std::istringstream(str) >> size;
 	return (size);
-}
-
-// static int	_from_hex(char c)
-// {
-// 	if (c >= '0' && c <= '9')
-// 		return (c - '0');
-// 	if (c >= 'a' && c <= 'f')
-// 		return (c - 'a' + 10);
-// 	if (c >= 'A' && c <= 'F')
-// 		return (c - 'A' + 10);
-// 	return (0);
-// }
-
-// static std::string	_url_decode(const std::string &str)
-// {
-// 	std::string	result;
-// 	char		hex[3] = {0, 0, 0};
-
-// 	result.reserve(str.length());
-// 	for (std::size_t i = 0; i < str.length(); ++i)
-// 	{
-// 		if (str[i] == '%')
-// 		{
-// 			if (i + 2 < str.length())
-// 			{
-// 				hex[0] = str[i + 1];
-// 				hex[1] = str[i + 2];
-// 				if (hex[0] == '2' && hex[1] == '2')
-// 					result += "\\\"";
-// 				else if (hex[0] == '5' && hex[1] == 'C')
-// 					result += "\\\\";
-// 				else if (hex[0] == '0' && hex[1] == 'A')
-// 					result += "\\n";
-// 				else if (hex[0] == '0' && hex[1] == 'D')
-// 					result += "\\r";
-// 				else
-// 					result += static_cast<char>(_from_hex(hex[0]) * 16 + _from_hex(hex[1]));
-// 				i += 2;
-// 			}
-// 		}
-// 		else if (str[i] == '+')
-// 			result += ' ';
-// 		else if (str[i] == '\n' || str[i] == '\r')
-// 			i += 1;
-// 		else
-// 			result += str[i];
-// 	}
-// 	return (result);
-// }
-
-static std::string _to_hex(unsigned char c)
-{
-	const char hex_chars[] = "0123456789ABCDEF";
-	std::string hex_str;
-
-	int first_digit = c / 16;
-    int second_digit = c % 16;
-
-    hex_str += hex_chars[first_digit];
-    hex_str += hex_chars[second_digit];
-
-	return (hex_str);
-}
-
-static std::string _url_encode(const std::string &str)
-{
-	std::string result;
-	result.reserve(str.length());
-
-	for (std::size_t i = 0; i < str.length(); ++i)
-	{
-		char c = str[i];
-		if (isalnum(c))
-			result += c;
-		else if (c == ' ')
-			result += '+';
-		else if (c == '\\')
-			result += "%5C";
-		else if (c == '\"')
-			result += "%22";
-		else if (c == '\n')
-			result += "%0A";
-		else if (c == '\r')
-			result += "%0D";
-		else
-		{
-			result += "%";
-			result += _to_hex(static_cast<unsigned char>(c));
-		}
-	}
-
-	return result;
 }
 
 /*
@@ -154,9 +62,9 @@ bool	Client::set_buffer(std::vector<char> buffer, bool &payload)
 	{
 		if (this->_map_finder("Content-Type", "", ";") == ("multipart/form-data"))
 		{
-			while (std::getline(stream, line))
+			while (std::getline(stream, line, '\0'))
 			{
-				this->_buffer_map["Payload"] += _url_encode(line.substr(0, line.find('\0')) + "\n");
+				this->_buffer_map["Payload"] += line.substr(0, line.find('\0'));
 			}
 		}
 		else

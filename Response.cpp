@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/08/13 13:34:29 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/13 17:55:20 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ Response::Response(int client_fd, t_server &server, std::string path_and_name, s
 	this->_response.method = method;
 	this->_response.path = path_and_name.substr(0, start);
 	this->_response.name = path_and_name.substr(start);
+
 	if (this->_response.method == "POST")
 		this->_response.payload = payload;
 	else
@@ -75,8 +76,9 @@ void	Response::run_response(void)
 	status_code_distributor("200");
 	_change_paths_for_redirections();
 	_check_allowed_methods();
+	_check_max_body_size();
 	_check_directory_location();
-	if (_check_for_cgi() == true && this->_status_code != "405" && this->_status_code != "404")
+	if (_check_for_cgi() == true && this->_status_code != "405" && this->_status_code != "404" && this->_status_code != "413")
 	{
 		_run_CGI();
 		if (this->get_content() == "404\n")
@@ -89,6 +91,8 @@ void	Response::run_response(void)
 	{
 		if (this->_status_code == "405")
 			_set_error_response("405");
+		else if (this->_status_code == "413")
+			_set_error_response("413");
 		else if (this->_response.method == "GET")
 			_handle_get_request();
 		else if (this->_response.method == "DELETE")
@@ -204,7 +208,6 @@ void	Response::_handle_post_request(void)
 void	Response::_file_validation(void)
 {
 	_check_file_location();
-	_check_max_body_size();
 	if (this->_status_code != "200")
 		_check_errors_location_file();
 	else

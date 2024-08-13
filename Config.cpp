@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:46:21 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/13 13:48:10 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/13 17:59:38 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,11 +96,10 @@ static void	_change_server_name(const std::string &name)
 		new_hosts += '\n';
 	}
 	std::ofstream	host_file_out("/etc/hosts");
+
 	if (!host_file_out.is_open())
-	{
-		std::cerr << "Unable to write new server name" << "\n";
 		return ;
-	}
+
 	host_file_out << new_hosts;
 	host_file_out.close();
 	return ;
@@ -290,12 +289,6 @@ void	Config::_define_max_body_size(std::string &serv, int &max_body_size)
 		end = serv.find(";};") + 1;
 		if (end != std::string::npos)
 			max_body_size = _string_to_int(_find_and_split(serv, ref, "client_max_body_size", ";"));
-	}
-	if (max_body_size > 20000)
-	{
-		std::cerr << "Max body size of the server is too big" << "\n";
-		std::cerr << "Changed max body size to 20000" << "\n";
-		max_body_size = 20000;
 	}
 	return ;
 }

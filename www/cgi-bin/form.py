@@ -25,7 +25,7 @@ def read_data():
 def get_data():
     data = read_data()
     if not data:
-        return "204 No Content"
+        return "204"
     return json.dumps(data, indent=4)
 
 def delete_data(key_1, key_2):
@@ -41,7 +41,7 @@ def delete_data(key_1, key_2):
             json.dump(file_data, file, indent=4)
         return f"Deleted entry: {key_1}, {key_2}"
     else:
-        return "404 Not Found"
+        return "404"
 
 def post_data(data):
     file_data = read_data()
