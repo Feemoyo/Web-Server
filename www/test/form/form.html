@@ -1,50 +1,55 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário Simples</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap">
-    <style>
-        body {
-            font-family: 'Raleway', sans-serif;
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Formulário Simples</title>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap">
+	<style>
+		body {
+			font-family: 'Raleway', sans-serif;
 			background-image: url('../../imgs/banana_server.png');
 			background-size: cover;
-            background-position: center;
+			background-position: center;
 			background-repeat: no-repeat;
 			height: 100vh;
 		}
-        h1{
-            text-align: center;
-        }
-        .container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        }
-        .form {
-        /* background-color: #f2f2f2; */
-        padding: 20px;
-        border-radius: 5px;
-        }
-    </style>
+		h1{
+			text-align: center;
+		}
+		.container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100vh;
+		}
+		.form {
+		/* background-color: #f2f2f2; */
+		padding: 20px;
+		border-radius: 5px;
+		}
+	</style>
 </head>
 <body>
-    <h1>Formulário de Contato</h1>
-    <div class="container">
-    <form class="form" action="../../cgi-bin/crud.py" method="post">
-        <label for="nome">Nome:</label><br>
-        <input type="text" id="nome" name="nome" required><br><br>
+	<h1>Formulário de Contato</h1>
+	<div class="container">
+		<form class="form" action="../../cgi-bin/form.py" method="post">
+			<label for="nome">Nome:</label><br>
+			<input type="text" id="nome" name="nome" required><br><br>
 
-        <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email" required><br><br>
+			<label for="email">Email:</label><br>
+			<input type="email" id="email" name="email" required><br><br>
 
-        <label for="mensagem">Mensagem:</label><br>
-        <textarea id="mensagem" name="mensagem" required></textarea><br><br>
-        <button type="submit" value="Enviar">Enviar</button>
-    </form>
-    </div>
-	<!-- <script src="../../cgi-bin/crud.py"></script> -->
+			<label for="mensagem">Mensagem:</label><br>
+			<textarea id="mensagem" name="mensagem" required></textarea><br><br>
+			<button type="submit" value="Enviar">Enviar</button>
+		</form>
+	</div>
+
+	<div>   
+		<form action="../../cgi-bin/form.py" method="GET">
+			<button type="submit" value="Enviar">Ver Usuarios</button>
+		</form>
+	</div>
 </body>
 </html>

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGI.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rferrero <rferrero@student.42sp.org.br     +#+  +:+       +#+        */
+/*   By: rferrero <rferrero@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/13 14:35:31 by rferrero          #+#    #+#             */
-/*   Updated: 2024/08/03 23:52:17 by rferrero         ###   ########.fr       */
+/*   Updated: 2024/08/13 13:17:38 by rferrero         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ CGI::CGI(t_cgi &cgi)
 	this->_env["METHOD"] = cgi.method;
 	this->_env["CGI"] = cgi.cgi;
 	this->_env["SCRIPT_FILE"] = cgi.script_file;
-	this->_env["DATA_BASE"] = cgi.data_base;
 	this->_env["DATA"] = cgi.data;
 
 	return ;
@@ -83,14 +82,11 @@ void	CGI::run_cgi(void)
 	{
 		close(pipe_out[1]);
 
-		//	output do cgi
 		char		buffer[1024];
 		size_t		bytes_read;
 
 		while((bytes_read = read(pipe_out[0], buffer, sizeof(buffer))) > 0)
-		{
 			this->_cgi_ret.append(buffer, bytes_read);
-		}
 
 		close(pipe_out[0]);
 

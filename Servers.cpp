@@ -159,7 +159,7 @@ void	Servers::_accept_connection (size_t index)
 		return ;
 	}
 	_process_client(index, client_fd);
-	_process_response(index, client_fd, this->_client.get_method());
+	_process_response(index, client_fd, this->_client.get_method(), this->_client.get_content());
 	close(client_fd);
 	return ;
 }
@@ -200,9 +200,14 @@ void	Servers::_process_client(size_t index, int &client_fd)
 	if (this->_client.get_method() == "POST")
 	{
 		this->_client.set_body_size();
-		this->_client.set_content(this->_client.get_map_content("Payload"));
+		if (!this->_client.get_map_content("Payload").empty())
+			this->_client.set_content(this->_client.get_map_content("Payload"));
+		else
+			this->_client.set_content(this->_client.get_map_content("Query"));
+
 		if (this->_client.get_content_length() > (long unsigned int)this->_servers[index].max_body_size)
 		{
+			this->_client.status_code_distributor("413");
 			std::cerr << "Payload too large on port: " << this->_servers[index].port << std::endl;
 			return ;
 		}
@@ -210,9 +215,9 @@ void	Servers::_process_client(size_t index, int &client_fd)
 	return ;
 }
 
-void	Servers::_process_response(size_t index, int &client_fd, std::string method)
+void	Servers::_process_response(size_t index, int &client_fd, std::string method, std::string payload)
 {
-	Response	resp(client_fd, this->_servers[index], this->_client.get_path(), method);
+	Response	resp(client_fd, this->_servers[index], this->_client.get_path(), method, payload);
 	
 	resp.run_response();
 	return ;
