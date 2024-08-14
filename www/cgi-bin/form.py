@@ -78,12 +78,8 @@ def create_response(message):
 def main():
     encoded_data = os.environ.get('DATA')
 
-    if not encoded_data:
-        print("400")
-        return
-
     decoded_data = urllib.parse.parse_qs(encoded_data)
-    decoded_data = {k: v[0] if len(v) == 1 else v for k, v in decoded_data.items()}
+    decoded_data = {k: v[0].strip() if len(v) == 1 else v for k, v in decoded_data.items()}
     form = json.dumps(decoded_data, indent=4)
     
     method = os.environ.get('METHOD')

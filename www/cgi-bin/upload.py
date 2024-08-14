@@ -71,7 +71,12 @@ def create_response(message):
 def main():
 	header = os.environ.get('DATA')
 	header = header[0:header.find('\r\n\r\n')]
-	body = os.environ.get('DATA').encode()
+
+	try:
+		body = os.environ.get('DATA').encode()
+	except (UnicodeEncodeError, KeyError):
+		print("415")
+		return
 	
 	if not body:
 		print("404")

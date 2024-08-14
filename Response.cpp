@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/08/13 17:55:20 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/13 21:22:10 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,8 @@ void	Response::run_response(void)
 			_set_error_response("404");
 		else if  (this->get_content() == "204\n")
 			_set_error_response("204");
+		else if  (this->get_content() == "415\n")
+			_set_error_response("415");
 
 	}
 	else

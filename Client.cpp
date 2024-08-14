@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:32:11 by fmoreira          #+#    #+#             */
-/*   Updated: 2024/08/13 17:40:56 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/13 21:26:32 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,15 @@ void	Client::_request_header(std::istringstream &stream)
 
 	std::getline(stream, line);
 	this->_buffer_map["Request"] = line;
+	this->_buffer_map["Query"] = this->_map_finder("Request", "?", "HTTP");
+
+	if (this->_buffer_map["Query"].size() > 1)
+	{
+		line.clear();
+		line = this->_buffer_map["Query"].substr(1);
+		this->_buffer_map["Query"] = line;
+		line.clear();
+	}
 
 	while (std::getline(stream, line))
 	{
@@ -118,6 +127,11 @@ std::string	Client::get_method(void)
 std::string	Client::get_path(void)
 {
 	std::string path = this->_map_finder("Request", "/", " ");
+	std::string query = this->_buffer_map["Query"];
+
+	if (path.find("?") != std::string::npos)
+		path = path.substr(0, path.find("?"));
+
 	if (std::strchr(path.c_str(), '.') == NULL)
 	{
 		this->set_content_type("text/html");
