@@ -6,7 +6,8 @@ import json
 
 DATA_FILE = "./www/cgi-bin/data/form.json"
 
-if not os.path.exists(DATA_FILE):
+if not os.path.exists(os.path.dirname(DATA_FILE)):
+    os.makedirs(os.path.dirname(DATA_FILE))
     with open(DATA_FILE, 'w') as file:
         json.dump([], file)
 
@@ -25,23 +26,8 @@ def read_data():
 def get_data():
     data = read_data()
     if not data:
-        return "204"
+        return ""
     return json.dumps(data, indent=4)
-
-def delete_data(key_1, key_2):
-    file_data = read_data()
-    item_to_delete = None
-    for item in file_data:
-        if item.get('nome') == key_1 and item.get('email') == key_2:
-            item_to_delete = item
-            break
-    if item_to_delete:
-        file_data.remove(item_to_delete)
-        with open(DATA_FILE, 'w') as file:
-            json.dump(file_data, file, indent=4)
-        return f"Deleted entry: {key_1}, {key_2}"
-    else:
-        return "404"
 
 def post_data(data):
     file_data = read_data()
@@ -62,7 +48,7 @@ def create_response(message):
     <style>
         body {{
             font-family: 'Raleway', sans-serif;
-            background-image: url('../imgs/200_OK.png');
+            background-image: url('../imgs/banana_server.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -89,18 +75,13 @@ def main():
 
     if method == 'GET':
         message = get_data()
-    elif method == 'DELETE':
-        if key_1 and key_2:
-            message = delete_data(key_1, key_2)
-        else:
-            message = "404"
     elif method == 'POST':
         if key_1 and key_2:
             message = post_data(data)
         else:
-            message = "404"
+            message = "404 - Not Found"
     else:
-        message = "405"
+        message = "405 - Method Not Allowed"
 
     print(create_response(message))
 

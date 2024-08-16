@@ -1,1 +1,0 @@
-GET /cgi-bin/form.py? HTTP/1.1

@@ -6,7 +6,7 @@
 /*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/08/13 21:22:10 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/15 22:10:05 by fmoreira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void	Response::run_response(void)
 	_check_allowed_methods();
 	_check_max_body_size();
 	_check_directory_location();
-	if (_check_for_cgi() == true && this->_status_code != "405" && this->_status_code != "404" && this->_status_code != "413")
+	if (_check_for_cgi() == true && this->_status_code != "405" && this->_status_code != "404" && this->_status_code != "413" && this->_response.method != "DELETE")
 	{
 		_run_CGI();
 		if (this->get_content() == "404\n")
@@ -89,6 +89,8 @@ void	Response::run_response(void)
 			_set_error_response("415");
 
 	}
+	else if (this->get_content_type().empty())
+		_set_error_response("404");
 	else
 	{
 		if (this->_status_code == "405")

@@ -21,7 +21,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		height: 100vh;
+		height: device-height;
 		}
 		.form {
 		/* background-color: #f2f2f2; */
@@ -33,23 +33,24 @@
 <body>
 	<h1>Formulário de Contato</h1>
 	<div class="container">
-		<form class="form" action="../../cgi-bin/form.py" method="post">
-			<label for="nome">Nome:</label><br>
-			<input type="text" id="nome" name="nome" required><br><br>
+		<div>
+			<form class="form" action="../../cgi-bin/form.py" method="post">
+				<label for="nome">Nome:</label><br>
+				<input type="text" id="nome" name="nome" required><br><br>
 
-			<label for="email">Email:</label><br>
-			<input type="email" id="email" name="email" required><br><br>
+				<label for="email">Email:</label><br>
+				<input type="email" id="email" name="email" required><br><br>
 
-			<label for="mensagem">Mensagem:</label><br>
-			<textarea id="mensagem" name="mensagem" required></textarea><br><br>
-			<button type="submit" value="Enviar">Enviar</button>
-		</form>
-	</div>
-
-	<div>   
-		<form action="../../cgi-bin/form.py" method="GET">
-			<button type="submit" value="Enviar">Ver Usuarios</button>
-		</form>
+				<label for="mensagem">Mensagem:</label><br>
+				<textarea id="mensagem" name="mensagem" required></textarea><br><br>
+				<button type="submit" value="Enviar">Enviar</button>
+			</form>
+		</div>
+		<div>   
+			<form action="../../cgi-bin/form.py" method="GET">
+				<button type="submit" value="Enviar">Ver Usuarios</button>
+			</form>
+		</div>
 	</div>
 </body>
 </html>

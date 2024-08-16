@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Request</title>
+</head>
+<body>
+    <h1>Delete Request</h1>
+    <form id="deleteForm">
+        <input type="text" id="resourceId" placeholder="Enter Resource ID" required>
+        <button type="submit">Delete</button>
+    </form>
+
+    <script>
+        document.getElementById('deleteForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const resourceId = document.getElementById('resourceId').value;
+            const url = `http://localhost:8000/trash/${resourceId}`;
+
+            fetch(url, {
+                method: 'DELETE',
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Resource deleted successfully');
+                } else {
+                    alert('Failed to delete resource');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
