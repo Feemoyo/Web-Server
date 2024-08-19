@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoreira <fmoreira@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: csantos- <csantos-@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2024/08/15 22:10:05 by fmoreira         ###   ########.fr       */
+/*   Updated: 2024/08/19 15:04:02 by csantos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	Response::run_response(void)
 			_set_error_response("415");
 
 	}
-	else if (this->get_content_type().empty())
+	else if (this->get_content_type().empty() && this->_response.method != "DELETE")
 		_set_error_response("404");
 	else
 	{
@@ -413,6 +413,10 @@ void	Response::_response_maker(void)
 
 void	Response::_send_response(void)
 {
-	write(this->_response.client, this->_response.body.c_str(), this->_response.body.size());
+	int response;
+	
+	response = write(this->_response.client, this->_response.body.c_str(), this->_response.body.size());
+	if (response < 0)
+		std::cerr << "Failed to write response to client port number: " << this->_response.server.port << "\n";
 	return ;
 }
